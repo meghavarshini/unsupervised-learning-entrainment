@@ -15,7 +15,8 @@
     - Checkout normutils.py, see if it helps
 8. Find out how long these things take
     - creation of ivectors could be time-consuming
-    - Kaldi can take time, comp. resources.
+    - Kaldi can take time, comp. resources
+    - OpenSMILE features: 7 hours
 ~~9. How are ivectors created?~~ 
    - ~~Kaldi files ? Check if these are pre-created, or if they are created.~~
 10. Check out load: tkinter
@@ -33,9 +34,12 @@
 	    - Software
         - Creating a `trans` directory with all transcripts
         - Code for creating `fisher_meta.csv`
-    2. Editing config file
+    2. ~~Editing config file~~
     3. Main entry Point
-16. Fix requirements
+16. ~~Fix requirements~~
 17. Upload Fisher corpus
-18. Add master directory for all Fisher-related stuff
+18. ~~Add master directory for all Fisher-related stuff~~
 19. Add `chmod` info to Readme
+    1. chmod 777 feats
+    2. chmod 777 feats/emobase2010_haoqi_revised.conf
+    3. chmod 755 feats/run_all_nopre.sh

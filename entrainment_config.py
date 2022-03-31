@@ -40,30 +40,31 @@ from scipy import spatial
 ### ABSOLUTE FILEPATHS FOR INPUT, SOFTWARE#####
 print(sys.path)
 print('\n')
-fisher_corpus = "/Users/meghavarshinikrishnaswamy/Downloads/Fisher_corpus"
-def_wav = fisher_corpus+"/fisher_eng_tr_sp_LDC2004S13_zip_2/fisher_eng_tr_sp_d1/audio/001/fe_03_00101.sph"
-def_audio = fisher_corpus+"/fisher_eng_tr_sp_LDC2004S13_zip_2/fisher_eng_tr_sp_d1/audio"
+### Files in the Fisher Directory ####
+fisher_corpus = "/Users/meghavarshinikrishnaswamy/Downloads/Fisher_corpus" # master directory
+transcript_dir= fisher_corpus+"/fe_03_p1_tran/data/trans/all_trans" #directory that hourses all transcript files in one directory (no subdirectories)
+audio_dir_root = fisher_corpus+"/fisher_eng_tr_sp_LDC2004S13_zip_2" #directory for sphere sound files
+def_wav = fisher_corpus+"/fisher_eng_tr_sp_LDC2004S13_zip_2/fisher_eng_tr_sp_d1/audio/001/fe_03_00101.sph" #example sound file
+def_audio = fisher_corpus+"/fisher_eng_tr_sp_LDC2004S13_zip_2/fisher_eng_tr_sp_d1/audio" #audio subdirectory that houses the sphere file subdirectories
+fisher_meta = fisher_corpus+"/Fisher_meta.csv" #metafile, create this before running anything else
+
 # Find OpenSMILE on the system and add relevant paths accordingly:
 opensmile = "/Users/meghavarshinikrishnaswamy/github/tomcat-speech/external/opensmile-3.0/bin/SMILExtract"
 opensmile_config = "/Users/meghavarshinikrishnaswamy/github/tomcat-speech/external/opensmile-3.0/config/emobase/emobase2010.conf"
-config_path = "/Users/meghavarshinikrishnaswamy/github/unsupervised-learning-entrainment/feats/emobase2010_mod.conf"
-sph2pipe = "/Users/meghavarshinikrishnaswamy/github/sph2pipe/sph2pipe"
-config_path = "/Users/meghavarshinikrishnaswamy/github/unsupervised-learning-entrainment/feats/emobase2010_mod.conf"
+sph2pipe = "/Users/meghavarshinikrishnaswamy/github/sph2pipe/sph2pipe" #clone this
+config_path = os.getcwd() +"/feats/emobase2010_mod.conf" #this file exists in repository
 
-transcript_dir= fisher_corpus+"/fe_03_p1_tran/data/trans/all_trans"
-audio_dir_root = fisher_corpus+"/fisher_eng_tr_sp_LDC2004S13_zip_2"
-fisher_meta = fisher_corpus+"/Fisher_meta.csv"
 
-temp_testfile = "/Users/meghavarshinikrishnaswamy/github/unsupervised-learning-entrainment/models/NED/data/tmp.csv"
+temp_testfile = os.getcwd()+"/models/NED/data/tmp.csv"
 ivec_scp = fisher_corpus+"/Fisher_ivector/exp/ivectors_train/ivector.scp"
 ###### OUTPUT FILES ###########
 feats_dir = fisher_corpus+"/feats"
 data_dir = fisher_corpus+"/feats_nonorm"
 feat_dir = fisher_corpus+"/raw_feats"
 out_dir = fisher_corpus+"/feats_nonorm_nopre"
-fdset = "data/train_Fisher_nonorm.h5"
-temp_testfile = "data/tmp.csv"
-model_name = "models/trained_VAE_nonorm_nopre_l1.pt"
+fdset = os.getcwd()+"data/train_Fisher_nonorm.h5"
+temp_testfile = os.getcwd()+"data/tmp.csv"
+model_name = os.getcwd()+"models/trained_VAE_nonorm_nopre_l1.pt"
 #FIX THIS
 data_dir_triplets_all = fisher_corpus+"/feats_triplets_all"
 data_dir_triplets = fisher_corpus+"/feats_triplets"
