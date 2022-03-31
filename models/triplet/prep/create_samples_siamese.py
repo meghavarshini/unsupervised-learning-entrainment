@@ -1,14 +1,14 @@
 from entrainment_config import *
 
 # -------------------------------------------------------- 
-# only used once for reading kaldi ivector
+# only used once for reading kaldi ivector, change line 5 to 'True' and uncomment 5-12
 # create_pkl = False
 # if create_pkl:
-# 	ivec_scp = "/home/nasir/data/Fisher/Fisher_ivector/exp/ivectors_train/ivector.scp"
+# 	ivec_scp = "/Users/meghavarshinikrishnaswamy/Downloads/Fisher_corpus/Fisher_ivector/exp/ivectors_train/ivector.scp"
 # 	ivec_norm_dict ={}
 # 	for key,mat in kaldi_io.read_mat_scp(ivec_scp):
 # 		ivec_norm_dict[key] = normalize(mat)
-# 	f = open('ivector_normalized.pkl', 'wb')
+# 	f = open('ivector_normalized.pkl', 'w')
 # 	pickle.dump(ivec_norm_dict, f)
 # --------------------------------------------------------------------------
 
