@@ -4,11 +4,7 @@ SEED=448
 frac_train = 0.8
 frac_val = 0.1
 
-
-
 # Create h5 files
-
-
 
 data_dir = data_dir
 
