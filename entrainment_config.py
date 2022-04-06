@@ -38,8 +38,8 @@ from scipy import spatial
 # import matplotlib.pyplot as plt
 
 ### ABSOLUTE FILEPATHS FOR INPUT, SOFTWARE#####
-print(sys.path)
-print('\n')
+# print(sys.path)
+# print('\n')
 ### Files in the Fisher Directory ####
 fisher_corpus = "/Users/meghavarshinikrishnaswamy/Downloads/Fisher_corpus" # master directory
 transcript_dir= fisher_corpus+"/fe_03_p1_tran/data/trans/all_trans" #directory that hourses all transcript files in one directory (no subdirectories)
