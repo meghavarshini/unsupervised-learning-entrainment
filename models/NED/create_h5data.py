@@ -24,9 +24,12 @@ dataset_id = 'Fisher_acoustic'
 norm_id = 'nonorm'
 dim = 228
 # Making files for the test partition, with train and val commented out. Try uncommenting, and make this happen
-data_dir = feats_dir #this is empty right now, let feature files be populated
+data_dir = feats_dir
+print(data_dir)
 
+# Try to generate this sessList correctly
 sessList = sorted(glob.glob(data_dir + '*.csv'))
+print("sessList: ", sessList)
 # sessList= [f for f in sorted(glob.glob(data_dir + '*.csv')) if int(os.path.basename(f).split('.')[0].split('_')[-2]) < 800]
 random.seed(SEED)
 random.shuffle(sessList)
@@ -35,43 +38,44 @@ num_files_all = len(sessList)
 num_files_train = int(np.ceil((frac_train*num_files_all)))
 num_files_val = int(np.ceil((frac_val*num_files_all)))
 num_files_test = num_files_all - num_files_train - num_files_val
-
+print("num_files_all: ", num_files_all)
+print("num_files_train: ", num_files_train)
 sessTrain = sessList[:num_files_train]
 sessVal = sessList[num_files_train:num_files_val+num_files_train]
 sessTest = sessList[num_files_val+num_files_train:]
 print(len(sessTrain) + len(sessVal) + len(sessTest))
-
+print("sessTrain: ", sessTrain)
 ############ Uncomment the following chunks to create data files ###################
 ###### Create Train Data file ######
-# temp_trainfile = os.getcwd()+"/data/tmp.csv"
-# try:
-#     os.remove(temp_trainfile)
-# except OSError:
-#     pass
-# ftmp = open(temp_trainfile, 'a')
-# for sess_file in sorted(sessTrain):
-# 	start = time.time()
-# 	print(sess_file)
-# 	xx = np.genfromtxt(sess_file, delimiter= ",")
-# 	xx = np.hstack((xx[0:-1,:], xx[1:,:]))
-# 	xx = clean_feat(xx, dim)
-# 	nn = xx.shape[0]
-# 	np.savetxt(ftmp, xx, delimiter=',')
-# 	print ('Train: ' +  sess_file + '  '+"{0:.2f}".format(time.time() - start) + '  '+ str(nn))
-#
-# ftmp.close()
-# start = time.time()
-# X_train = np.genfromtxt(temp_trainfile, delimiter= ",")
-# X_train = X_train.astype('float64')
+temp_trainfile = os.getcwd()+"/data/tmp.csv"
+try:
+    os.remove(temp_trainfile)
+except OSError:
+    pass
+ftmp = open(temp_trainfile, 'a')
+for sess_file in sorted(sessTrain):
+	start = time.time()
+	print("sess_file: ", sess_file)
+	xx = np.genfromtxt(sess_file, delimiter= ",")
+	xx = np.hstack((xx[0:-1,:], xx[1:,:]))
+	xx = clean_feat(xx, dim)
+	nn = xx.shape[0]
+	np.savetxt(ftmp, xx, delimiter=',')
+	print ('Train: ' +  sess_file + '  '+"{0:.2f}".format(time.time() - start) + '  '+ str(nn))
+
+ftmp.close()
+start = time.time()
+X_train = np.genfromtxt(temp_trainfile, delimiter= ",")
+X_train = X_train.astype('float64')
 # os.remove(temp_trainfile)
-#
-# print ('Reading Train takes  '+"{0:.2f}".format(time.time() - start) )
-#
-# start = time.time()
-# hf = h5py.File('data/train_' + dataset_id + '_' + norm_id + '.h5', 'w')
-# hf.create_dataset('dataset', data=X_train)
-# hf.close()
-# print ('Writing Train takes '+"{0:.2f}".format(time.time() - start) )
+
+print ('Reading Train takes  '+"{0:.2f}".format(time.time() - start) )
+
+start = time.time()
+hf = h5py.File('data/train_' + dataset_id + '_' + norm_id + '.h5', 'w')
+hf.create_dataset('dataset', data=X_train)
+hf.close()
+print ('Writing Train takes '+"{0:.2f}".format(time.time() - start) )
 
 
 
