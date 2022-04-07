@@ -8,7 +8,7 @@ frac_val = 0.1
 data_dir_triplets = data_dir_triplets
 
 
-sessList= sorted(glob.glob(data_dir + '*.csv'))
+sessList= sorted(glob.glob(data_dir + '/*.csv'))
 random.seed(SEED)
 random.shuffle(sessList)
 

@@ -62,7 +62,7 @@ line_dict = pickle.load( open( "meta/file2line.pkl", "rb" ) )
 SEED=448
 frac_train = 0.8
 frac_val = 0.1
-sessList= sorted(glob.glob(turnfeatdir + '*.csv'))
+sessList= sorted(glob.glob(turnfeatdir + '/*.csv'))
 random.seed(SEED)
 random.shuffle(sessList)
 
@@ -77,7 +77,7 @@ sessTest = sessList[num_files_val+num_files_train:]
 print((len(sessTrain) + len(sessVal) + len(sessTest)))
 # ------------------------------------------------------------
 #  FOR DEBUG
-sessList = [turnfeatdir + 'fe_03_03892_IPU_func_feat.csv']
+sessList = [turnfeatdir + '/fe_03_03892_IPU_func_feat.csv']
 # 
 for sessfile in sessList:
 	df_i = pd.read_csv(sessfile)

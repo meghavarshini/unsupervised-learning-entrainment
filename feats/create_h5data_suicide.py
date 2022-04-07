@@ -16,7 +16,7 @@ frac_val = 0
 
 data_dir = '~/Downloads/Fisher_corpus/feats_nonorm'
 
-sessList= sorted(glob.glob(data_dir + '*.csv'))
+sessList= sorted(glob.glob(data_dir + '/*.csv'))
 random.seed(SEED)
 random.shuffle(sessList)
 

@@ -28,9 +28,9 @@ data_dir = feats_dir
 print(data_dir)
 
 # Try to generate this sessList correctly
-sessList = sorted(glob.glob(data_dir + '*.csv'))
+sessList = sorted(glob.glob(data_dir + '/*.csv'))
 print("sessList: ", sessList)
-# sessList= [f for f in sorted(glob.glob(data_dir + '*.csv')) if int(os.path.basename(f).split('.')[0].split('_')[-2]) < 800]
+# sessList= [f for f in sorted(glob.glob(data_dir + '/*.csv')) if int(os.path.basename(f).split('.')[0].split('_')[-2]) < 800]
 random.seed(SEED)
 random.shuffle(sessList)
 

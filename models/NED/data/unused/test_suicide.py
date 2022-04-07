@@ -53,7 +53,7 @@ hff = h5py.File('data/test_' + dtset + '_nonorm_sep.h5', 'r')
 
 
 
-sessList= sorted(glob.glob(data_dir + '*.csv'))
+sessList= sorted(glob.glob(data_dir + '/*.csv'))
 random.seed(SEED)
 random.shuffle(sessList)
 

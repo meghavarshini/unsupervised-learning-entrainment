@@ -11,13 +11,11 @@ import pandas as pd
 import numpy as np
 import time
 import subprocess
-import subprocess
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 import pdb
 import glob
 import random
 import h5py
-import pdb
 import kaldi_io
 # from aeent import *
 import torch
@@ -35,44 +33,48 @@ from sklearn.metrics.pairwise import euclidean_distances
 from sklearn.preprocessing import normalize
 from scipy import spatial
 
-# import matplotlib.pyplot as plt
-
-### ABSOLUTE FILEPATHS FOR INPUT, SOFTWARE#####
+### ABSOLUTE FILEPATHS FOR INPUT#####
 # print(sys.path)
-# print('\n')
+
 ### Files in the Fisher Directory ####
+########## EDIT THE FOLLOWING LINE TO SET THE DIRECTORY FOR THE FISHER CORPUS ##########
 fisher_corpus = "/Users/meghavarshinikrishnaswamy/Downloads/Fisher_corpus" # master directory
+# Find OpenSMILE on the system and add relevant paths accordingly:
+opensmile = "/Users/meghavarshinikrishnaswamy/github/tomcat-speech/external/opensmile-3.0/bin/SMILExtract"
+sph2pipe = "/Users/meghavarshinikrishnaswamy/github/sph2pipe/sph2pipe" #clone this
+##########
+
 transcript_dir= fisher_corpus+"/fe_03_p1_tran/data/trans/all_trans" #directory that hourses all transcript files in one directory (no subdirectories)
 audio_dir_root = fisher_corpus+"/fisher_eng_tr_sp_LDC2004S13_zip_2" #directory for sphere sound files
 def_wav = fisher_corpus+"/fisher_eng_tr_sp_LDC2004S13_zip_2/fisher_eng_tr_sp_d1/audio/001/fe_03_00101.sph" #example sound file
 def_audio = fisher_corpus+"/fisher_eng_tr_sp_LDC2004S13_zip_2/fisher_eng_tr_sp_d1/audio" #audio subdirectory that houses the sphere file subdirectories
 fisher_meta = fisher_corpus+"/Fisher_meta.csv" #metafile, create this before running anything else
 
-# Find OpenSMILE on the system and add relevant paths accordingly:
-opensmile = "/Users/meghavarshinikrishnaswamy/github/tomcat-speech/external/opensmile-3.0/bin/SMILExtract"
-opensmile_config = "/Users/meghavarshinikrishnaswamy/github/tomcat-speech/external/opensmile-3.0/config/emobase/emobase2010.conf"
-sph2pipe = "/Users/meghavarshinikrishnaswamy/github/sph2pipe/sph2pipe" #clone this
-config_path = os.getcwd() +"/feats/emobase2010_mod.conf" #this file exists in repository
-
-
-temp_testfile = os.getcwd()+"/models/NED/data/tmp.csv"
-ivec_scp = fisher_corpus+"/Fisher_ivector/exp/ivectors_train/ivector.scp"
 ###### OUTPUT FILES ###########
+
 feats_dir = fisher_corpus+"/feats"
 data_dir = fisher_corpus+"/feats_nonorm"
-feat_dir = fisher_corpus+"/raw_feats"
+raw_feat_dir = fisher_corpus+"/raw_feats"
 out_dir = fisher_corpus+"/feats_nonorm_nopre"
+data_dir_triplets_all = fisher_corpus+"/feats_triplets_all"
+data_dir_triplets = fisher_corpus+"/feats_triplets"
+
+####### MODELLING ########
+ivec_scp = fisher_corpus+"/Fisher_ivector/exp/ivectors_train/ivector.scp"
+model_path = fisher_corpus+"/workspace/acoustic/triplet/fisher/trained_models"
+work_dir = fisher_corpus+"/workspace/acoustic/NED_ecdc"
+
+temp_testfile = os.getcwd()+"/models/NED/data/tmp.csv"
 fdset = os.getcwd()+"data/train_Fisher_nonorm.h5"
 temp_testfile = os.getcwd()+"data/tmp.csv"
 model_name = os.getcwd()+"models/trained_VAE_nonorm_nopre_l1.pt"
-#FIX THIS
-data_dir_triplets_all = fisher_corpus+"/feats_triplets_all"
-data_dir_triplets = fisher_corpus+"/feats_triplets"
-raw_featdir= fisher_corpus+"/raw_feats"
+
+
+opensmile_config = opensmile+"/config/emobase/emobase2010.conf"
+config_path = os.getcwd() +"/feats/emobase2010_mod.conf" #this file exists in repository
 # DEBUG = False # no saving of files; output in the terminal; first random seed from the list
 
-model_path = fisher_corpus+"/workspace/acoustic/triplet/fisher/trained_models"
-work_dir = fisher_corpus+"/workspace/acoustic/NED_ecdc"
+
 
 ##### ARGPARSE COMMANDS #######
 parser = argparse.ArgumentParser(description='Process some integers.')

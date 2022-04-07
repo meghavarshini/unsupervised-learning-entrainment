@@ -16,7 +16,7 @@ frac_val = 0
 
 data_dir = '/home/nasir/data/suicide/feats_nonorm/'
 
-sessList= sorted(glob.glob(data_dir + '*.csv'))
+sessList= sorted(glob.glob(data_dir + '/*.csv'))
 random.seed(SEED)
 random.shuffle(sessList)
 

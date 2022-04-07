@@ -9,7 +9,7 @@ frac_val = 0.1
 data_dir = data_dir
 
 
-sessList= sorted(glob.glob(data_dir + '*.csv'))
+sessList= sorted(glob.glob(data_dir + '/*.csv'))
 print("sessList", sessList)
 random.seed(SEED)
 random.shuffle(sessList)
@@ -89,7 +89,7 @@ hf.close()
 
 data_dir = data_dir
 
-sessList= sorted(glob.glob(data_dir + '*.csv'))
+sessList= sorted(glob.glob(data_dir + '/*.csv'))
 random.seed(SEED)
 random.shuffle(sessList)
 
