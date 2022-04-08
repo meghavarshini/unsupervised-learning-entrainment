@@ -44,11 +44,11 @@ opensmile = "/Users/meghavarshinikrishnaswamy/github/tomcat-speech/external/open
 sph2pipe = "/Users/meghavarshinikrishnaswamy/github/sph2pipe/sph2pipe" #clone this
 ##########
 
-transcript_dir= fisher_corpus+"/fe_03_p1_tran/data/trans/all_trans" #directory that hourses all transcript files in one directory (no subdirectories)
-audio_dir_root = fisher_corpus+"/fisher_eng_tr_sp_LDC2004S13_zip_2" #directory for sphere sound files
-def_wav = fisher_corpus+"/fisher_eng_tr_sp_LDC2004S13_zip_2/fisher_eng_tr_sp_d1/audio/001/fe_03_00101.sph" #example sound file
-def_audio = fisher_corpus+"/fisher_eng_tr_sp_LDC2004S13_zip_2/fisher_eng_tr_sp_d1/audio" #audio subdirectory that houses the sphere file subdirectories
-fisher_meta = fisher_corpus+"/Fisher_meta.csv" #metafile, create this before running anything else
+transcript_dir= fisher_corpus +"/fe_03_p1_tran/data/trans/all_trans" #directory that hourses all transcript files in one directory (no subdirectories)
+audio_dir_root = fisher_corpus + "/fisher_eng_tr_sp_LDC2004S13_zip" #directory for sphere sound files
+def_wav = fisher_corpus +"/" + audio_dir_root + "/fisher_eng_tr_sp_d1/audio/001/fe_03_00101.sph" #example sound file
+def_audio = fisher_corpus +"/" + audio_dir_root + "/fisher_eng_tr_sp_d1/audio" #audio subdirectory that houses the sphere file subdirectories
+fisher_meta = fisher_corpus + "/Fisher_meta.csv" #metafile, create this before running anything else
 
 ###### OUTPUT FILES ###########
 
