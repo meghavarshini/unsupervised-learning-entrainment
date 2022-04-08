@@ -60,17 +60,17 @@ data_dir_triplets_all = fisher_corpus+"/feats_triplets_all"
 data_dir_triplets = fisher_corpus+"/feats_triplets"
 
 ####### MODELLING ########
-ivec_scp = fisher_corpus+"/Fisher_ivector/exp/ivectors_train/ivector.scp"
-model_path = fisher_corpus+"/workspace/acoustic/triplet/fisher/trained_models"
-work_dir = fisher_corpus+"/workspace/acoustic/NED_ecdc"
+ivec_scp = fisher_corpus + "/Fisher_ivector/exp/ivectors_train/ivector.scp"
+model_path = fisher_corpus + "/workspace/acoustic/triplet/fisher/trained_models"
+work_dir = fisher_corpus + "/workspace/acoustic/NED_ecdc"
 
-temp_testfile = os.getcwd()+"/models/NED/data/tmp.csv"
-fdset = os.getcwd()+"data/train_Fisher_nonorm.h5"
-temp_testfile = os.getcwd()+"data/tmp.csv"
-model_name = os.getcwd()+"models/trained_VAE_nonorm_nopre_l1.pt"
+temp_testfile = os.getcwd() + "/models/NED/data/tmp.csv"
+fdset = os.getcwd() + "data/train_Fisher_nonorm.h5"
+temp_testfile = os.getcwd() + "data/tmp.csv"
+model_name = os.getcwd() + "models/trained_VAE_nonorm_nopre_l1.pt"
 
 
-opensmile_config = opensmile+"/config/emobase/emobase2010.conf"
+opensmile_config = opensmile + "/config/emobase/emobase2010.conf"
 config_path = os.getcwd() +"/feats/emobase2010_mod.conf" #this file exists in repository
 # DEBUG = False # no saving of files; output in the terminal; first random seed from the list
 
@@ -78,7 +78,6 @@ config_path = os.getcwd() +"/feats/emobase2010_mod.conf" #this file exists in re
 
 ##### ARGPARSE COMMANDS #######
 parser = argparse.ArgumentParser(description='Process some integers.')
-
 parser.add_argument('--audio_file', type=str, required=False, default=def_wav,
 					help='File path of the input audio file')
 parser.add_argument('--openSMILE', type=str, required=False, default=opensmile,

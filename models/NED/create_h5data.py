@@ -15,9 +15,6 @@ def clean_feat(XX, dim):
 	XX = XX[ind,:]
 	return XX
 
-
-
-
 # Create h5 files
 
 dataset_id = 'Fisher_acoustic'
@@ -25,11 +22,9 @@ norm_id = 'nonorm'
 dim = 228
 # Making files for the test partition, with train and val commented out. Try uncommenting, and make this happen
 data_dir = feats_dir
-print(data_dir)
 
 # Try to generate this sessList correctly
 sessList = sorted(glob.glob(data_dir + '/*.csv'))
-print("sessList: ", sessList)
 # sessList= [f for f in sorted(glob.glob(data_dir + '/*.csv')) if int(os.path.basename(f).split('.')[0].split('_')[-2]) < 800]
 random.seed(SEED)
 random.shuffle(sessList)
@@ -43,8 +38,7 @@ print("num_files_train: ", num_files_train)
 sessTrain = sessList[:num_files_train]
 sessVal = sessList[num_files_train:num_files_val+num_files_train]
 sessTest = sessList[num_files_val+num_files_train:]
-print(len(sessTrain) + len(sessVal) + len(sessTest))
-print("sessTrain: ", sessTrain)
+print("Total File = ", len(sessTrain) + len(sessVal) + len(sessTest))
 ############ Uncomment the following chunks to create data files ###################
 ###### Create Train Data file ######
 temp_trainfile = os.getcwd()+"/data/tmp.csv"
@@ -56,6 +50,7 @@ ftmp = open(temp_trainfile, 'a')
 for sess_file in sorted(sessTrain):
 	start = time.time()
 	print("sess_file: ", sess_file)
+	########## ToDo: fix issues with identifying relevant rows ########
 	xx = np.genfromtxt(sess_file, delimiter= ",")
 	xx = np.hstack((xx[0:-1,:], xx[1:,:]))
 	xx = clean_feat(xx, dim)
