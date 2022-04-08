@@ -1,34 +1,32 @@
-import glob
-import os
-import csv
-import pdb
+from entrainment_config import *
 
-transcript_dir='~/Downloads/Fisher_corpus/fe_03_p1_tran'
-audio_dir_root = "~/Downloads/Fisher_corpus/fisher_eng_tr_sp_LDC2004S13_zip_2"
-metaf = open('Fisher_meta.csv', 'rb')
+transcript_dir= transcript_dir
+audio_dir_root = audio_dir_root
+metaf = open(fisher_meta, 'r')
 
 
 reader = csv.reader(metaf)
 metadata ={}
 for row in reader:
 	metadata[row[0]] = row[1:]
-
 wavscpf = open('./wav.scp', 'w')
 segf = open('./segments', 'w')
 uttf = open('./utt2spk', 'w')
 
 
 for dir in os.listdir(audio_dir_root):
-	if "fe_03_p1" in dir:
-		subdir = audio_dir_root + dir + "/audio" 
+	# if "fe_03_p1" in dir:
+	if "fisher_eng_tr" in dir:
+		subdir = audio_dir_root + "/" + dir + "/audio"
 		for subsubdir in os.listdir(subdir):
-			for audio in os.listdir(subdir + '/' + subsubdir):
+			for audio in os.listdir(subdir + '/' + subsubdir)
+				print("audio file found..." + audio)
 				audio_path = subdir + '/' + subsubdir + '/'+ audio
 				audio = audio.split(".")[0]
 				sess_id = audio.split('_')[-1]
-				# wavscpf.write(audio + ' ~/github/sph2pipe/sph2pipe -f wav -p -c 1 ' + audio_path + ' |\n')
-				wavscpf.write(audio + ' sox ' + audio_path +' channels 1 rate 16k '+ ' |\n')
-				transcript =  transcript_dir + audio + '.txt'
+				wavscpf.write(audio + ' '+ sph2pipe +' -f wav -p -c 1 ' + audio_path + ' |\n')
+				# wavscpf.write(audio + ' sox ' + audio_path +' channels 1 rate 16k '+ ' |\n')
+				transcript =  transcript_dir + "/"+ audio + '.txt'
 				trans = open(transcript).readlines()
 				spk_list = []
 				for line in trans:
@@ -44,8 +42,6 @@ for dir in os.listdir(audio_dir_root):
 							segf.write(utt_id + ' ' + audio + ' ' + start + ' '+ stop + '\n')
 							uttf.write(utt_id + ' ' +spk +'\n')
 				# print audio, spk_list[0][2]
-
-
 
 
 wavscpf.close()

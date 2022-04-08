@@ -1,23 +1,7 @@
-import h5py
-import pdb
-from networks import *
-import numpy as np 
-import csv
-import random
-import argparse
-import torch
-import torch.utils.data
-from torch.utils.data import Dataset
-from torch import nn, optim
-from torch.autograd import Variable
-from torch.nn import functional as F
-from torchvision import datasets, transforms
-from torchvision.utils import save_image
-import matplotlib.pyplot as plt
+from entrainment_config import *
 
-
-model_path = '~/Downloads/workspace/acoustic/triplet/fisher/trained_models/'
-work_dir = '~/Downloads/workspace/acoustic/NED_ecdc/'
+model_path = model_path
+work_dir = work_dir
 model_name = model_path + 'triplet_64d_50ep_fisher.pkl'
 
 SEED = 448
@@ -103,11 +87,11 @@ for k in range(20):
     total_fake_test_loss = np.sum(Fake_loss)/Loss.shape[0]
 
 
-    print("Total Real Loss:"+str(total_test_loss) + "Total Fake Loss:" + str(total_fake_test_loss))
+    print(("Total Real Loss:"+str(total_test_loss) + "Total Fake Loss:" + str(total_fake_test_loss)))
 
-    print(float(np.sum(Loss < Fake_loss))/Loss.shape[0])
+    print((float(np.sum(Loss < Fake_loss))/Loss.shape[0]))
 
     results.append(float(np.sum(Loss < Fake_loss))/Loss.shape[0])
 
 
-print(np.mean(np.array(results)))
+print((np.mean(np.array(results))))

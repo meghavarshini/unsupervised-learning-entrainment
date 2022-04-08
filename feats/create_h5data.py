@@ -1,25 +1,16 @@
-import csv
-import h5py
-import numpy as np
-import pandas as pd
-import glob
-import random
-import pdb
+from entrainment_config import *
 
 SEED=448
 frac_train = 0.8
 frac_val = 0.1
 
-
-
 # Create h5 files
 
+data_dir = data_dir
 
 
-data_dir = '~/Downloads/Fisher_corpus/feats_nonorm'
-
-
-sessList= sorted(glob.glob(data_dir + '*.csv'))
+sessList= sorted(glob.glob(data_dir + '/*.csv'))
+print("sessList", sessList)
 random.seed(SEED)
 random.shuffle(sessList)
 
@@ -31,7 +22,7 @@ num_files_test = num_files_all - num_files_train - num_files_val
 sessTrain = sessList[:num_files_train]
 sessVal = sessList[num_files_train:num_files_val+num_files_train]
 sessTest = sessList[num_files_val+num_files_train:]
-print len(sessTrain) + len(sessVal) + len(sessTest)
+print(len(sessTrain) + len(sessVal) + len(sessTest))
 
 # Create Train Data file
 
@@ -59,7 +50,7 @@ for sess_file in sessVal:
 	df_i = pd.read_csv(sess_file)
 	xx=np.array(df_i)
 	X_val=np.vstack([X_val, xx]) if X_val.size else xx
-
+print(X_val.shape)
 X_val = X_val.astype('float64')
 hf = h5py.File('data/val_Fisher_nonorm.h5', 'w')
 hf.create_dataset('dataset', data=X_val)
@@ -67,9 +58,6 @@ hf.create_dataset('prosset', data=X_val[:,:24])
 hf.create_dataset('specset', data=X_val[:,24:150])
 hf.create_dataset('vqset', data=X_val[:,150:])
 hf.close()
-
-
-
 
 # Create Test Data file
 spk_base = 1
@@ -99,10 +87,9 @@ hf.close()
 
 
 
-data_dir = '~/Downloads/Fisher_corpus/feats_nonorm_nopre'
+data_dir = data_dir
 
-
-sessList= sorted(glob.glob(data_dir + '*.csv'))
+sessList= sorted(glob.glob(data_dir + '/*.csv'))
 random.seed(SEED)
 random.shuffle(sessList)
 
@@ -114,7 +101,7 @@ num_files_test = num_files_all - num_files_train - num_files_val
 sessTrain = sessList[:num_files_train]
 sessVal = sessList[num_files_train:num_files_val+num_files_train]
 sessTest = sessList[num_files_val+num_files_train:]
-print len(sessTrain) + len(sessVal) + len(sessTest)
+print(len(sessTrain) + len(sessVal) + len(sessTest))
 
 # Create Train Data file
 
@@ -178,6 +165,3 @@ hf.create_dataset('prosset', data=X_test[:,:24])
 hf.create_dataset('specset', data=X_test[:,24:150])
 hf.create_dataset('vqset', data=X_test[:,150:])
 hf.close()
-
-
-

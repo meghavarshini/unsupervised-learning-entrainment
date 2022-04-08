@@ -1,26 +1,6 @@
-import h5py
-import pdb
+from entrainment_config import *
 # from aeent import *
-from ecdc import *
-import numpy as np 
-import csv
-import random
-import argparse
-import torch
-import torch.utils.data
-from torch.utils.data import Dataset
-from torch import nn, optim
-from torch.autograd import Variable
-from torch.nn import functional as F
-from torchvision import datasets, transforms
-from torchvision.utils import save_image
-import matplotlib.pyplot as plt
-
-
-
-model_name = 'models/trained_VAE_nonorm_nopre_l1.pt'
-
-
+model_name = model_name
 SEED=448
 
 #------------------------------------------------------------------
@@ -64,7 +44,7 @@ if 'l1' in model_name:
 elif 'l2' in model_name:
     p=2
 else:
-    print "need better model name"
+    print("need better model name")
     p=2
 
 results = []
@@ -120,11 +100,11 @@ for k in range(10):
     total_fake_test_loss = np.sum(Fake_loss)/Loss.shape[0]
 
 
-    print "Total Real Loss:"+str(total_test_loss) + "Total Fake Loss:" + str(total_fake_test_loss)
+    print("Total Real Loss:"+str(total_test_loss) + "Total Fake Loss:" + str(total_fake_test_loss))
 
-    print float(np.sum(Loss < Fake_loss))/Loss.shape[0]
+    print(float(np.sum(Loss < Fake_loss))/Loss.shape[0])
 
     results.append(float(np.sum(Loss < Fake_loss))/Loss.shape[0])
 
 
-print np.mean(np.array(results))
+print(np.mean(np.array(results)))

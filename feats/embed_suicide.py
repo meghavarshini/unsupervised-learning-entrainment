@@ -54,7 +54,7 @@ hff = h5py.File('data/test_' + dtset + '_nonorm_sep.h5', 'r')
 highbond =['3030', '3008', '3031', '3042' , '3048']
 lowbond =['3049','3014']
 
-sessList= sorted(glob.glob(data_dir + '*.csv'))
+sessList= sorted(glob.glob(data_dir + '/*.csv'))
 random.seed(SEED)
 random.shuffle(sessList)
 
@@ -65,7 +65,7 @@ if 'l1' in model_name:
 elif 'l2' in model_name:
     p=2
 else:
-    print "need better model name"
+    print("need better model name")
     p=1
 
 
@@ -86,7 +86,7 @@ for sess_file in sessList:
 
     if 'Pre' not in sess and 'pre' not in sess:
         continue
-    print sess
+    print(sess)
     subj_id = float(sess[0:4])
     if str(int(subj_id)) not in highbond:
         continue

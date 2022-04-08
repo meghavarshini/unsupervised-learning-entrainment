@@ -1,37 +1,25 @@
-import glob
-import os
-import csv
-import pdb
-import kaldi_io
-import pprint, pickle
-from sklearn.metrics.pairwise import euclidean_distances
-from scipy import spatial
-from sklearn.preprocessing import normalize
-import random, math
-import numpy as np
-import pandas as pd
+from entrainment_config import *
+
 # -------------------------------------------------------- 
-# only used once for reading kaldi ivector
+# only used once for reading kaldi ivector, change line 5 to 'True' and uncomment 5-12
 # create_pkl = False
 # if create_pkl:
-# 	ivec_scp = "/home/nasir/data/Fisher/Fisher_ivector/exp/ivectors_train/ivector.scp"
+# 	ivec_scp = "/Users/meghavarshinikrishnaswamy/Downloads/Fisher_corpus/Fisher_ivector/exp/ivectors_train/ivector.scp"
 # 	ivec_norm_dict ={}
 # 	for key,mat in kaldi_io.read_mat_scp(ivec_scp):
 # 		ivec_norm_dict[key] = normalize(mat)
-# 	f = open('ivector_normalized.pkl', 'wb')
+# 	f = open('ivector_normalized.pkl', 'w')
 # 	pickle.dump(ivec_norm_dict, f)
 # --------------------------------------------------------------------------
 
 # key format     "SPKID-FILEID_Start-Stop"
 
 
-
-
 def get_neighbor(sess_id, ivec_norm_dict, utt_id):
 	turn2ivec = ivec_norm_dict[utt_id]
 	turnlist = list(ivec_norm_dict.keys())
 	candidates = random.sample(turnlist, 10000)
-	candidates = list(filter(lambda x: sess_id not in x, candidates))
+	candidates = list([x for x in candidates if sess_id not in x])
 	lenpool = len(candidates)
 	# print(lenpool)
 	cosD = np.zeros(lenpool)
@@ -53,12 +41,12 @@ def get_utt_id(line, metadata):
 	return utt_id
 
 # --------------------------------------------------------------------------------------------
-transcript_dir='/home/nasir/data/Fisher/transcripts/'
+transcript_dir= transcript_dir
 
 
-turnfeatdir = '/home/nasir/data/Fisher/feats/'
+turnfeatdir = feats_dir
 
-metaf = open('meta/Fisher_meta.csv', 'r')
+metaf = open(fisher_meta, 'r')
 
 
 reader = csv.reader(metaf)
@@ -74,7 +62,7 @@ line_dict = pickle.load( open( "meta/file2line.pkl", "rb" ) )
 SEED=448
 frac_train = 0.8
 frac_val = 0.1
-sessList= sorted(glob.glob(turnfeatdir + '*.csv'))
+sessList= sorted(glob.glob(turnfeatdir + '/*.csv'))
 random.seed(SEED)
 random.shuffle(sessList)
 
@@ -86,10 +74,10 @@ num_files_test = num_files_all - num_files_train - num_files_val
 sessTrain = sessList[:num_files_train]
 sessVal = sessList[num_files_train:num_files_val+num_files_train]
 sessTest = sessList[num_files_val+num_files_train:]
-print(len(sessTrain) + len(sessVal) + len(sessTest))
+print((len(sessTrain) + len(sessVal) + len(sessTest)))
 # ------------------------------------------------------------
 #  FOR DEBUG
-sessList = [turnfeatdir + 'fe_03_03892_IPU_func_feat.csv']
+sessList = [turnfeatdir + '/fe_03_03892_IPU_func_feat.csv']
 # 
 for sessfile in sessList:
 	df_i = pd.read_csv(sessfile)
@@ -122,8 +110,3 @@ for sessfile in sessList:
 		pdb.set_trace()
 		if turnno==totTurns:
 			break
-
-		
-
-
-			

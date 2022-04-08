@@ -4,29 +4,21 @@
 # Date   : 05-04-18
 # Description : resample to 16k Hz, and run openSMILE to extract features
 # ------------------------------------------------------------------------
-from __future__ import division
-import sys, os
-import csv
-from os.path import basename
-import pandas as pd
-import numpy as np
-import argparse
-import subprocess
-import commands
-from sklearn import preprocessing
-import matplotlib.pyplot as plt
-import pdb
 
+from entrainment_config import *
+
+# import matplotlib.pyplot as plt
 # -----------------
-def_wav = '~/Downloads/Fisher_corpus/fisher_eng_tr_sp_LDC2004S13_zip_2/fisher_eng_tr_sp_d1/audio/001/fe_03_00101.sph'
-config_path = 'emobase2010_haoqi_revised.conf'
+def_wav = def_wav
+def_audio = def_audio
+config_path = config_path
 # out_dir = '~/Downloads/Fisher_corpus/feats_nonorm_nopre'
-out_dir = '~/Downloads/Fisher_corpus/feats'
+out_dir = feats_dir
+opensmile = opensmile
 
-#trans ==~/Downloads/Fisher_corpus/fisher_eng_tr_sp_LDC2004S13_zip_2/data/trans/000
+#trans =~/Downloads/Fisher_corpus/fisher_eng_tr_sp_LDC2004S13_zip_2/data/trans/000
 # fe_03_00001.txt
 # feats == ~/Downloads/Fisher_corpus/feats/000
-
 # feat_extract_MN.py --audio_file wav/fe_03_00001.sph -- --openSMILE_config emobase2010_haoqi_revised.conf --output_path feats
 
 IPU_gap=50
@@ -39,8 +31,8 @@ extract=True
 #-------------------------------------------------
 
 # For t-rex -------------------------------------
-transcript_dir='~/Downloads/Fisher_corpus/fisher_eng_tr_sp_LDC2004S13_zip_2'
-feat_dir = '~/Downloads/Fisher_corpus/raw_feats/'
+transcript_dir= transcript_dir
+feat_dir = feat_dir
 #------------------------------------------------
 
 # ------------------------------------------------------------------------
@@ -50,7 +42,7 @@ parser = argparse.ArgumentParser(description='Process some integers.')
 
 parser.add_argument('--audio_file', type=str, required=False, default=def_wav,
 					help='File path of the input audio file')
-parser.add_argument('--openSMILE_config', type=str, required=False, default=config_path,
+parser.add_argument('--openSMILE_config', type=str, required=False, default=opensmile,
 					help='config file of openSMILE')
 parser.add_argument('--output_path', type=str, required=False, default=out_dir,
 					help='output folder path')
@@ -76,7 +68,7 @@ if shift_size is None:
 if norm == 'False':
 	norm = False
 
-print >> sys.stderr,  'Current audio file: %s ' %INPUT_audio
+print('Current audio file: %s ' %INPUT_audio, file=sys.stderr)
 
 #----------------------------------------------------------------
 #---------------------------------------------------------------------
@@ -86,9 +78,9 @@ if extract:
 	not_wav = False
 	if basename(INPUT_audio).split('.')[-1] != 'wav':
 		not_wav = True
-		print >> sys.stderr,  'convert to .wav file...' 
+		print('convert to .wav file...')
 		# cmd2wav = 'sox ' + INPUT_audio +' '+ basename(INPUT_audio).split('.')[-2]+'.wav'
-		cmd2wav = '~/github/sph2pipe/sph2pipe -f rif ' + INPUT_audio +' '+ basename(INPUT_audio).split('.')[-2]+'.wav'
+		cmd2wav = sph2pipe +' -f rif ' + INPUT_audio +' '+ basename(INPUT_audio).split('.')[-2]+'.wav'
 		subprocess.call(cmd2wav, shell  = True)
 
 		INPUT_audio = basename(INPUT_audio).split('.')[-2]+'.wav'
@@ -96,18 +88,20 @@ if extract:
 	# ------------------------------------------------------------------------
 	# downsample audio to 16kHz and convert to mono (unless file already downsampled)
 	# ------------------------------------------------------------------------
-	cmd_check_sample_rate = 'sox --i -r '+ INPUT_audio
-	sample_rate = commands.getstatusoutput(cmd_check_sample_rate)
+	cmd_check_sample_rate = ['sox', '--i', '-r', INPUT_audio]
+	sample_rate = subprocess.check_output(cmd_check_sample_rate) #check_output is throwing an error
 	not_16k = False
 	if sample_rate[1] != '16000':
 		not_16k = True
-		print >> sys.stderr,  "Resampling to 16k ... "
+		# print("Resampling to 16k ... ", sys.stderr)
+		print("Resampling to 16k ... ")
 		output_16k_audio = 'resampled--' + os.path.basename(INPUT_audio)
 		cmd_resample = 'sox %s -b 16 -c 1 -r 16k %s dither -s' %(INPUT_audio, output_16k_audio)
 		subprocess.call(cmd_resample, shell  = True)
 		# replace variable with downsampled audio
 		#INPUT_audio = ''.join(output_16k_audio.split('--')[1:])
 		INPUT_audio = output_16k_audio
+		print(exists(INPUT_audio))
 
 	# # ------------------------------------------------------------------------
 	# # extract feature use openSMILE
@@ -118,8 +112,10 @@ if extract:
 		csv_file_name = feat_dir+'/'+basename(INPUT_audio).split('.wav')[0].split('--')[1] + '.csv'
 	else:
 		csv_file_name = feat_dir+'/'+basename(INPUT_audio).split('.wav')[0] + '.csv'
-	print >> sys.stderr,  "Using openSMILE to extract features ... "
-	cmd_feat = 'SMILExtract -nologfile -C %s -I %s -O %s' %(CONFIG_openSMILE, INPUT_audio, csv_file_name)
+	print("Using openSMILE to extract features ... ")
+	# cmd_feat = '%s -nologfile -C -I %s -O %s' % (CONFIG_openSMILE, INPUT_audio, csv_file_name)
+	cmd_feat = '%s -nologfile -C %s -I %s -O %s' % (opensmile, CONFIG_openSMILE, INPUT_audio, csv_file_name)
+	print(cmd_feat)
 	subprocess.call(cmd_feat, shell  = True)
 
 	# delete resampled audio file
@@ -141,9 +137,9 @@ else:
 	ext='.csv'
 
 if extract:
-	transcript = transcript_dir + basename(INPUT_audio).split(ext)[0].split('--')[1] + '.txt'
+	transcript = transcript_dir + '/' + basename(INPUT_audio).split(ext)[0].split('--')[1] + '.txt'
 else:
-	transcript = transcript_dir + basename(INPUT_audio).split(ext)[0] + '.txt'
+	transcript = transcript_dir + '/' + basename(INPUT_audio).split(ext)[0] + '.txt'
 trans = open(transcript).readlines()
 # pdb.set_trace()
 for line in trans:
@@ -163,17 +159,17 @@ for line in trans:
 # csv_file_name = feat_dir +'/'+basename(INPUT_audio).split('.sph')[0] + '.csv'
 
 if extract:
-	csv_file_name = feat_dir +basename(INPUT_audio).split(ext)[0].split('--')[1]  + '.csv'
+	csv_file_name = feat_dir + '/' +basename(INPUT_audio).split(ext)[0].split('--')[1] + '.csv'
 else:
-	csv_file_name = feat_dir +basename(INPUT_audio).split(ext)[0]  + '.csv'
+	csv_file_name = feat_dir + '/' + basename(INPUT_audio).split(ext)[0] + '.csv'
 
 # read csv feature file
-csv_feat = pd.read_csv(csv_file_name, dtype=np.float32)
+csv_feat = pd.read_csv(csv_file_name, dtype=np.float32, on_bad_lines='warn')
 csv_feat = csv_feat.values.copy()
-
+print("this is a temporary fix, need to figure out why these weird feature extraction lines are getting printed in the first place")
 feat_data = np.copy(csv_feat)
 # convert the first column indext to int index
-sample_index = map(int,list((feat_data[:,0])))
+sample_index = list(map(int,list((feat_data[:,0]))))
 
 
 # def turn_level_index(spk_list, sample_index):
@@ -235,7 +231,7 @@ for i, itm in enumerate(turn_level_index_list):
 # normalize for loudness 
 if norm:
 	# do normalization
-	print >> sys.stderr,  "Do session level feature normalization... "
+	print("Do session level feature normalization... ")
 	# f0 normalization
 	f0                            = np.copy(feat_data[:, 70])
 	# replace 0 in f0 with nan
@@ -247,8 +243,8 @@ if norm:
 	# f0_de normalization
 	f0_de                         = np.copy(feat_data[:, 74])
 	f0_de[f0_de==0.]               = np.nan
-	f0_de_mean                    = np.nanmean(f0_de)
-	f0_de[~np.isnan(f0_de)]       = np.log2(f0_de[~np.isnan(f0_de)]/f0_de_mean)
+	f0_de_mean                    = np.nanmean(np.absolute(f0_de))
+	f0_de[~np.isnan(f0_de)]       = np.log2(np.absolute(f0_de[~np.isnan(f0_de)]/f0_de_mean))
 	f0_de                         = np.reshape(f0_de,(-1,1))
 	# intensity normalization
 	intensity                     = np.copy(feat_data[:,2])
@@ -264,7 +260,7 @@ if norm:
 	
 	# all other features normalization, just 
 	# feat_idx                      = range(3,34) + range(37, 68)   with spectral de
-	feat_idx                      = range(3,34)
+	feat_idx                      = list(range(3,34))
 	mfcc_etc                      = np.copy(feat_data[:,feat_idx])
 	
 	mfcc_etc_mean                 = np.mean(mfcc_etc, axis=0)
@@ -280,7 +276,7 @@ if norm:
 	jitter_shimmer_norm           = jitter_shimmer - jitter_shimmer_mean
 else:
 	# did not do session level normalization
-	print >> sys.stderr,  "Ignore session level feature normalization... "
+	print("Ignore session level feature normalization... ")
 	# f0 normalization
 	f0                            = np.copy(feat_data[:, 70])
 	# replace 0 in f0 with nan
@@ -302,7 +298,7 @@ else:
 	intensity_de                  = np.reshape(intensity_de, (-1,1))
 	
 	# feat_idx                      = range(3,34) + range(37, 68)   with spectral de
-	feat_idx                      = range(3,34)
+	feat_idx                      = list(range(3,34))
 	mfcc_etc                      = np.copy(feat_data[:,feat_idx])
 	mfcc_etc_norm                 =  np.copy(mfcc_etc) 
 	
@@ -373,7 +369,6 @@ whole_func_feat1 = final_feat_calculate(s1_list, all_raw_norm_feat)
 whole_func_feat2 = final_feat_calculate(s2_list, all_raw_norm_feat)
 whole_func_feat = np.hstack((whole_func_feat1,whole_func_feat2))
 
-
 ##-----------------------------------------------------------------------
 ## normalization at whole session level, using scikit learn
 ## -- for each feature 0 mean and 1 variance
@@ -383,7 +378,6 @@ whole_func_feat = np.hstack((whole_func_feat1,whole_func_feat2))
 
 if writing==True:
 	feat_csv_file_name = out_dir + '/' + basename(csv_file_name).split('.csv')[0] + '_IPU_func_feat.csv'
-	print feat_csv_file_name
-	with open(feat_csv_file_name, 'wb') as fcsv:
+	with open(feat_csv_file_name, 'w') as fcsv: # changed 'wb' to 'w' to avoid TypeError
 		writer = csv.writer(fcsv)
 		writer.writerows(whole_func_feat)

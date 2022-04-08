@@ -1,3 +1,20 @@
+output
+test_data
+
+.idea/
+*/.DS_Store
+entrainment_config.pyc
+
+# Kaldi files:
+ models/triplet/prep/segments
+ models/triplet/prep/utt2spk
+ models/triplet/prep/wav.scp
+ models/NED/data/
+ models/triplet/prep/file2line
+ feats/data/
+
+
 *.csv
 *.wav
 *.mp3
+*.txt

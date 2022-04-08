@@ -1,0 +1,11 @@
+# you can do a requirements.txt file like this if you want
+wheel
+torch
+torchvision
+sklearn
+numpy
+pandas
+matplotlib
+h5py
+kaldi_io
+scipy
