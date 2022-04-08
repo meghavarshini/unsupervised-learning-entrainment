@@ -27,4 +27,11 @@ Summary of directories and files
 - models/ :- Directory containing scripts for different deep unsupervised learning models for entrainment
 - utils/ :- Directory containing utility files used by other scripts
 
+------------------------
+Files that need to be edited by user to add filepaths:
+--------------------------------
+
+- `entrainment_config.py`
+- `feats/run_all_nopre.sh`
+- `models/NED/run_all_nopre.sh`
 			
