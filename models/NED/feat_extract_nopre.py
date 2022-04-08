@@ -10,10 +10,6 @@ from entrainment_config import *
 
 np.set_printoptions(threshold=np.inf)
 
-# import matplotlib
-# matplotlib.use('TkAgg')
-# import matplotlib.pyplot as plt
-# -----------------
 # def_wav = '/Users/meghavarshinikrishnaswamy/Downloads/Fisher_corpus/fisher_eng_tr_sp_LDC2004S13_zip_2/fisher_eng_tr_sp_d1/audio/001/fe_03_00101.sph'
 # def_audio = '/Users/meghavarshinikrishnaswamy/Downloads/Fisher_corpus/fisher_eng_tr_sp_LDC2004S13_zip_2/fisher_eng_tr_sp_d1/audio/'
 # config_path = 'emobase2010_revised.conf'

@@ -36,21 +36,31 @@ from scipy import spatial
 ### ABSOLUTE FILEPATHS FOR INPUT#####
 # print(sys.path)
 
-### Files in the Fisher Directory ####
-########## EDIT THE FOLLOWING LINE TO SET THE DIRECTORY FOR THE FISHER CORPUS ##########
-fisher_corpus = "/Users/meghavarshinikrishnaswamy/Downloads/Fisher_corpus" # master directory
-# Find OpenSMILE on the system and add relevant paths accordingly:
+###############################
+# Speech feature extraction tools
+###############################
 opensmile = "/Users/meghavarshinikrishnaswamy/github/tomcat-speech/external/opensmile-3.0/bin/SMILExtract"
 sph2pipe = "/Users/meghavarshinikrishnaswamy/github/sph2pipe/sph2pipe" #clone this
-##########
 
-transcript_dir= fisher_corpus +"/fe_03_p1_tran/data/trans/all_trans" #directory that hourses all transcript files in one directory (no subdirectories)
+
+###############################
+# Files in the Fisher Directory
+###############################
+
+		## EDIT THE FOLLOWING LINE TO SET THE DIRECTORY FOR THE FISHER CORPUS
+fisher_corpus = "/Users/meghavarshinikrishnaswamy/Downloads/Fisher_corpus" # master directory
+transcript_dir = fisher_corpus + "/fe_03_p1_tran/data/trans/all_trans" #directory that hourses all transcript files in one directory (no subdirectories)
 audio_dir_root = fisher_corpus + "/fisher_eng_tr_sp_LDC2004S13_zip" #directory for sphere sound files
-def_wav = fisher_corpus +"/" + audio_dir_root + "/fisher_eng_tr_sp_d1/audio/001/fe_03_00101.sph" #example sound file
-def_audio = fisher_corpus +"/" + audio_dir_root + "/fisher_eng_tr_sp_d1/audio" #audio subdirectory that houses the sphere file subdirectories
 fisher_meta = fisher_corpus + "/Fisher_meta.csv" #metafile, create this before running anything else
 
-###### OUTPUT FILES ###########
+		## Sample files for testing things
+def_wav = fisher_corpus + "/" + audio_dir_root + "/fisher_eng_tr_sp_d1/audio/000/fe_03_00004.sph" #example sound file
+def_audio = fisher_corpus + "/" + audio_dir_root + "/fisher_eng_tr_sp_d1/audio" #audio subdirectory that houses the sphere file subdirectories
+
+
+###############################
+# OUTPUT FILES
+###############################
 
 feats_dir = fisher_corpus+"/feats"
 data_dir = fisher_corpus+"/feats_nonorm"
@@ -59,11 +69,14 @@ out_dir = fisher_corpus+"/feats_nonorm_nopre"
 data_dir_triplets_all = fisher_corpus+"/feats_triplets_all"
 data_dir_triplets = fisher_corpus+"/feats_triplets"
 
-####### MODELLING ########
+
+###############################
+# MODELLING
+###############################
+
 ivec_scp = fisher_corpus + "/Fisher_ivector/exp/ivectors_train/ivector.scp"
 model_path = fisher_corpus + "/workspace/acoustic/triplet/fisher/trained_models"
 work_dir = fisher_corpus + "/workspace/acoustic/NED_ecdc"
-
 temp_testfile = os.getcwd() + "/models/NED/data/tmp.csv"
 fdset = os.getcwd() + "data/train_Fisher_nonorm.h5"
 temp_testfile = os.getcwd() + "data/tmp.csv"
@@ -75,8 +88,10 @@ config_path = os.getcwd() +"/feats/emobase2010_mod.conf" #this file exists in re
 # DEBUG = False # no saving of files; output in the terminal; first random seed from the list
 
 
+###############################
+# ARGPARSE COMMANDS
+###############################
 
-##### ARGPARSE COMMANDS #######
 parser = argparse.ArgumentParser(description='Process some integers.')
 parser.add_argument('--audio_file', type=str, required=False, default=def_wav,
 					help='File path of the input audio file')
