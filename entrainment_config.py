@@ -65,7 +65,7 @@ def_audio = fisher_corpus + "/" + audio_dir_root + "/fisher_eng_tr_sp_d1/audio" 
 feats_dir = fisher_corpus+"/feats"
 data_dir = fisher_corpus+"/feats_nonorm"
 raw_feat_dir = fisher_corpus+"/raw_feats"
-out_dir = fisher_corpus+"/feats_nonorm_nopre"
+feats_nonorm_nopre = fisher_corpus+"/feats_nonorm_nopre"
 data_dir_triplets_all = fisher_corpus+"/feats_triplets_all"
 data_dir_triplets = fisher_corpus+"/feats_triplets"
 
@@ -99,7 +99,7 @@ parser.add_argument('--openSMILE', type=str, required=False, default=opensmile,
 					help='openSMILE path')
 parser.add_argument('--openSMILE_config', type=str, required=False, default=opensmile_config,
 					help='config file of openSMILE')
-parser.add_argument('--output_path', type=str, required=False, default=out_dir,
+parser.add_argument('--output_path', type=str, required=False, default=feats_dir,
 					help='output folder path')
 parser.add_argument('--norm', type=str, required=False, default=True,
 					help='do session level normalization or not')
