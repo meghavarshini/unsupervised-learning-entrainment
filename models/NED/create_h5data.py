@@ -39,6 +39,7 @@ sessTrain = sessList[:num_files_train]
 sessVal = sessList[num_files_train:num_files_val+num_files_train]
 sessTest = sessList[num_files_val+num_files_train:]
 print("Total File = ", len(sessTrain) + len(sessVal) + len(sessTest))
+
 ############ Uncomment the following chunks to create data files ###################
 ###### Create Train Data file ######
 temp_trainfile = os.getcwd()+"/data/tmp.csv"

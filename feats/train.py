@@ -61,7 +61,9 @@ def train(epoch):
         recon_batch = model(data)
         loss = loss_function(recon_batch, y_data)
         loss.backward()
-        train_loss += loss.data[0]
+        print(loss.data)
+        train_loss += loss.data
+        # train_loss += loss.data[0]
         optimizer.step()
         # if batch_idx % args.log_interval == 0:
             # print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
@@ -74,7 +76,8 @@ def train(epoch):
 
     return train_loss
 
-
+#Lines 88,89 depreciated
+# https://stackoverflow.com/questions/61720460/volatile-was-removed-and-now-had-no-effect-use-with-torch-no-grad-instread
 def validate(epoch):
     model.eval()
     val_loss = 0
@@ -85,7 +88,8 @@ def validate(epoch):
         data = Variable(data, volatile=True)
         y_data = Variable(y_data, volatile=True)
         recon_batch = model(data)
-        val_loss += loss_function(recon_batch, y_data).data[0]
+        val_loss += loss_function(recon_batch, y_data).data
+        # val_loss += loss_function(recon_batch, y_data).data[0]
 
     val_loss /= len(val_loader.dataset)
     print(('====> Validation set loss: {:.4f}'.format(val_loss)))
