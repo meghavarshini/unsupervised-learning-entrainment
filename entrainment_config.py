@@ -34,21 +34,22 @@ from sklearn.preprocessing import normalize
 from scipy import spatial
 
 ### ABSOLUTE FILEPATHS FOR INPUT#####
-# print(sys.path)
+print(sys.path)
 
 ###############################
-# Speech feature extraction tools
+# Speech feature extraction tools, edit paths according to your system:
 ###############################
 opensmile = "/Users/meghavarshinikrishnaswamy/github/tomcat-speech/external/opensmile-3.0/bin/SMILExtract"
 sph2pipe = "/Users/meghavarshinikrishnaswamy/github/sph2pipe/sph2pipe" #clone this
 
+## EDIT THE FOLLOWING LINE TO SET THE DIRECTORY FOR THE FISHER CORPUS
+fisher_corpus = "/Users/meghavarshinikrishnaswamy/Downloads/Fisher_corpus" # master directory
+##
 
 ###############################
 # Files in the Fisher Directory
 ###############################
 
-		## EDIT THE FOLLOWING LINE TO SET THE DIRECTORY FOR THE FISHER CORPUS
-fisher_corpus = "/Users/meghavarshinikrishnaswamy/Downloads/Fisher_corpus" # master directory
 transcript_dir = fisher_corpus + "/fe_03_p1_tran/data/trans/all_trans" #directory that hourses all transcript files in one directory (no subdirectories)
 audio_dir_root = fisher_corpus + "/fisher_eng_tr_sp_LDC2004S13_zip" #directory for sphere sound files
 fisher_meta = fisher_corpus + "/Fisher_meta.csv" #metafile, create this before running anything else

@@ -24,10 +24,30 @@ dim = 228
 data_dir = feats_dir
 
 # Try to generate this sessList correctly
-sessList = sorted(glob.glob(data_dir + '/*.csv'))
-# sessList= [f for f in sorted(glob.glob(data_dir + '/*.csv')) if int(os.path.basename(f).split('.')[0].split('_')[-2]) < 800]
-random.seed(SEED)
-random.shuffle(sessList)
+sess_files = os.path.isfile("data/sessList.txt")
+if sess_files == 1:
+	with open("data/sessList.txt", 'r') as f:
+		temp = f.read().splitlines()
+		if len(temp) == len(sorted(glob.glob(feats_dir + '/*.csv'))):
+			print("list of shuffled files exists, importing...")
+			sessList = temp
+else:
+	sessList= sorted(glob.glob(feats_dir + '/*.csv'))
+	print("creating a list of shuffled feature files and saving to disk...")
+	# print("sessList", sessList)
+	random.seed(SEED)
+	random.shuffle(sessList)
+	with open("data/sessList.txt", 'w') as f:
+		f.writelines( "%s\n" % i for i in sessList)
+
+	with open("data/sessList.txt", 'r') as f:
+		sessList = f.read().splitlines()
+
+## Alternative to 27-45
+# sessList = sorted(glob.glob(data_dir + '/*.csv'))
+## sessList= [f for f in sorted(glob.glob(data_dir + '/*.csv')) if int(os.path.basename(f).split('.')[0].split('_')[-2]) < 800]
+# random.seed(SEED)
+# random.shuffle(sessList)
 
 num_files_all = len(sessList)
 num_files_train = int(np.ceil((frac_train*num_files_all)))
@@ -52,7 +72,7 @@ ftmp = open(temp_trainfile, 'a')
 for sess_file in sorted(sessTrain):
 	start = time.time()
 	print("sess_file: ", sess_file)
-	########## ToDo: fix issues with identifying relevant rows ########
+	########## ToDo: find out IPU feat files that don't have enough rows ########
 	xx = np.genfromtxt(sess_file, delimiter= ",")
 	xx = np.hstack((xx[0:-1,:], xx[1:,:]))
 	xx = clean_feat(xx, dim)

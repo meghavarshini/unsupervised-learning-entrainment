@@ -20,13 +20,14 @@
 ~~9. How are ivectors created?~~ 
    - ~~Kaldi files ? Check if these are pre-created, or if they are created.~~
 10. Check out load: tkinter
-11. What does `tmp.csv` in `NED/create_h5data.py` do?
+~~11. What does `tmp.csv` in `NED/create_h5data.py` do?~~
     - Gets created in the python file, so look into the notes there.
     - Also, feats directory is empty, so work on running run_all_nopre.sh properly
     - Right now, it's not running opensmile and `feat_extract_nopre.py` correctly.
-12. How is the `/media/nasir/xData/newdata/Fisher/ldc2004s13/fe_03_p1_sph1/feats/000/` being generated in analysis_trial.m? What does it do?
+12. How is the `/media/nasir/xData/newdata/Fisher/ldc2004s13/fe_03_p1_sph1/feats/000/` being generated in `analysis_trial.m`? What does it do?
 13. How is `/home/nasir/data/Fisher/feats_triplets_all/` in `triplet/prep/create_h5data.py` created? What does it do?
-14. Fix `test/test_session.py` with the workpace directories
+~~14. Fix `test/test_session.py` with the workpace directories~~
+    - Fix bug in this code
 15. Work on a README
     1. External dependencies:
 	    - LDC data
@@ -37,9 +38,10 @@
     2. ~~Editing config file~~
     3. Main entry Point
 16. ~~Fix requirements~~
-17. Upload Fisher corpus
+~~17. Upload Fisher corpus~~
 18. ~~Add master directory for all Fisher-related stuff~~
-19. Add `chmod` info to Readme
-    1. chmod 777 feats
-    2. chmod 777 feats/emobase2010_haoqi_revised.conf
-    3. chmod 755 feats/run_all_nopre.sh
+~~9. Add `chmod` info to Readme~~
+    ~~1. chmod 777 feats~~
+    ~~2. chmod 777 feats/emobase2010_haoqi_revised.conf~~
+    ~~3. chmod 755 feats/run_all_nopre.sh~~
+19. Add details to readme files in subfolders
