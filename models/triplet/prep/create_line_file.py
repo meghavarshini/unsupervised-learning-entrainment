@@ -6,10 +6,10 @@ metadata ={}
 for row in reader:
 	metadata[row[0]] = row[1:]
 
-wavscpf = open('./wav.scp', 'w')
-segf = open('./segments', 'w')
-uttf = open('./utt2spk', 'w')
-linef = open('./file2line', 'wb')
+wavscpf = open('data/wav.scp', 'w')
+segf = open('data/segments', 'w')
+uttf = open('data/utt2spk', 'w')
+linef = open('data/file2line', 'wb')
 LineDict = {}
 for dir in os.listdir(audio_dir_root):
 	if "fisher_eng_tr_sp" in dir:

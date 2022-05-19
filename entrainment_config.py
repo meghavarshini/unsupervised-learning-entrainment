@@ -78,9 +78,9 @@ ivec_scp = fisher_corpus + "/Fisher_ivector/exp/ivectors_train/ivector.scp"
 model_path = fisher_corpus + "/workspace/acoustic/triplet/fisher/trained_models"
 work_dir = fisher_corpus + "/workspace/acoustic/NED_ecdc"
 temp_testfile = os.getcwd() + "/models/NED/data/tmp.csv"
-fdset = os.getcwd() + "data/train_Fisher_nonorm.h5"
-temp_testfile = os.getcwd() + "data/tmp.csv"
-model_name = os.getcwd() + "models/trained_VAE_nonorm_nopre_l1.pt"
+fdset = os.getcwd() + "/data/train_Fisher_nonorm.h5"
+temp_testfile = os.getcwd() + "/data/tmp.csv"
+model_name = os.getcwd() + "/models/trained_VAE_nonorm_nopre_l1.pt"
 
 
 opensmile_config = opensmile + "/config/emobase/emobase2010.conf"

@@ -6,11 +6,11 @@ test_data
 entrainment_config.pyc
 
 # Kaldi files:
- models/triplet/prep/segments
- models/triplet/prep/utt2spk
- models/triplet/prep/wav.scp
+ models/triplet/prep/data/segments
+ models/triplet/prep/data/utt2spk
+ models/triplet/prep/data/wav.scp
  models/NED/data/
- models/triplet/prep/file2line
+ models/triplet/prep/data/file2line
  feats/data/
 
 
