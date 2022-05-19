@@ -12,9 +12,14 @@ entrainment_config.pyc
  models/NED/data/
  models/triplet/prep/data/file2line
  feats/data/
+ feats/model/
+ models/NED/models
+ models/triplet/train/models
 
 
+*.DS_Store
 *.csv
 *.wav
 *.mp3
 *.txt
+*.pt
