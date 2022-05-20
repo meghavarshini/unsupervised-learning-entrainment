@@ -35,7 +35,7 @@
 	    - Software
         - Creating a `trans` directory with all transcripts
         - Code for creating `fisher_meta.csv`
-    2. ~~Editing config file~~
+    2. ~~Editing config file~~~~~~
     3. Main entry Point
 16. ~~Fix requirements~~
 ~~17. Upload Fisher corpus~~
