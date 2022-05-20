@@ -37,10 +37,20 @@ Files that need to be edited by user to add filepaths:
 
 ------------------------
 Start Point:
---------------------------------
+------------------------
 1. Download and set-up the LDC data, and access/create `Fisher_meta.csv`
-2. Ensure you have installed all dependencies
+    -   `scp -r mkrishnaswamy@kraken.sista.arizona.edu:/media/mule/projects/ldc [local directory]`
+2. Ensure you have installed all required python libraries
 3. Edit `entrainment_config.py`, `feats/run_all_nopre.sh` and `models/NED/run_all_nopre.sh` with relevant filepaths
-4. Run `feats/run_all_nopre.sh` or `models/NED/run_all_nopre.sh` to extract OpenSMILE features for all sound files
+4. Run `feats/run_all_nopre.sh` and `models/NED/run_all_nopre.sh` to extract OpenSMILE features for all sound files
 5. Run `models/triplet/prep/create_kaldi_files.py` to extract Kaldi files
-			
+6. Open feats directory to follow the steps for modelling
+
+------------------------
+Permissions:
+------------------------
+Make sure the following directories/files have permissions:
+1. chmod 777 feats
+2. chmod 777 feats/emobase2010_haoqi_revised.conf
+3. chmod 755 feats/run_all_nopre.sh
+4. chmod 755 models/NED/run_all_nopre.sh
