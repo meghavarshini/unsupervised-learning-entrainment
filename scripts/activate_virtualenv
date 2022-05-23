@@ -16,5 +16,8 @@ if [[ ! -d "$VENV_DIR" ]]; then
     echo "Thus, we will create it now."
     python3 -m venv "$VENV_DIR"
 fi
-echo $VENV_DIR 
-. "$VENV_DIR"/bin/activate
+
+# Temporarily turning off return code checking
+set +u
+source "$VENV_DIR"/bin/activate
+set -u

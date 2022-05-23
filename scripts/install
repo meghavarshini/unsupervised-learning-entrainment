@@ -15,6 +15,10 @@ export ROOT
 # activate it. If it doesn't exist yet, create it first.
 # Note: Whenever you are working on the project, activate this virtual
 # enviroment first.
-"$ROOT"/scripts/activate_virtualenv
+
+# Temporarily turning of return code checking
+set +u
+source "$ROOT"/scripts/activate_virtualenv
+set -u
 
 pip install -e .
