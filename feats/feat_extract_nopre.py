@@ -5,7 +5,6 @@
 # Description : resample to 16k Hz, and run openSMILE to extract features
 # ------------------------------------------------------------------------
 
-sys.path.append("/Users/meghavarshinikrishnaswamy/github/unsupervised-learning-entrainment")
 from entrainment_config import *
 
 # import matplotlib.pyplot as plt

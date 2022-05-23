@@ -1,11 +1,11 @@
 # you can do a requirements.txt file like this if you want
 wheel
-torch
-torchvision
+torch==1.11.0
+torchvision==0.12.0
 sklearn
 numpy
 pandas
 matplotlib
 h5py
-kaldi_io
+kaldi-io==0.9.4
 scipy
