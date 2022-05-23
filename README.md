@@ -39,7 +39,7 @@ Files that need to be edited by user to add filepaths:
 Start Point:
 ------------------------
 1. Download and set-up the LDC data, and access/create `Fisher_meta.csv`
-    -   `scp -r mkrishnaswamy@kraken.sista.arizona.edu:/media/mule/projects/ldc [local directory]`
+    -   `scp -r [username]@kraken.sista.arizona.edu:/media/mule/projects/ldc [local directory]`
 2. Ensure you have installed all required python libraries
 3. Edit `entrainment_config.py`, `feats/run_all_nopre.sh` and `models/NED/run_all_nopre.sh` with relevant filepaths
 4. Run `feats/run_all_nopre.sh` and `models/NED/run_all_nopre.sh` to extract OpenSMILE features for all sound files
