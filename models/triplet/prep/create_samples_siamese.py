@@ -1,4 +1,4 @@
-from entrainment_config import *
+from entrainment.config import *
 
 # -------------------------------------------------------- 
 # only used once for reading kaldi ivector, change line 5 to 'True' and uncomment 5-12

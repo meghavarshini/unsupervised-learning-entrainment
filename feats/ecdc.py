@@ -1,4 +1,4 @@
-from entrainment_config import *
+from entrainment.config import *
 
 #-------------------------------------------------
 # Define the dataset class

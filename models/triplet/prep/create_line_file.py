@@ -1,4 +1,4 @@
-from entrainment_config import *
+from entrainment.config import *
 metaf = open(fisher_meta, 'r')
 
 reader = csv.reader(metaf)

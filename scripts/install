@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -eu
 # This script creates a virtual environment for the project and installs it as
 # an editable Python package. The script is primarily meant for developers
 # who need to install the package in editable mode, rather than end-users.

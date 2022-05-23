@@ -1,9 +1,8 @@
 # from aeent import *
-from entrainment_config import *
+from entrainment.config import *
 from ecdc import *
 import matplotlib
 matplotlib.use('TkAgg')
-import matplotlib.pyplot as plt
 
 model_name = 'models/trained_VAE_nonorm_nopre_l1.pt'
 

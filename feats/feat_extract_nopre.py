@@ -5,7 +5,7 @@
 # Description : resample to 16k Hz, and run openSMILE to extract features
 # ------------------------------------------------------------------------
 
-from entrainment_config import *
+from entrainment.config import *
 
 #trans =~/Downloads/Fisher_corpus/fisher_eng_tr_sp_LDC2004S13_zip_2/data/trans/000
 # fe_03_00001.txt
@@ -22,8 +22,8 @@ extract=True
 #-------------------------------------------------
 
 # For t-rex -------------------------------------
-transcript_dir= transcript_dir
-feat_dir = feat_dir
+# transcript_dir= transcript_dir
+# feat_dir = feat_dir
 #------------------------------------------------
 
 # ------------------------------------------------------------------------
@@ -37,7 +37,7 @@ parser.add_argument('--openSMILE', type=str, required=False, default=opensmile,
 					help='openSMILE path')
 parser.add_argument('--openSMILE_config', type=str, required=False, default=opensmile_config,
 					help='config file of openSMILE')
-parser.add_argument('--output_path', type=str, required=False, default=out_dir,
+parser.add_argument('--output_path', type=str, required=False, default=feats_dir,
 					help='output folder path')
 parser.add_argument('--norm', type=str, required=False, default=True, 
 					help='do session level normalization or not')

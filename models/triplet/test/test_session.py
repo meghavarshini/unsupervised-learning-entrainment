@@ -1,4 +1,4 @@
-from entrainment_config import *
+from entrainment.config import *
 
 model_path = model_path
 work_dir = work_dir

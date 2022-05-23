@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+set -e
+set -u #undefined variables will cause an exit with error
+
 # cmddir=/home/nasir/inter_dynamics/scripts/NPC
 # replaced with $PWD
 
@@ -27,22 +30,23 @@ ctr=1
 # done
 
 ##make this recursive, search all subfolders
-for dir in $audiodirroot/f*;
-do
-	for f in  $dir/audio/*/*.sph;
-	do
-		#echo $f;
+for dir in $audiodirroot/f*; do
+  if [[ -d "$dir" ]]
+    then
+    echo "$dir exists on your filesystem."
+    echo flag2 $dir
+	  for f in  $dir/audio/*/*.sph; do
+		  echo flag1 $f;
+	    (
+	 	  python $featextractfile --audio_file $f --openSMILE_config $opensmileconfig --output_path $featdir #will work if virtual env is active
+	 	  ) &
 
-	 (
-
-	 	/usr/local/Caskroom/miniconda/base/envs/entrainment_py3/bin/python3 $featextractfile --audio_file $f --openSMILE_config $opensmileconfig --output_path $featdir
-	 	) &
 	if [ $(($ctr % $numParallelJobs)) -eq 0 ]
 	then
 #		echo "Running $numParallelJobs jobs in parallel.."
 		wait
 	fi
 	ctr=`expr $ctr + 1`
-	 	
 	done;
+	fi
 done

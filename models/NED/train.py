@@ -1,7 +1,6 @@
-from entrainment_config import *
+from entrainment.config import *
 # from aeent import *
 from ecdc import *
-import matplotlib.pyplot as plt
 
 #------------------------------------------------------------------
 #Uncomment for parsing inputs
