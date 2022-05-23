@@ -38,6 +38,8 @@ Files that need to be edited by user to add filepaths:
 ------------------------
 Start Point:
 ------------------------
+1. Setup and activate virtual environment
+2. Run `setup.py`
 1. Download and set-up the LDC data, and access/create `Fisher_meta.csv`
     -   `scp -r [username]@kraken.sista.arizona.edu:/media/mule/projects/ldc [local directory]`
 2. Ensure you have installed all required python libraries
