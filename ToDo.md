@@ -16,7 +16,7 @@
 8. Find out how long these things take
     - creation of ivectors could be time-consuming
     - Kaldi can take time, comp. resources
-    - OpenSMILE features: 7 hours
+    ~~- OpenSMILE features: 7 hours~~
 ~~9. How are ivectors created?~~ 
    - ~~Kaldi files ? Check if these are pre-created, or if they are created.~~
 10. Check out load: tkinter

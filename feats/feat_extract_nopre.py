@@ -7,15 +7,6 @@
 
 from entrainment_config import *
 
-# import matplotlib.pyplot as plt
-# -----------------
-def_wav = def_wav
-def_audio = def_audio
-config_path = config_path
-# out_dir = '~/Downloads/Fisher_corpus/feats_nonorm_nopre'
-out_dir = feats_dir
-opensmile = opensmile
-
 #trans =~/Downloads/Fisher_corpus/fisher_eng_tr_sp_LDC2004S13_zip_2/data/trans/000
 # fe_03_00001.txt
 # feats == ~/Downloads/Fisher_corpus/feats/000
@@ -42,7 +33,9 @@ parser = argparse.ArgumentParser(description='Process some integers.')
 
 parser.add_argument('--audio_file', type=str, required=False, default=def_wav,
 					help='File path of the input audio file')
-parser.add_argument('--openSMILE_config', type=str, required=False, default=opensmile,
+parser.add_argument('--openSMILE', type=str, required=False, default=opensmile,
+					help='openSMILE path')
+parser.add_argument('--openSMILE_config', type=str, required=False, default=opensmile_config,
 					help='config file of openSMILE')
 parser.add_argument('--output_path', type=str, required=False, default=out_dir,
 					help='output folder path')
