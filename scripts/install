@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -eu
 # This script creates a virtual environment for the project and installs it as
 # an editable Python package. The script is primarily meant for developers
 # who need to install the package in editable mode, rather than end-users.
@@ -14,6 +15,10 @@ export ROOT
 # activate it. If it doesn't exist yet, create it first.
 # Note: Whenever you are working on the project, activate this virtual
 # enviroment first.
-"$ROOT"/scripts/activate_virtualenv
+
+# Temporarily turning of return code checking
+set +u
+source "$ROOT"/scripts/activate_virtualenv
+set -u
 
 pip install -e .

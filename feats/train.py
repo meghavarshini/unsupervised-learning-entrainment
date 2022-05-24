@@ -1,5 +1,4 @@
 # from aeent import *
-from entrainment_config import *
 from ecdc import *
 #------------------------------------------------------------------
 

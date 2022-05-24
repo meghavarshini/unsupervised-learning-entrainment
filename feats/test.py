@@ -1,4 +1,4 @@
-from entrainment_config import *
+from entrainment.config import *
 
 # from aeent import *
 model_name = model_name

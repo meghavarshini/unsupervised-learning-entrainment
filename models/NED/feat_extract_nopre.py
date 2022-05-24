@@ -8,7 +8,8 @@ import sys
 ###Fix This File: it's not putting all IPU features
 print(sys.path)
 
-from entrainment_config import *
+from entrainment.config import *
+print("feat_dir: ", feat_dir)
 
 np.set_printoptions(threshold=np.inf)
 

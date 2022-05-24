@@ -13,11 +13,11 @@ written by Md Nasir (modified for Python3 by Megh Krishnaswamy)
 Dependencies and Requirements
 ------------
 1. Bash
-2. [OpenSMILE](https://github.com/audeering/opensmile) 
+2. [OpenSMILE](https://github.com/audeering/opensmile)
 3. [sph2pipe](https://github.com/burrmill/sph2pipe)
 5. [Kaldi](https://kaldi-asr.org)
 4. LDC corpus and metadata files <br>(for ToMCAT users, a small sample of the corpus is available at `kraken.sista.arizona.edu:/media/mule/projects/ldc`)
-<br> note: move all files in the 
+<br> note: move all files in the
 
 ------------------------
 Summary of directories and files
@@ -38,6 +38,8 @@ Files that need to be edited by user to add filepaths:
 ------------------------
 Start Point:
 ------------------------
+1. Setup and activate virtual environment
+2. Run `pip install -e .`
 1. Download and set-up the LDC data, and access/create `Fisher_meta.csv`
     -   `scp -r [username]@kraken.sista.arizona.edu:/media/mule/projects/ldc [local directory]`
 2. Ensure you have installed all required python libraries

@@ -1,48 +1,50 @@
 #!/usr/bin/env bash
+set -e
+set -u #undefined variables will cause an exit with error
+
+
+# Get the top-level repo directory. The pushd/popd commands use
+# this directory, so that this script can be safely executed from any
+# directory.
+export ROOT="$( cd "$(dirname "${BASH_SOURCE[0]}" )/../" >/dev/null 2>&1 && pwd)"
+echo "Root: " $ROOT
 # cmddir=/home/nasir/inter_dynamics/scripts/NPC
 # replaced with $PWD
-
-featdir=/Users/meghavarshinikrishnaswamy/Downloads/Fisher_corpus/feats
-raw_featdir=/Users/meghavarshinikrishnaswamy/Downloads/Fisher_corpus/raw_feats
-audiodirroot=/Users/meghavarshinikrishnaswamy/Downloads/Fisher_sample
+corpus=/Users/meghavarshinikrishnaswamy/Downloads/Fisher_sample
+audiodirroot=$corpus/fisher_eng_tr_sp_LDC2004S13_zip
+#audiodirroot=/media/mule/projects/ldc/Fisher_sample/fisher_eng_tr_sp_LDC2004S13_zip
 #audiodirroot=/Users/meghavarshinikrishnaswamy/Downloads/Fisher_corpus/fisher_eng_tr_sp_LDC2004S13_zip_2
-featextractfile=/Users/meghavarshinikrishnaswamy/github/unsupervised-learning-entrainment/feats/feat_extract_nopre.py
-opensmileconfig=/Users/meghavarshinikrishnaswamy/github/unsupervised-learning-entrainment/feats/emobase2010_haoqi_revised.conf
+transcript_dir=$corpus/fe_03_p1_tran/data/trans/all_trans
+outdir=$audiodirroot/output/feats_norm
+raw_featdir=$audiodirroot/output/raw_feats
+
+featextractfile=$ROOT/feats/feat_extract_nopre.py
+opensmileconfig=$ROOT/feats/emobase2010_haoqi_revised.conf
 
 numParallelJobs=24
 ctr=1
-# for dir in $audiodir/*;
-# do  
-# 	cd $dir
-# 	for file in *;
-# 	do 
-# 	python $cmddir/feat_extract.py --audio_file $dir/$file --openSMILE_config $cmddir/emobase2010_haoqi_revised.conf --output_path $featdir
-# done
-# 	cd ..
-# done
-
-# for file in $audiodir/*.csv;
-# do
-# 	python $cmddir/feat_extract_nopre.py --audio_file $file --openSMILE_config $cmddir/emobase2010_haoqi_revised.conf --output_path $featdir
-# done
 
 ##make this recursive, search all subfolders
-for dir in $audiodirroot/f*;
-do
-	for f in  $dir/audio/*/*.sph;
-	do
-		#echo $f;
+for dir in $audiodirroot/f*; do
+    if [[ -dz "$dir" ]]; then
+        echo "Directory: " $dir "exists on your filesystem."
+        for f in  $dir/audio/*/*.sph; do
+            echo "Processing file: " $f;
+            #will work if virtual env is active
+            python $featextractfile \
+                --audio_file $f \
+                --openSMILE_config $opensmileconfig \
+                --feat_dir $raw_featdir \
+                --transcript_dir $transcript_dir\
+                --output_path $outdir  &
 
-	 (
+        if [ $(($ctr % $numParallelJobs)) -eq 0 ]; then
+            echo "Running $numParallelJobs jobs in parallel.."
+            wait
+        fi
 
-	 	/usr/local/Caskroom/miniconda/base/envs/entrainment_py3/bin/python3 $featextractfile --audio_file $f --openSMILE_config $opensmileconfig --output_path $featdir
-	 	) &
-	if [ $(($ctr % $numParallelJobs)) -eq 0 ]
-	then
-#		echo "Running $numParallelJobs jobs in parallel.."
-		wait
-	fi
-	ctr=`expr $ctr + 1`
-	 	
-	done;
+        ctr=`expr $ctr + 1`
+
+        done;
+    fi
 done

@@ -5,25 +5,25 @@
 # Description : resample to 16k Hz, and run openSMILE to extract features
 # ------------------------------------------------------------------------
 
-from entrainment_config import *
-
+from entrainment.config import *
+# out_dir = feats_dir
 #trans =~/Downloads/Fisher_corpus/fisher_eng_tr_sp_LDC2004S13_zip_2/data/trans/000
 # fe_03_00001.txt
 # feats == ~/Downloads/Fisher_corpus/feats/000
 # feat_extract_MN.py --audio_file wav/fe_03_00001.sph -- --openSMILE_config emobase2010_haoqi_revised.conf --output_path feats
 
-IPU_gap=50
-writing=True   # set True for getting functionals
-extract=True 
+# IPU_gap=50
+# writing=True   # set True for getting functionals
+# extract=True
 
 # For posidon -----------------------------------
-# transcript_dir='~/Downloads/Fisher_corpus/fisher_eng_tr_sp_LDC2004S13_zip_2/fisher_eng_tr_sp_d1/fe_03_p1_sph1/trans'
-# feat_dir = '~/Downloads/Fisher_corpus/fisher_eng_tr_sp_LDC2004S13_zip_2/fisher_eng_tr_sp_d1/fe_03_p1_sph1/feats'
+# transcript_dir = transcript_dir
+# feat_dir = audio_dir_root+"/fe_03_p1_sph1/feats/all_dir/"
 #-------------------------------------------------
 
 # For t-rex -------------------------------------
-transcript_dir= transcript_dir
-feat_dir = feat_dir
+# transcript_dir= transcript_dir
+# feat_dir = raw_feat_dir
 #------------------------------------------------
 
 # ------------------------------------------------------------------------
@@ -31,28 +31,41 @@ feat_dir = feat_dir
 # ------------------------------------------------------------------------
 parser = argparse.ArgumentParser(description='Process some integers.')
 
-parser.add_argument('--audio_file', type=str, required=False, default=def_wav,
+parser.add_argument('--audio_file', type=str, required=False, #default=def_wav,
 					help='File path of the input audio file')
-parser.add_argument('--openSMILE', type=str, required=False, default=opensmile,
+parser.add_argument('--transcript_dir', type=str, required=False, #default=def_wav,
+					help='File path of the directory with all transcripts')
+parser.add_argument('--openSMILE', type=str, required=False, #default=opensmile,
 					help='openSMILE path')
-parser.add_argument('--openSMILE_config', type=str, required=False, default=opensmile_config,
+parser.add_argument('--openSMILE_config', type=str, required=False, #default=opensmile_config,
 					help='config file of openSMILE')
-parser.add_argument('--output_path', type=str, required=False, default=out_dir,
+parser.add_argument('--output_path', type=str, required=False, #default=feats_dir,
 					help='output folder path')
+parser.add_argument('--feat_dir', type=str, required=False, #default=raw_feat_dir,
+					help='path to store acoustic features before normalisation')
 parser.add_argument('--norm', type=str, required=False, default=True, 
 					help='do session level normalization or not')
 parser.add_argument('--window_size', required=False, type=float, default=None)
 parser.add_argument('--shift_size', required=False, type=float, default=1)
+parser.add_argument('--extract', required=False, type=str, default=True)
+parser.add_argument('--writing', required=False, type=str, default=True)
+parser.add_argument('--IPU_gap', required=False, type=float, default=50)
 
 args = parser.parse_args()
 
+openSMILE		 = args.openSMILE
 CONFIG_openSMILE = args.openSMILE_config
 INPUT_audio      = args.audio_file
+transcript_dir	 = args.transcript_dir
 OUTPUT_path      = args.output_path
+feat_dir             = args.feat_dir
 
 window_size      = args.window_size
 shift_size       = args.shift_size
 norm             = args.norm
+extract          = args.extract
+IPU_gap          = args.IPU_gap
+writing          = args.writing
 
 if window_size is None:
 	window_size = 10
@@ -82,7 +95,7 @@ if extract:
 	# downsample audio to 16kHz and convert to mono (unless file already downsampled)
 	# ------------------------------------------------------------------------
 	cmd_check_sample_rate = ['sox', '--i', '-r', INPUT_audio]
-	sample_rate = subprocess.check_output(cmd_check_sample_rate) #check_output is throwing an error
+	sample_rate = subprocess.check_output(cmd_check_sample_rate) #check_output is throwing an error, INPUT_audio might not exist
 	not_16k = False
 	if sample_rate[1] != '16000':
 		not_16k = True
@@ -107,7 +120,7 @@ if extract:
 		csv_file_name = feat_dir+'/'+basename(INPUT_audio).split('.wav')[0] + '.csv'
 	print("Using openSMILE to extract features ... ")
 	# cmd_feat = '%s -nologfile -C -I %s -O %s' % (CONFIG_openSMILE, INPUT_audio, csv_file_name)
-	cmd_feat = '%s -nologfile -C %s -I %s -O %s' % (opensmile, CONFIG_openSMILE, INPUT_audio, csv_file_name)
+	cmd_feat = '%s -nologfile -C %s -I %s -O %s' % (openSMILE, CONFIG_openSMILE, INPUT_audio, csv_file_name)
 	print(cmd_feat)
 	subprocess.call(cmd_feat, shell  = True)
 
@@ -370,7 +383,8 @@ whole_func_feat = np.hstack((whole_func_feat1,whole_func_feat2))
 # write to csv file
 
 if writing==True:
-	feat_csv_file_name = out_dir + '/' + basename(csv_file_name).split('.csv')[0] + '_IPU_func_feat.csv'
+	# feat_csv_file_name = out_dir + '/' + basename(csv_file_name).split('.csv')[0] + '_IPU_func_feat.csv'
+	feat_csv_file_name = output_path + '/' + basename(csv_file_name).split('.csv')[0] + '_IPU_func_feat.csv'
 	with open(feat_csv_file_name, 'w') as fcsv: # changed 'wb' to 'w' to avoid TypeError
 		writer = csv.writer(fcsv)
 		writer.writerows(whole_func_feat)

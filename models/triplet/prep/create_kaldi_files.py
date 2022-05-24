@@ -1,4 +1,4 @@
-from entrainment_config import *
+from entrainment.config import *
 
 transcript_dir= transcript_dir
 audio_dir_root = audio_dir_root
