@@ -9,6 +9,7 @@ import sys
 print(sys.path)
 
 from entrainment.config import *
+print("feat_dir: ", feat_dir)
 
 np.set_printoptions(threshold=np.inf)
 
