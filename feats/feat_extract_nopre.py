@@ -31,24 +31,25 @@ from entrainment.config import *
 # ------------------------------------------------------------------------
 parser = argparse.ArgumentParser(description='Process some integers.')
 
-parser.add_argument('--audio_file', type=str, required=False, #default=def_wav,
+parser.add_argument('--audio_file', type=str, required=True, #default=def_wav,
 					help='File path of the input audio file')
-parser.add_argument('--transcript_dir', type=str, required=False, #default=def_wav,
+parser.add_argument('--transcript_dir', type=str, required=True, #default=def_wav,
 					help='File path of the directory with all transcripts')
-parser.add_argument('--openSMILE', type=str, required=False, #default=opensmile,
-					help='openSMILE path')
+parser.add_argument('--openSMILE', type=str, required=False, default=opensmile,
+					help='openSMILE path on the system')
 parser.add_argument('--openSMILE_config', type=str, required=False, #default=opensmile_config,
 					help='config file of openSMILE')
-parser.add_argument('--output_path', type=str, required=False, #default=feats_dir,
-					help='output folder path')
-parser.add_argument('--feat_dir', type=str, required=False, #default=raw_feat_dir,
-					help='path to store acoustic features before normalisation')
+parser.add_argument('--output_path', type=str, required=True, #default=feats_dir,
+					help='output directory for IPU level normalised features')
+parser.add_argument('--feat_dir', type=str, required=True, #default=raw_feat_dir,
+					help='path to store acoustic features per .sph file, before normalisation')
 parser.add_argument('--norm', type=str, required=False, default=True, 
 					help='do session level normalization or not')
 parser.add_argument('--window_size', required=False, type=float, default=None)
 parser.add_argument('--shift_size', required=False, type=float, default=1)
 parser.add_argument('--extract', required=False, type=str, default=True)
-parser.add_argument('--writing', required=False, type=str, default=True)
+parser.add_argument('--writing', required=False, type=str, default=True,
+					help='whether raw features need to be stored on the system or not.')
 parser.add_argument('--IPU_gap', required=False, type=float, default=50)
 
 args = parser.parse_args()
@@ -57,7 +58,7 @@ openSMILE		 = args.openSMILE
 CONFIG_openSMILE = args.openSMILE_config
 INPUT_audio      = args.audio_file
 transcript_dir	 = args.transcript_dir
-OUTPUT_path      = args.output_path
+output_path      = args.output_path
 feat_dir             = args.feat_dir
 
 window_size      = args.window_size
@@ -80,6 +81,7 @@ print('Current audio file: %s ' %INPUT_audio, file=sys.stderr)
 #---------------------------------------------------------------------
 # check if file is wav or not
 #---------------------------------------------------------------------
+
 if extract:
 	not_wav = False
 	if basename(INPUT_audio).split('.')[-1] != 'wav':
@@ -87,10 +89,12 @@ if extract:
 		print('convert to .wav file...')
 		# cmd2wav = 'sox ' + INPUT_audio +' '+ basename(INPUT_audio).split('.')[-2]+'.wav'
 		cmd2wav = sph2pipe +' -f rif ' + INPUT_audio +' '+ basename(INPUT_audio).split('.')[-2]+'.wav'
+		print("cmd2wav: ", cmd2wav)
 		subprocess.call(cmd2wav, shell  = True)
 
 		INPUT_audio = basename(INPUT_audio).split('.')[-2]+'.wav'
 		file_to_be_removed = basename(INPUT_audio).split('.')[-2]+'.wav'
+		print("INPUT_audio: ", INPUT_audio)
 	# ------------------------------------------------------------------------
 	# downsample audio to 16kHz and convert to mono (unless file already downsampled)
 	# ------------------------------------------------------------------------
@@ -112,8 +116,8 @@ if extract:
 	# # ------------------------------------------------------------------------
 	# # extract feature use openSMILE
 	# # ------------------------------------------------------------------------
-	if not os.path.exists(OUTPUT_path):
-		os.makedirs(OUTPUT_path)
+	if not os.path.exists(feat_dir):
+		os.makedirs(feat_dir)
 	if not_16k:
 		csv_file_name = feat_dir+'/'+basename(INPUT_audio).split('.wav')[0].split('--')[1] + '.csv'
 	else:
@@ -154,20 +158,12 @@ for line in trans:
 			start, stop, spk = line.split(':')[0].split(' ')
 			spk_list.append([start, stop, spk])
 
-# ------------------------------------------------------------------------
-# functional calculation: this has to be  PER Utterance (for entrainment)
-# ------------------------------------------------------------------------
-# frame length and overlap size in seconds
+## ------------------------------------------------------------------------
+## functional calculation: this has to be  PER Utterance (for entrainment)
+## ------------------------------------------------------------------------
+## frame length and overlap size in seconds
 # frame_len = window_size/0.01
 # frame_shift_len = shift_size/0.01
-
-
-# csv_file_name = feat_dir +'/'+basename(INPUT_audio).split('.sph')[0] + '.csv'
-
-if extract:
-	csv_file_name = feat_dir + '/' +basename(INPUT_audio).split(ext)[0].split('--')[1] + '.csv'
-else:
-	csv_file_name = feat_dir + '/' + basename(INPUT_audio).split(ext)[0] + '.csv'
 
 # read csv feature file
 csv_feat = pd.read_csv(csv_file_name, dtype=np.float32, on_bad_lines='warn')
@@ -177,7 +173,7 @@ feat_data = np.copy(csv_feat)
 # convert the first column indext to int index
 sample_index = list(map(int,list((feat_data[:,0]))))
 
-
+##Looks like this wasn't done by the author. TODO
 # def turn_level_index(spk_list, sample_index):
 	# '''generate indices for different turns'''
 
