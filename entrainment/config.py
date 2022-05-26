@@ -34,13 +34,6 @@ from sklearn.preprocessing import normalize
 from scipy import spatial
 
 ### ABSOLUTE FILEPATHS FOR INPUT#####
-print(sys.path)
-
-###############################
-# Speech feature extraction tools, edit paths according to your system:
-###############################
-opensmile = "/Users/meghavarshinikrishnaswamy/github/tomcat-speech/external/opensmile-3.0/bin/SMILExtract"
-sph2pipe = "/Users/meghavarshinikrishnaswamy/github/sph2pipe/sph2pipe" #clone this
 
 ## EDIT THE FOLLOWING LINE TO SET THE DIRECTORY FOR THE FISHER CORPUS
 fisher_corpus = "/media/mule/projects/ldc/corpus/" # master directory
