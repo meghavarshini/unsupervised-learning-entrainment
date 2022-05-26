@@ -4,26 +4,13 @@
 # Date   : 05-04-18
 # Description : resample to 16k Hz, and run openSMILE to extract features
 # ------------------------------------------------------------------------
-import sys
 ###Fix This File: it's not putting all IPU features
-print(sys.path)
-
 from entrainment.config import *
-print("feat_dir: ", feat_dir)
+print(sys.path)
 
 np.set_printoptions(threshold=np.inf)
 
-# def_wav = '/Users/meghavarshinikrishnaswamy/Downloads/Fisher_corpus/fisher_eng_tr_sp_LDC2004S13_zip_2/fisher_eng_tr_sp_d1/audio/001/fe_03_00101.sph'
-# def_audio = '/Users/meghavarshinikrishnaswamy/Downloads/Fisher_corpus/fisher_eng_tr_sp_LDC2004S13_zip_2/fisher_eng_tr_sp_d1/audio/'
 # config_path = 'emobase2010_revised.conf'
-# opensmile = '/Users/meghavarshinikrishnaswamy/github/tomcat-speech/external/opensmile-3.0/bin/SMILExtract'
-# opensmile_config = '/Users/meghavarshinikrishnaswamy/github/tomcat-speech/external/opensmile-3.0/config/emobase/emobase2010.conf'
-# # out_dir = '/home/nasir/data/Fisher/feats_nonorm_nopre'
-# out_dir = '/Users/meghavarshinikrishnaswamy/Downloads/Fisher_corpus/feats_nonorm_nopre'
-
-#trans == /home/nasir/xData/newdata/Fisher/ldc2004s13/Fisher English Training Speech Part 1 Transcripts (LDC2004S19)/data/trans/000
-# fe_03_00001.txt
-# feats == /home/nasir/xData/newdata/Fisher/ldc2004s13/fe_03_p1_sph1/feats/000
 
 # feat_extract_MN.py --audio_file wav/fe_03_00001.sph -- --openSMILE_config emobase2010_revised.conf --output_path feats
 
@@ -32,7 +19,6 @@ writing=True   # set True for getting functionals
 extract=True
 
 # For posidon -----------------------------------
-# transcript_dir='/home/nasir/xData/newdata/Fisher/ldc2004s13/fe_03_p1_sph1/trans/'
 # feat_dir = '/home/nasir/xData/newdata/Fisher/ldc2004s13/fe_03_p1_sph1/feats/all_dir/'
 #-------------------------------------------------
 
@@ -46,18 +32,26 @@ extract=True
 # ------------------------------------------------------------------------
 parser = argparse.ArgumentParser(description='Process some integers.')
 
-parser.add_argument('--audio_file', type=str, required=False, default=def_wav,
+parser.add_argument('--audio_file', type=str, required=False, #default=def_wav,
 					help='File path of the input audio file')
+parser.add_argument('--transcript_dir', type=str, required=True, #default=transcript_dir,
+					help='File path of the directory with all transcripts')
 parser.add_argument('--openSMILE', type=str, required=False, default=opensmile,
 					help='openSMILE path')
-parser.add_argument('--openSMILE_config', type=str, required=False, default=opensmile_config,
+parser.add_argument('--openSMILE_config', type=str, required=False, #default=opensmile_config,
 					help='config file of openSMILE')
-parser.add_argument('--output_path', type=str, required=False, default=out_dir,
+parser.add_argument('--output_path', type=str, required=False, #default=out_dir,
 					help='output folder path')
+parser.add_argument('--feat_dir', type=str, required=True, #default=raw_feat_dir,
+					help='path to store acoustic features per .sph file, before normalisation')
 parser.add_argument('--norm', type=str, required=False, default=True,
 					help='do session level normalization or not')
 parser.add_argument('--window_size', required=False, type=float, default=None)
 parser.add_argument('--shift_size', required=False, type=float, default=1)
+parser.add_argument('--extract', required=False, type=str, default=True)
+parser.add_argument('--writing', required=False, type=str, default=True,
+					help='whether raw features need to be stored on the system or not.')
+parser.add_argument('--IPU_gap', required=False, type=float, default=50)
 
 args = parser.parse_args()
 
@@ -65,10 +59,15 @@ CONFIG_openSMILE = args.openSMILE_config
 openSMILE		 =	args.openSMILE
 INPUT_audio      = args.audio_file
 OUTPUT_path      = args.output_path
+feat_dir         = args.feat_dir
+transcript_dir	 = args.transcript_dir
 
 window_size      = args.window_size
 shift_size       = args.shift_size
 norm             = args.norm
+extract          = args.extract
+IPU_gap          = args.IPU_gap
+writing          = args.writing
 
 if window_size is None:
 	window_size = 10
@@ -84,33 +83,37 @@ print("Current audio file: %s " % (INPUT_audio), sys.stderr)
 # check if file is wav or not
 #---------------------------------------------------------------------
 if extract:
+	if not os.path.exists(feat_dir):
+		os.makedirs(feat_dir)
 	not_wav = False
 	if basename(INPUT_audio).split('.')[-1] != 'wav':
 		not_wav = True
 		print('convert to .wav file...')
+		if os.path.isfile(INPUT_audio):
 		# cmd2wav = 'sox ' + INPUT_audio +' '+ basename(INPUT_audio).split('.')[-2]+'.wav rate 16k'
-		cmd2wav = sph2pipe+' -f rif ' + INPUT_audio +' ' + basename(INPUT_audio).split('.')[-2]+'.wav'
-		print('.wav conversion complete...')
-		subprocess.call(cmd2wav, shell  = True)
+			cmd2wav = sph2pipe+' -f rif ' + INPUT_audio +' ' + basename(INPUT_audio).split('.')[-2]+'.wav'
+			print('.wav conversion complete...')
+			subprocess.call(cmd2wav, shell  = True)
 
 		INPUT_audio = basename(INPUT_audio).split('.')[-2]+'.wav'
 		file_to_be_removed = basename(INPUT_audio).split('.')[-2]+'.wav'
 	# ------------------------------------------------------------------------
 	# downsample audio to 16kHz and convert to mono (unless file already downsampled)
 	# ------------------------------------------------------------------------
-	cmd_check_sample_rate = ['sox', '--i', '-r', INPUT_audio]
-	sample_rate = subprocess.check_output(cmd_check_sample_rate)
-	not_16k = False
-	if sample_rate[1] != '16000':
-		not_16k = True
-		print("Resampling to 16k ... ")
-		output_16k_audio = 'resampled--' + os.path.basename(INPUT_audio)
-		cmd_resample = 'sox %s -b 16 -c 1 -r 16k %s dither -s' %(INPUT_audio, output_16k_audio)
-		subprocess.call(cmd_resample, shell  = True)
-		# replace variable with downsampled audio
-		#INPUT_audio = ''.join(output_16k_audio.split('--')[1:])
-		INPUT_audio = output_16k_audio
-		print("input audio file: "+ os.path.abspath(INPUT_audio))
+	if os.path.isfile(INPUT_audio):
+		cmd_check_sample_rate = ['sox', '--i', '-r', INPUT_audio]
+		sample_rate = subprocess.check_output(cmd_check_sample_rate)
+		not_16k = False
+		if sample_rate[1] != '16000':
+			not_16k = True
+			print("Resampling to 16k ... ")
+			output_16k_audio = 'resampled--' + os.path.basename(INPUT_audio)
+			cmd_resample = 'sox %s -b 16 -c 1 -r 16k %s dither -s' %(INPUT_audio, output_16k_audio)
+			subprocess.call(cmd_resample, shell  = True)
+			# replace variable with downsampled audio
+			#INPUT_audio = ''.join(output_16k_audio.split('--')[1:])
+			INPUT_audio = output_16k_audio
+			print("input audio file: "+ os.path.abspath(INPUT_audio))
 
 	# # ------------------------------------------------------------------------
 	# # extract feature use openSMILE
@@ -122,7 +125,7 @@ if extract:
 	else:
 		csv_file_name = feat_dir+'/'+basename(INPUT_audio).split('.wav')[0] + '.csv'
 	print("Using openSMILE to extract features ... ")
-	cmd_feat = '%s -nologfile -C %s -I %s -O %s' %(openSMILE, opensmile_config, os.path.abspath(INPUT_audio), csv_file_name)
+	cmd_feat = '%s -nologfile -C %s -I %s -O %s' %(openSMILE, CONFIG_openSMILE, os.path.abspath(INPUT_audio), csv_file_name)
 	print(cmd_feat)
 	subprocess.call(cmd_feat, shell  = True)
 
@@ -184,7 +187,7 @@ for line in open(csv_file_name, "r"):
 with open("bad_files.csv","w") as f:
 	f.write("\n".join(bad_files))
 
-csv_feat = pd.read_csv(csv_file_name, sep=',', dtype=np.float32, error_bad_lines=False)
+csv_feat = pd.read_csv(csv_file_name, sep=',', dtype=np.float32, on_bad_lines='warn')
 csv_feat = csv_feat.values.copy()
 print("this is a temporary fix, need to figure out why these weird feature extraction lines are getting printed in the first place")
 feat_data = np.copy(csv_feat)
@@ -399,8 +402,10 @@ whole_func_feat = np.hstack((whole_func_feat1,whole_func_feat2))
 # write to csv file
 
 if writing==True:
-	feat_csv_file_name = out_dir + '/' + basename(csv_file_name).split('.csv')[0] + '_IPU_func_feat.csv'
-	# print feat_csv_file_name
+	print("writing IPU-level features to file...")
+	if not os.path.exists(output_path):
+		os.makedirs(output_path)
+	feat_csv_file_name = output_path + '/' + basename(csv_file_name).split('.csv')[0] + '_IPU_func_feat.csv'
 	with open(feat_csv_file_name, 'w') as fcsv: # changed 'wb' to 'w' to avoid TypeError
 		writer = csv.writer(fcsv)
 		writer.writerows(whole_func_feat)

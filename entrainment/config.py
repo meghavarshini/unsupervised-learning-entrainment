@@ -83,11 +83,6 @@ sph2pipe = "/Users/meghavarshinikrishnaswamy/github/sph2pipe/sph2pipe" #clone th
 # temp_testfile = os.getcwd() + "/data/tmp.csv"
 # model_name = os.getcwd() + "/models/trained_VAE_nonorm_nopre_l1.pt"
 
-
-# opensmile_config = opensmile + "/config/emobase/emobase2010.conf"
-# config_path = os.getcwd() +"/feats/emobase2010_mod.conf" #this file exists in repository
-# DEBUG = False # no saving of files; output in the terminal; first random seed from the list
-
 # # do you want to save dataset files?
 # save_dataset = False
 #

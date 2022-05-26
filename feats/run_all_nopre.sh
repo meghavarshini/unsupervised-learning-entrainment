@@ -10,13 +10,14 @@ export ROOT="$( cd "$(dirname "${BASH_SOURCE[0]}" )/../" >/dev/null 2>&1 && pwd)
 echo "Root: " $ROOT
 # cmddir=/home/nasir/inter_dynamics/scripts/NPC
 # replaced with $PWD
+
+#corpus=/media/mule/projects/ldc/Fisher_sample
 corpus=/Users/meghavarshinikrishnaswamy/Downloads/Fisher_sample
 audiodirroot=$corpus/fisher_eng_tr_sp_LDC2004S13_zip
-#audiodirroot=/media/mule/projects/ldc/Fisher_sample/fisher_eng_tr_sp_LDC2004S13_zip
-#audiodirroot=/Users/meghavarshinikrishnaswamy/Downloads/Fisher_corpus/fisher_eng_tr_sp_LDC2004S13_zip_2
 transcript_dir=$corpus/fe_03_p1_tran/data/trans/all_trans
-outdir=$audiodirroot/output/feats_norm
-raw_featdir=$audiodirroot/output/raw_feats
+
+outdir=$corpus/baseline_feats/feats_norm
+raw_featdir=$corpus/baseline_feats/raw_feats
 
 featextractfile=$ROOT/feats/feat_extract_nopre.py
 opensmileconfig=$ROOT/feats/emobase2010_haoqi_revised.conf

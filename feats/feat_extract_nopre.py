@@ -6,23 +6,12 @@
 # ------------------------------------------------------------------------
 
 from entrainment.config import *
-# out_dir = feats_dir
-#trans =~/Downloads/Fisher_corpus/fisher_eng_tr_sp_LDC2004S13_zip_2/data/trans/000
-# fe_03_00001.txt
-# feats == ~/Downloads/Fisher_corpus/feats/000
-# feat_extract_MN.py --audio_file wav/fe_03_00001.sph -- --openSMILE_config emobase2010_haoqi_revised.conf --output_path feats
-
-# IPU_gap=50
-# writing=True   # set True for getting functionals
-# extract=True
 
 # For posidon -----------------------------------
-# transcript_dir = transcript_dir
 # feat_dir = audio_dir_root+"/fe_03_p1_sph1/feats/all_dir/"
 #-------------------------------------------------
 
 # For t-rex -------------------------------------
-# transcript_dir= transcript_dir
 # feat_dir = raw_feat_dir
 #------------------------------------------------
 
@@ -33,7 +22,7 @@ parser = argparse.ArgumentParser(description='Process some integers.')
 
 parser.add_argument('--audio_file', type=str, required=True, #default=def_wav,
 					help='File path of the input audio file')
-parser.add_argument('--transcript_dir', type=str, required=True, #default=def_wav,
+parser.add_argument('--transcript_dir', type=str, required=True, #default=transcript_dir,
 					help='File path of the directory with all transcripts')
 parser.add_argument('--openSMILE', type=str, required=False, default=opensmile,
 					help='openSMILE path on the system')
@@ -59,7 +48,7 @@ CONFIG_openSMILE = args.openSMILE_config
 INPUT_audio      = args.audio_file
 transcript_dir	 = args.transcript_dir
 output_path      = args.output_path
-feat_dir             = args.feat_dir
+feat_dir         = args.feat_dir
 
 window_size      = args.window_size
 shift_size       = args.shift_size
@@ -88,9 +77,12 @@ if extract:
 		not_wav = True
 		print('convert to .wav file...')
 		# cmd2wav = 'sox ' + INPUT_audio +' '+ basename(INPUT_audio).split('.')[-2]+'.wav'
-		cmd2wav = sph2pipe +' -f rif ' + INPUT_audio +' '+ basename(INPUT_audio).split('.')[-2]+'.wav'
-		print("cmd2wav: ", cmd2wav)
-		subprocess.call(cmd2wav, shell  = True)
+		if os.path.isfile(INPUT_audio):
+			cmd2wav = sph2pipe +' -f rif ' + INPUT_audio +' '+ basename(INPUT_audio).split('.')[-2]+'.wav'
+			print("cmd2wav: ", cmd2wav)
+			subprocess.call(cmd2wav, shell  = True)
+		else:
+			print("file ", INPUT_audio," does not exist")
 
 		INPUT_audio = basename(INPUT_audio).split('.')[-2]+'.wav'
 		file_to_be_removed = basename(INPUT_audio).split('.')[-2]+'.wav'
@@ -168,12 +160,13 @@ for line in trans:
 # read csv feature file
 csv_feat = pd.read_csv(csv_file_name, dtype=np.float32, on_bad_lines='warn')
 csv_feat = csv_feat.values.copy()
+print("feature array has the following shape: ", np.shape(csv_feat))
 print("this is a temporary fix, need to figure out why these weird feature extraction lines are getting printed in the first place")
 feat_data = np.copy(csv_feat)
-# convert the first column indext to int index
+# convert the first column index to int index
 sample_index = list(map(int,list((feat_data[:,0]))))
 
-##Looks like this wasn't done by the author. TODO
+##TODO Looks like this wasn't done by the author.
 # def turn_level_index(spk_list, sample_index):
 	# '''generate indices for different turns'''
 
@@ -188,9 +181,9 @@ for spch in spk_list:
 	spk = spch[2]
 	if not turn_level_index_list:
 		turn_level_index_list = [sample_index[start:stop]]
-		last_stop =stop
+		last_stop = stop
 		continue
-	if spk==last_spk:
+	if spk == last_spk:
 		if start-last_stop < IPU_gap/10:
 			turn_level_index_list[-1].extend(sample_index[start:stop])
 
@@ -225,6 +218,7 @@ for i, itm in enumerate(turn_level_index_list):
 		s1_list.append(itm)
 	else:
 		s2_list.append(itm)
+
 ##-----------------------------------------------------------------------
 ## feature selection and normalization 
 ##-----------------------------------------------------------------------
@@ -379,6 +373,9 @@ whole_func_feat = np.hstack((whole_func_feat1,whole_func_feat2))
 # write to csv file
 
 if writing==True:
+	print("writing IPU-level features to file...")
+	if not os.path.exists(output_path):
+		os.makedirs(output_path)
 	# feat_csv_file_name = out_dir + '/' + basename(csv_file_name).split('.csv')[0] + '_IPU_func_feat.csv'
 	feat_csv_file_name = output_path + '/' + basename(csv_file_name).split('.csv')[0] + '_IPU_func_feat.csv'
 	with open(feat_csv_file_name, 'w') as fcsv: # changed 'wb' to 'w' to avoid TypeError
