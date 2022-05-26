@@ -6,8 +6,8 @@ cmddir=.
 export ROOT="$( cd "$(dirname "${BASH_SOURCE[0]}" )/../" >/dev/null 2>&1 && pwd)"
 echo "Root: " $ROOT
 
-corpus=/media/mule/projects/ldc/Fisher_sample
-#corpus=/Users/meghavarshinikrishnaswamy/Downloads/Fisher_sample
+#corpus=/media/mule/projects/ldc/Fisher_sample
+corpus=/Users/meghavarshinikrishnaswamy/Downloads/Fisher_sample
 audiodirroot=$corpus/fisher_eng_tr_sp_LDC2004S13_zip
 transcript_dir=$corpus/fe_03_p1_tran/data/trans/all_trans
 
@@ -39,7 +39,6 @@ for dir in $audiodirroot/f*; do
 
         if [ $(($ctr % $numParallelJobs)) -eq 0 ]; then
             echo "Running $numParallelJobs jobs in parallel.."
-            wait
         fi
 
         ctr=`expr $ctr + 1`

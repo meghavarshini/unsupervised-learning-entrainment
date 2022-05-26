@@ -475,8 +475,10 @@ if writing == True:
         + basename(csv_file_name).split(".csv")[0]
         + "_IPU_func_feat.csv"
     )
+    print("writing: ",feat_csv_file_name)
     with open(
         feat_csv_file_name, "w"
     ) as fcsv:  # changed 'wb' to 'w' to avoid TypeError
         writer = csv.writer(fcsv)
         writer.writerows(whole_func_feat)
+    print("file ", writing IPU-leve, " processed!")
