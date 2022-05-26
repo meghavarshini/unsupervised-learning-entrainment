@@ -1,18 +1,13 @@
 #!/usr/bin/env bash
 set -e
 set -u #undefined variables will cause an exit with error
+cmddir=.
 
-
-# Get the top-level repo directory. The pushd/popd commands use
-# this directory, so that this script can be safely executed from any
-# directory.
 export ROOT="$( cd "$(dirname "${BASH_SOURCE[0]}" )/../" >/dev/null 2>&1 && pwd)"
 echo "Root: " $ROOT
-# cmddir=/home/nasir/inter_dynamics/scripts/NPC
-# replaced with $PWD
 
-#corpus=/media/mule/projects/ldc/Fisher_sample
-corpus=/Users/meghavarshinikrishnaswamy/Downloads/Fisher_sample
+corpus=/media/mule/projects/ldc/Fisher_sample
+#corpus=/Users/meghavarshinikrishnaswamy/Downloads/Fisher_sample
 audiodirroot=$corpus/fisher_eng_tr_sp_LDC2004S13_zip
 transcript_dir=$corpus/fe_03_p1_tran/data/trans/all_trans
 

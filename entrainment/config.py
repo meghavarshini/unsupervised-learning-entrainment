@@ -43,51 +43,51 @@ opensmile = "/Users/meghavarshinikrishnaswamy/github/tomcat-speech/external/open
 sph2pipe = "/Users/meghavarshinikrishnaswamy/github/sph2pipe/sph2pipe" #clone this
 
 ## EDIT THE FOLLOWING LINE TO SET THE DIRECTORY FOR THE FISHER CORPUS
-# fisher_corpus = "/Users/meghavarshinikrishnaswamy/Downloads/Fisher_corpus" # master directory
+fisher_corpus = "/media/mule/projects/ldc/corpus/" # master directory
 ##
 
 ###############################
 # Files in the Fisher Directory
 ###############################
 
-# transcript_dir = fisher_corpus + "/fe_03_p1_tran/data/trans/all_trans" #directory that hourses all transcript files in one directory (no subdirectories)
-# audio_dir_root = fisher_corpus + "/fisher_eng_tr_sp_LDC2004S13_zip" #directory for sphere sound files
-# fisher_meta = fisher_corpus + "/Fisher_meta.csv" #metafile, create this before running anything else
+transcript_dir = fisher_corpus + "/fe_03_p1_tran/data/trans/all_trans" #directory that hourses all transcript files in one directory (no subdirectories)
+audio_dir_root = fisher_corpus + "/fisher_eng_tr_sp_LDC2004S13_zip" #directory for sphere sound files
+fisher_meta = fisher_corpus + "/Fisher_meta.csv" #metafile, create this before running anything else
 #
 # 		## Sample files for testing things
-# def_wav = fisher_corpus + "/" + audio_dir_root + "/fisher_eng_tr_sp_d1/audio/000/fe_03_00004.sph" #example sound file
-# def_audio = fisher_corpus + "/" + audio_dir_root + "/fisher_eng_tr_sp_d1/audio" #audio subdirectory that houses the sphere file subdirectories
+def_wav = fisher_corpus + "/" + audio_dir_root + "/fisher_eng_tr_sp_d1/audio/000/fe_03_00004.sph" #example sound file
+def_audio = fisher_corpus + "/" + audio_dir_root + "/fisher_eng_tr_sp_d1/audio" #audio subdirectory that houses the sphere file subdirectories
 #
 
 ###############################
 # OUTPUT FILES
 ###############################
 
-# feats_dir = fisher_corpus+"/feats"
-# data_dir = fisher_corpus+"/feats_nonorm"
-# raw_feat_dir = fisher_corpus+"/raw_feats"
-# feats_nonorm_nopre = fisher_corpus+"/feats_nonorm_nopre"
-# data_dir_triplets_all = fisher_corpus+"/feats_triplets_all"
-# data_dir_triplets = fisher_corpus+"/feats_triplets"
+feats_dir = fisher_corpus+"/feats"
+data_dir = fisher_corpus+"/feats_nonorm"
+raw_feat_dir = fisher_corpus+"/raw_feats"
+feats_nonorm_nopre = fisher_corpus+"/feats_nonorm_nopre"
+data_dir_triplets_all = fisher_corpus+"/feats_triplets_all"
+data_dir_triplets = fisher_corpus+"/feats_triplets"
 
 
 ###############################
 # MODELLING
 ###############################
 
-# ivec_scp = fisher_corpus + "/Fisher_ivector/exp/ivectors_train/ivector.scp"
-# model_path = fisher_corpus + "/workspace/acoustic/triplet/fisher/trained_models"
-# work_dir = fisher_corpus + "/workspace/acoustic/NED_ecdc"
-# temp_testfile = os.getcwd() + "/models/NED/data/tmp.csv"
-# fdset = os.getcwd() + "/data/train_Fisher_nonorm.h5"
-# temp_testfile = os.getcwd() + "/data/tmp.csv"
-# model_name = os.getcwd() + "/models/trained_VAE_nonorm_nopre_l1.pt"
+ivec_scp = fisher_corpus + "/Fisher_ivector/exp/ivectors_train/ivector.scp"
+model_path = fisher_corpus + "/workspace/acoustic/triplet/fisher/trained_models"
+work_dir = fisher_corpus + "/workspace/acoustic/NED_ecdc"
+temp_testfile = os.getcwd() + "/models/NED/data/tmp.csv"
+fdset = os.getcwd() + "/data/train_Fisher_nonorm.h5"
+temp_testfile = os.getcwd() + "/data/tmp.csv"
+model_name = os.getcwd() + "/models/trained_VAE_nonorm_nopre_l1.pt"
 
-# # do you want to save dataset files?
-# save_dataset = False
-#
-# # do you want to load pre-saved dataset files?
-# load_dataset = True
+# do you want to save dataset files?
+save_dataset = False
+
+# do you want to load pre-saved dataset files?
+load_dataset = True
 
 # get this file's path to save a copy
 CONFIG_FILE = os.path.abspath(__file__)

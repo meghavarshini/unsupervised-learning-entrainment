@@ -6,8 +6,8 @@ cmddir=.
 export ROOT="$( cd "$(dirname "${BASH_SOURCE[0]}" )/../" >/dev/null 2>&1 && pwd)"
 echo $ROOT
 
-#corpus=/media/mule/projects/ldc/Fisher_sample
-corpus=/Users/meghavarshinikrishnaswamy/Downloads/Fisher_sample
+corpus=/media/mule/projects/ldc/Fisher_sample
+#corpus=/Users/meghavarshinikrishnaswamy/Downloads/Fisher_sample
 audiodirroot=$corpus/fisher_eng_tr_sp_LDC2004S13_zip
 transcript_dir=$corpus/fe_03_p1_tran/data/trans/all_trans
 
