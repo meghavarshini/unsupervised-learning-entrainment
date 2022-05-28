@@ -6,7 +6,8 @@
 # ------------------------------------------------------------------------
 ###Fix This File: it's not putting all IPU features
 from entrainment.config import *
-print(sys.path)
+import os
+from subprocess import run, check_output
 
 np.set_printoptions(threshold=np.inf)
 
@@ -19,39 +20,84 @@ writing=True   # set True for getting functionals
 extract=True
 
 # For posidon -----------------------------------
-# feat_dir = '/home/nasir/xData/newdata/Fisher/ldc2004s13/fe_03_p1_sph1/feats/all_dir/'
+# feat_dir = audio_dir_root+"/fe_03_p1_sph1/feats/all_dir/"
 #-------------------------------------------------
 
 # For t-rex -------------------------------------
-# transcript_dir='/Users/meghavarshinikrishnaswamy/Downloads/Fisher_corpus/fe_03_p1_tran/data/trans/all_trans/'
-# feat_dir = '/Users/meghavarshinikrishnaswamy/Downloads/Fisher_corpus/raw_feats'
+# feat_dir = feat_dir = raw_feat_dir
 #------------------------------------------------
 
 # ------------------------------------------------------------------------
 # Params Setup
 # ------------------------------------------------------------------------
-parser = argparse.ArgumentParser(description='Process some integers.')
+def make_argument_parser():
+    parser = argparse.ArgumentParser(description="Processing filepaths and values required for setup")
 
-parser.add_argument('--audio_file', type=str, required=False, #default=def_wav,
-					help='File path of the input audio file')
-parser.add_argument('--transcript_dir', type=str, required=True, #default=transcript_dir,
-					help='File path of the directory with all transcripts')
-parser.add_argument('--openSMILE', type=str, required=False, default=opensmile,
-					help='openSMILE path')
-parser.add_argument('--openSMILE_config', type=str, required=False, #default=opensmile_config,
-					help='config file of openSMILE')
-parser.add_argument('--output_path', type=str, required=False, #default=out_dir,
-					help='output folder path')
-parser.add_argument('--feat_dir', type=str, required=True, #default=raw_feat_dir,
-					help='path to store acoustic features per .sph file, before normalisation')
-parser.add_argument('--norm', type=str, required=False, default=True,
-					help='do session level normalization or not')
-parser.add_argument('--window_size', required=False, type=float, default=None)
-parser.add_argument('--shift_size', required=False, type=float, default=1)
-parser.add_argument('--extract', required=False, type=str, default=True)
-parser.add_argument('--writing', required=False, type=str, default=True,
-					help='whether raw features need to be stored on the system or not.')
-parser.add_argument('--IPU_gap', required=False, type=float, default=50)
+	parser.add_argument(
+		"--audio_file"",
+		type = str,
+		required = False,
+		#default = def_wav,
+		help = "File path of the input audio file")
+	parser.add_argument(
+		"--transcript_dir",
+		type = str,
+		required = True, #default=transcript_dir,
+		help = "File path of the directory with all transcripts")
+	parser.add_argument(
+		"--openSMILE",
+		type = str,
+		required = True,
+		default = opensmile,
+		help = "openSMILE path")
+	parser.add_argument(
+		"--openSMILE_config",
+		type = str,
+		required = False, #default=opensmile_config,
+		help = "config file of openSMILE")
+	parser.add_argument(
+		"--output_path",
+		type = str,
+		required = True,
+		#default = out_dir,
+		help = "output directory for IPU level normalised features")
+	parser.add_argument(
+		"--feat_dir",
+		type = str,
+		required = True,
+		#default = raw_feat_dir,
+		help = "path to store acoustic features per .sph file, before normalisation")
+	parser.add_argument(
+		"--norm",
+		type = str,
+		required = False, default=True,
+		help = "do session level normalization or not")
+	parser.add_argument(
+		"--window_size",
+		required = False,
+		type = float,
+		default = 10)
+	parser.add_argument(
+		"--shift_size",
+		required = False,
+		type = float,
+		default = 1)
+	parser.add_argument(
+		"--extract",
+		required = False,
+		type = str,
+		default = True)
+	parser.add_argument(
+		"--writing",
+		required = False,
+		type = str,
+		default = True,
+		help = "whether raw features need to be stored on the system or not")
+	parser.add_argument(
+		"--IPU_gap",
+		required = False,
+		type = float,
+		default = 50)
 
 args = parser.parse_args()
 
@@ -68,13 +114,6 @@ norm             = args.norm
 extract          = args.extract
 IPU_gap          = args.IPU_gap
 writing          = args.writing
-
-if window_size is None:
-	window_size = 10
-if shift_size is None:
-	shift_size = 1
-if norm == 'False':
-	norm = False
 
 print("Current audio file: %s " % (INPUT_audio), sys.stderr)
 
