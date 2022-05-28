@@ -91,9 +91,13 @@ def make_argument_parser():
         default=True,
         help="whether raw features need to be stored on the system or not.",
     )
-    parser.add_argument("--IPU_gap", required=False, type=float, default=50)
+    parser.add_argument("--IPU_gap",
+                        required=False,
+                        type=float,
+                        default=50)
     return parser
 parser = make_argument_parser()
+args = parser.parse_args()
 
 openSMILE = args.openSMILE
 CONFIG_openSMILE = args.openSMILE_config

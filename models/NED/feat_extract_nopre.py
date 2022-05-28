@@ -98,7 +98,8 @@ def make_argument_parser():
 		required = False,
 		type = float,
 		default = 50)
-
+	return parser
+parser = make_argument_parser()
 args = parser.parse_args()
 
 CONFIG_openSMILE = args.openSMILE_config
