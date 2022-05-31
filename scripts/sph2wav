@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+set -eu
+
+input_sph_file=$1
+output_wav_file=$2
+
+# Convert to .wav file
+sph2pipe -f rif $input_sph_file $output_wav_file
+
+# Check if 16k, else resample
+if [ ! $(sox --i -r $output_wav_file) == 16000 ]; then
+    resampled_wav_file=${output_wav_file/.wav/_resampled.wav}
+    sox $output_wav_file -b 16 -c 1 -r 16k $resampled_wav_file dither -s
+    mv $resampled_wav_file $output_wav_file
+fi
