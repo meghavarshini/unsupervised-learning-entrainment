@@ -10,6 +10,9 @@ CSV_FILES:= $(WAV_FILES:.wav=_features.csv)
 SPH2WAV=scripts/sph2wav
 
 # Recipe to convert .sph files to .wav files
+# The .INTERMEDIATE annotation makes it so that the .wav files are deleted when
+# they are not needed any longer.
+.INTERMEDIATE:
 build/%.wav: $(SPH2WAV) $(AUDIO_DIR_ROOT)/%.sph
 	@mkdir -p $(@D)
 	$^ $@
