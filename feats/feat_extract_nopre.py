@@ -1,12 +1,8 @@
-# ------------------------------------------------------------------------
-# Name : feat_extract_nopre.py
-# Author : Md Nasir
-# Date   : 05-04-18
-# Description : resample to 16k Hz, and run openSMILE to extract features
-# ------------------------------------------------------------------------
-
-from entrainment.config import *
 import os
+import csv
+import pandas as pd
+import numpy as np
+import argparse
 from subprocess import run, check_output
 
 # ------------------------------------------------------------------------
@@ -45,7 +41,7 @@ def make_argument_parser():
     return parser
 
 
-def final_feat_calculate(sample_index, all_raw_norm_feat):
+def final_feat_calculate(sample_index, all_raw_norm_feat, all_raw_feat_dim):
     whole_output_feat = np.array([], dtype=np.float32).reshape(
         0, all_raw_feat_dim * 6
     )
@@ -100,19 +96,16 @@ def func_calculate(input_feat_matrix):
     return output_feat
 
 
-if __name__ == "__main__":
-
-    parser = make_argument_parser()
-    args = parser.parse_args()
-
-    window_size = args.window_size
-    shift_size = args.shift_size
-    norm = args.norm
-    extract = args.extract
-    IPU_gap = args.IPU_gap
-    writing = args.writing
-
-    print("Current audio file: %s " % INPUT_audio, file=sys.stderr)
+def create_normed_features_csv(
+    raw_features_csv,
+    transcript,
+    window_size,
+    shift_size,
+    norm,
+    extract,
+    IPU_gap,
+    writing,
+):
 
     # ------------------------------------------------------------------------
     # load transcript timings
@@ -139,7 +132,7 @@ if __name__ == "__main__":
 
     # read csv feature file
     csv_feat = pd.read_csv(
-        csv_file_name, dtype=np.float32, on_bad_lines="warn"
+        args.raw_features_csv, dtype=np.float32, on_bad_lines="warn"
     )
     csv_feat = csv_feat.values.copy()
     print("feature array has the following shape: ", np.shape(csv_feat))
@@ -246,7 +239,7 @@ if __name__ == "__main__":
         intensity_de = intensity_de / int_de_mean
 
     intensity_de = np.reshape(intensity_de, (-1, 1))
-        # feat_idx = range(3,34) + range(37, 68)   with spectral de
+    # feat_idx = range(3,34) + range(37, 68)   with spectral de
     feat_idx = list(range(3, 34))
     mfcc_etc = np.copy(feat_data[:, feat_idx])
     if norm:
@@ -285,32 +278,43 @@ if __name__ == "__main__":
     # feature dimension
     all_raw_feat_dim = all_raw_norm_feat.shape[1]
 
-    whole_func_feat1 = final_feat_calculate(s1_list, all_raw_norm_feat)
-    whole_func_feat2 = final_feat_calculate(s2_list, all_raw_norm_feat)
+    whole_func_feat1 = final_feat_calculate(
+        s1_list, all_raw_norm_feat, all_raw_feat_dim
+    )
+    whole_func_feat2 = final_feat_calculate(
+        s2_list, all_raw_norm_feat, all_raw_feat_dim
+    )
     whole_func_feat = np.hstack((whole_func_feat1, whole_func_feat2))
 
     ##-----------------------------------------------------------------------
     ## normalization at whole session level, using scikit-learn
     ## -- for each feature 0 mean and 1 variance
     ##-----------------------------------------------------------------------
-    # norm_whole_func_feat = preprocessing.scale(whole_func_feat)
     # write to csv file
 
     if writing == True:
-        print("writing IPU-level features to file...")
-        if not os.path.exists(output_path):
-            os.makedirs(output_path)
-        # feat_csv_file_name = out_dir + '/' + basename(csv_file_name).split('.csv')[0] + '_IPU_func_feat.csv'
-        feat_csv_file_name = (
-            output_path
-            + "/"
-            + basename(csv_file_name).split(".csv")[0]
-            + "_IPU_func_feat.csv"
-        )
-        print("writing: ", feat_csv_file_name)
+        print(f"Writing IPU-level features to file {args.output_csv}")
+        feat_csv_file_name = args.output_csv
         with open(
-            feat_csv_file_name, "w"
+            args.output_csv, "w"
         ) as fcsv:  # changed 'wb' to 'w' to avoid TypeError
             writer = csv.writer(fcsv)
             writer.writerows(whole_func_feat)
         print("file ", feat_csv_file_name, " processed!")
+
+
+if __name__ == "__main__":
+
+    parser = make_argument_parser()
+    args = parser.parse_args()
+
+    create_normed_features_csv(
+        args.raw_features_csv,
+        args.transcript,
+        args.window_size,
+        args.shift_size,
+        args.norm,
+        args.extract,
+        args.IPU_gap,
+        args.writing,
+    )
