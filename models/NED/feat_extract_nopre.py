@@ -11,10 +11,6 @@ from subprocess import run, check_output
 
 np.set_printoptions(threshold=np.inf)
 
-# config_path = 'emobase2010_revised.conf'
-
-# feat_extract_MN.py --audio_file wav/fe_03_00001.sph -- --openSMILE_config emobase2010_revised.conf --output_path feats
-
 IPU_gap=50
 writing=True   # set True for getting functionals
 extract=True

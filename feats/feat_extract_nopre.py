@@ -261,6 +261,7 @@ sample_index = list(map(int, list((feat_data[:, 0]))))
 ##TODO Looks like this wasn't done by the author.
 # def turn_level_index(spk_list, sample_index):
 # '''generate indices for different turns'''
+# Assign column and row names, we can remove these later
 
 turn_level_index_list = []
 last_spk = "A"
@@ -271,12 +272,15 @@ for spch in spk_list:
     start = int(float(spch[0]) / 0.01)
     stop = int(float(spch[1]) / 0.01)
     spk = spch[2]
+    #ToDo: check if line 276 is always true, else change to check for empty list
     if not turn_level_index_list:
         turn_level_index_list = [sample_index[start:stop]]
         last_stop = stop
         continue
     if spk == last_spk:
         if start - last_stop < IPU_gap / 10:
+            #ToDo: need more print statements- here pring lenghs of turn_level_index_list before and after,
+            # and see what's being added
             turn_level_index_list[-1].extend(sample_index[start:stop])
 
         else:
@@ -284,6 +288,7 @@ for spch in spk_list:
                 if gap_found:
                     turn_level_index_list[-1] = sample_index[start:stop]
                 else:
+                    #if gap found, it overwrites with sample index. Why tho?
                     turn_level_index_list.append(sample_index[start:stop])
 
             else:
