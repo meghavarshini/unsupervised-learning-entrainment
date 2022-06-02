@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# This script converts a .sph file to a .wav file. If the .wav file is not
+# 16KHz, it resamples to 16KHz.
 set -eu
 
 input_sph_file=$1
