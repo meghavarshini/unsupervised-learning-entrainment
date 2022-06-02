@@ -1,4 +1,4 @@
-from entrainment_config import *
+from entrainment.config import *
 # -------------------------------------------------------- 
 #only used once for reading kaldi ivector
 create_pkl = True

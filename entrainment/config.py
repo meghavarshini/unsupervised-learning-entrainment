@@ -34,29 +34,23 @@ from sklearn.preprocessing import normalize
 from scipy import spatial
 
 ### ABSOLUTE FILEPATHS FOR INPUT#####
-# print(sys.path)
 
-###############################
-# Speech feature extraction tools
-###############################
-opensmile = "/Users/meghavarshinikrishnaswamy/github/tomcat-speech/external/opensmile-3.0/bin/SMILExtract"
-sph2pipe = "/Users/meghavarshinikrishnaswamy/github/sph2pipe/sph2pipe" #clone this
-
+## EDIT THE FOLLOWING LINE TO SET THE DIRECTORY FOR THE FISHER CORPUS
+fisher_corpus = "/media/mule/projects/ldc/corpus/" # master directory
+##
 
 ###############################
 # Files in the Fisher Directory
 ###############################
 
-		## EDIT THE FOLLOWING LINE TO SET THE DIRECTORY FOR THE FISHER CORPUS
-fisher_corpus = "/Users/meghavarshinikrishnaswamy/Downloads/Fisher_corpus" # master directory
 transcript_dir = fisher_corpus + "/fe_03_p1_tran/data/trans/all_trans" #directory that hourses all transcript files in one directory (no subdirectories)
 audio_dir_root = fisher_corpus + "/fisher_eng_tr_sp_LDC2004S13_zip" #directory for sphere sound files
 fisher_meta = fisher_corpus + "/Fisher_meta.csv" #metafile, create this before running anything else
-
-		## Sample files for testing things
+#
+# 		## Sample files for testing things
 def_wav = fisher_corpus + "/" + audio_dir_root + "/fisher_eng_tr_sp_d1/audio/000/fe_03_00004.sph" #example sound file
 def_audio = fisher_corpus + "/" + audio_dir_root + "/fisher_eng_tr_sp_d1/audio" #audio subdirectory that houses the sphere file subdirectories
-
+#
 
 ###############################
 # OUTPUT FILES
@@ -78,51 +72,15 @@ ivec_scp = fisher_corpus + "/Fisher_ivector/exp/ivectors_train/ivector.scp"
 model_path = fisher_corpus + "/workspace/acoustic/triplet/fisher/trained_models"
 work_dir = fisher_corpus + "/workspace/acoustic/NED_ecdc"
 temp_testfile = os.getcwd() + "/models/NED/data/tmp.csv"
-fdset = os.getcwd() + "data/train_Fisher_nonorm.h5"
-temp_testfile = os.getcwd() + "data/tmp.csv"
-model_name = os.getcwd() + "models/trained_VAE_nonorm_nopre_l1.pt"
+fdset = os.getcwd() + "/data/train_Fisher_nonorm.h5"
+temp_testfile = os.getcwd() + "/data/tmp.csv"
+model_name = os.getcwd() + "/models/trained_VAE_nonorm_nopre_l1.pt"
 
+# do you want to save dataset files?
+save_dataset = False
 
-opensmile_config = opensmile + "/config/emobase/emobase2010.conf"
-config_path = os.getcwd() +"/feats/emobase2010_mod.conf" #this file exists in repository
-# DEBUG = False # no saving of files; output in the terminal; first random seed from the list
-
-
-###############################
-# ARGPARSE COMMANDS
-###############################
-
-parser = argparse.ArgumentParser(description='Process some integers.')
-parser.add_argument('--audio_file', type=str, required=False, default=def_wav,
-					help='File path of the input audio file')
-parser.add_argument('--openSMILE', type=str, required=False, default=opensmile,
-					help='openSMILE path')
-parser.add_argument('--openSMILE_config', type=str, required=False, default=opensmile_config,
-					help='config file of openSMILE')
-parser.add_argument('--output_path', type=str, required=False, default=feats_dir,
-					help='output folder path')
-parser.add_argument('--norm', type=str, required=False, default=True,
-					help='do session level normalization or not')
-parser.add_argument('--window_size', required=False, type=float, default=None)
-parser.add_argument('--shift_size', required=False, type=float, default=1)
-
-args = parser.parse_args()
-
-CONFIG_openSMILE = args.openSMILE_config
-openSMILE		 =	args.openSMILE
-INPUT_audio      = args.audio_file
-OUTPUT_path      = args.output_path
-
-window_size      = args.window_size
-shift_size       = args.shift_size
-norm             = args.norm
-
-
-# # do you want to save dataset files?
-# save_dataset = False
-#
-# # do you want to load pre-saved dataset files?
-# load_dataset = True
+# do you want to load pre-saved dataset files?
+load_dataset = True
 
 # get this file's path to save a copy
 CONFIG_FILE = os.path.abspath(__file__)

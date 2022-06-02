@@ -4,17 +4,22 @@ test_data
 .idea/
 */.DS_Store
 entrainment_config.pyc
+*/__pycache__/
 
 # Kaldi files:
- models/triplet/prep/segments
- models/triplet/prep/utt2spk
- models/triplet/prep/wav.scp
- models/NED/data/
- models/triplet/prep/file2line
- feats/data/
+ models/triplet/prep/data
+ models/NED/data
+ feats/data
+ feats/model
+ models/NED/models
+ models/triplet/train/models
+.venv
 
-
+*.DS_Store
 *.csv
 *.wav
 *.mp3
 *.txt
+*.pt
+*.h5
+*.egg-info

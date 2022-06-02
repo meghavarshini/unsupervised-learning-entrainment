@@ -1,4 +1,4 @@
-from entrainment_config import *
+from entrainment.config import *
 # from aeent import *
 model_name = model_name
 SEED=448
@@ -21,13 +21,13 @@ if args.cuda:
     torch.cuda.manual_seed(args.seed)
 
 
-
-hff = h5py.File('data/test_Fisher_nonorm_nopre.h5', 'r')
+hff = h5py.File('data/test_Fisher_nonorm.h5', 'r')
+# hff = h5py.File('data/test_Fisher_nonorm_nopre.h5', 'r')
 X_test = np.array(hff['dataset'])
 
 
 
-
+##NameError: name 'VAE' is not defined
 model = VAE().double()
 
 

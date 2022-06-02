@@ -1,4 +1,4 @@
-from entrainment_config import *
+from entrainment.config import *
 SEED=448
 frac_train = 0.8
 frac_val = 0.1
@@ -7,10 +7,29 @@ frac_val = 0.1
 
 data_dir_triplets = data_dir_triplets
 #####ToDo: figure out how the files in directory below are generated #####
-sessList= sorted(glob.glob(data_dir_triplets + '/*.csv'))
-print(sessList)
-random.seed(SEED)
-random.shuffle(sessList)
+# sessList= sorted(glob.glob(data_dir_triplets + '/*.csv'))
+#
+# print(sessList)
+# random.seed(SEED)
+# random.shuffle(sessList)
+sess_files = os.path.isfile("data/sessList.txt")
+if sess_files == 1:
+	with open("data/sessList.txt", 'r') as f:
+		temp = f.read().splitlines()
+		if len(temp) == len(sorted(glob.glob(feats_dir + '/*.csv'))):
+			print("list of shuffled files exists, importing...")
+			sessList = temp
+else:
+	sessList= sorted(glob.glob(feats_dir + '/*.csv'))
+	print("creating a list of shuffled feature files and saving to disk...")
+	# print("sessList", sessList)
+	random.seed(SEED)
+	random.shuffle(sessList)
+	with open("data/sessList.txt", 'w') as f:
+		f.writelines( "%s\n" % i for i in sessList)
+
+	with open("data/sessList.txt", 'r') as f:
+		sessList = f.read().splitlines()
 
 num_files_all = len(sessList)
 num_files_train = int(np.ceil((frac_train*num_files_all)))

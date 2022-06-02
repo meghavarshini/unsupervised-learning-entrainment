@@ -1,4 +1,4 @@
-from entrainment_config import *
+from entrainment.config import *
 
 SEED=448
 frac_train = 0.8

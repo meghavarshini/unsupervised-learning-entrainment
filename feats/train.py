@@ -1,9 +1,13 @@
 # from aeent import *
-from entrainment_config import *
 from ecdc import *
 #------------------------------------------------------------------
-#Uncomment for parsing inputs
 
+print(model_name)
+if os.path.exists(model_name):
+    print("model file available for update: ", model_name)
+else:
+    print("model file not found")
+#Uncomment for parsing inputs
 parser = argparse.ArgumentParser(description='VAE MNIST Example')
 parser.add_argument('--batch-size', type=int, default=128, metavar='N',
 	help='input batch size for training (default: 128)')
@@ -61,7 +65,9 @@ def train(epoch):
         recon_batch = model(data)
         loss = loss_function(recon_batch, y_data)
         loss.backward()
-        train_loss += loss.data[0]
+        print("loss data: ",loss.data)
+        train_loss += loss.data
+        # train_loss += loss.data[0]
         optimizer.step()
         # if batch_idx % args.log_interval == 0:
             # print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
@@ -74,7 +80,8 @@ def train(epoch):
 
     return train_loss
 
-
+#Lines 88,89 depreciated
+# https://stackoverflow.com/questions/61720460/volatile-was-removed-and-now-had-no-effect-use-with-torch-no-grad-instread
 def validate(epoch):
     model.eval()
     val_loss = 0
@@ -82,10 +89,13 @@ def validate(epoch):
         if args.cuda:
             data = data.cuda()
             y_data = y_data.cuda()
-        data = Variable(data, volatile=True)
-        y_data = Variable(y_data, volatile=True)
+        # data = Variable(data, volatile=True)
+        # y_data = Variable(y_data, volatile=True)
+        data = Variable(data)
+        y_data = Variable(y_data)
         recon_batch = model(data)
-        val_loss += loss_function(recon_batch, y_data).data[0]
+        val_loss += loss_function(recon_batch, y_data).data
+        # val_loss += loss_function(recon_batch, y_data).data[0]
 
     val_loss /= len(val_loader.dataset)
     print(('====> Validation set loss: {:.4f}'.format(val_loss)))
@@ -97,6 +107,7 @@ Vloss =[]
 best_loss=np.inf
 print("This is Sparta!!")
 
+# for epoch in range(1, 3):
 for epoch in range(1, args.epochs + 1):
     tloss = train(epoch)
     vloss = validate(epoch)
@@ -105,4 +116,5 @@ for epoch in range(1, args.epochs + 1):
     if vloss < best_loss:
         best_loss = vloss
         best_epoch = epoch
-        torch.save(model, 'models/trained_VAE_nonorm_l1_30dim.pt')
+        print("epoch: ", vloss, "epoch: ", epoch)
+        torch.save(model, model_name)
