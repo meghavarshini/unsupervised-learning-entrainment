@@ -30,7 +30,7 @@ def make_argument_parser():
     parser = argparse.ArgumentParser(description="Processing filepaths and values required for setup")
 
 	parser.add_argument(
-		"--audio_file"",
+		"--audio_file",
 		type = str,
 		required = False,
 		#default = def_wav,
@@ -38,7 +38,8 @@ def make_argument_parser():
 	parser.add_argument(
 		"--transcript_dir",
 		type = str,
-		required = True, #default=transcript_dir,
+		required = True,
+		#default=transcript_dir,
 		help = "File path of the directory with all transcripts")
 	parser.add_argument(
 		"--openSMILE",
@@ -49,7 +50,8 @@ def make_argument_parser():
 	parser.add_argument(
 		"--openSMILE_config",
 		type = str,
-		required = False, #default=opensmile_config,
+		required = False,
+		#default=opensmile_config,
 		help = "config file of openSMILE")
 	parser.add_argument(
 		"--output_path",
@@ -82,7 +84,8 @@ def make_argument_parser():
 		"--extract",
 		required = False,
 		type = str,
-		default = True)
+		default = True,
+		help = "whether raw features need to be extracted using OpenSMILE or not")
 	parser.add_argument(
 		"--writing",
 		required = False,

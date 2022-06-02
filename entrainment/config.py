@@ -37,6 +37,7 @@ from scipy import spatial
 
 ## EDIT THE FOLLOWING LINE TO SET THE DIRECTORY FOR THE FISHER CORPUS
 fisher_corpus = "/media/mule/projects/ldc/corpus/" # master directory
+fisher_corpus = "/Users/meghavarshinikrishnaswamy/Downloads/Fisher_sample" # master directory
 ##
 
 ###############################

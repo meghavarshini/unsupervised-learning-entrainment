@@ -26,13 +26,15 @@ def make_argument_parser():
     parser.add_argument(
         "--audio_file",
         type=str,
-        required=True,  # default=def_wav,
+        required=True,
+        default=def_wav,
         help="File path of the input audio file",
     )
     parser.add_argument(
         "--transcript_dir",
         type=str,
-        required=True,  # default=transcript_dir,
+        required=True,
+        default=transcript_dir,
         help="File path of the directory with all transcripts",
     )
     parser.add_argument(
@@ -45,21 +47,22 @@ def make_argument_parser():
     parser.add_argument(
         "--openSMILE_config",
         type=str,
-        required=False,  # default=opensmile_config,
+        required=False,
+        default=opensmile_config,
         help="config file of openSMILE",
     )
     parser.add_argument(
         "--output_path",
         type=str,
         required=True,
-        # default=feats_dir,
+        default=feats_dir,
         help="output directory for IPU level normalised features",
     )
     parser.add_argument(
         "--feat_dir",
         type=str,
         required=True,
-        # default=raw_feat_dir,
+        default=raw_feat_dir,
         help="path to store acoustic features per .sph file, before normalisation",
     )
     parser.add_argument(
@@ -91,11 +94,14 @@ def make_argument_parser():
         default=True,
         help="whether raw features need to be stored on the system or not.",
     )
-    parser.add_argument("--IPU_gap",
-                        required=False,
-                        type=float,
-                        default=50)
+    parser.add_argument(
+        "--IPU_gap",
+        required=False,
+        type=float,
+        default=50)
+
     return parser
+
 parser = make_argument_parser()
 args = parser.parse_args()
 
@@ -116,9 +122,8 @@ writing = args.writing
 print("Current audio file: %s " % INPUT_audio, file=sys.stderr)
 
 # ----------------------------------------------------------------
-# ---------------------------------------------------------------------
 # check if file is wav or not
-# ---------------------------------------------------------------------
+# -----------------------------------------------------------------
 
 if extract:
     not_wav = False
