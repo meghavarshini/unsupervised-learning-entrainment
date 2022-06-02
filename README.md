@@ -2,7 +2,8 @@
 Software supporting "Modeling Vocal Entrainment in Conversational Speech using Deep Unsupervised Learning"
 ------------------------------------------------------------------------------------------
 
-written by Md Nasir (modified for Python3 by Megh Krishnaswamy)
+original code by Md Nasir 
+Modified for Python3 by Megh Krishnaswamy and Adarsh Pyrelal
 
 
 #### Updated on Apr 8, 2022 (Work in Progress)
@@ -30,29 +31,35 @@ Summary of directories and files
 ------------------------
 Files that need to be edited by user to add filepaths:
 --------------------------------
-
-- `entrainment_config.py`
-- `feats/run_all_nopre.sh`
-- `models/NED/run_all_nopre.sh`
+ToDo- edit this with latest files
+- ~~`entrainment_config.py`
+- ~~`feats/run_all_nopre.sh`
+- ~~`models/NED/run_all_nopre.sh`
 
 ------------------------
 Start Point:
 ------------------------
+ToDo- edit this for instructions for the makefile
+
 1. Setup and activate virtual environment
 2. Run `pip install -e .`
-1. Download and set-up the LDC data, and access/create `Fisher_meta.csv`
+1. To run the code on your system, download and set-up the LDC data, and access/create `Fisher_meta.csv`
     -   `scp -r [username]@kraken.sista.arizona.edu:/media/mule/projects/ldc [local directory]`
-2. Ensure you have installed all required python libraries
-3. Edit `entrainment_config.py`, `feats/run_all_nopre.sh` and `models/NED/run_all_nopre.sh` with relevant filepaths
-4. Run `feats/run_all_nopre.sh` and `models/NED/run_all_nopre.sh` to extract OpenSMILE features for all sound files
+1. Add a step for setup.py, wheel and installing requirements   
+2. ~~Ensure you have installed all required python libraries
+3. ~~Edit `entrainment_config.py`, `feats/run_all_nopre.sh` and `models/NED/run_all_nopre.sh` with relevant filepaths
+4. ~~Run `feats/run_all_nopre.sh` and `models/NED/run_all_nopre.sh` to extract OpenSMILE features for all sound files
 5. Run `models/triplet/prep/create_kaldi_files.py` to extract Kaldi files
 6. Open feats directory to follow the steps for modelling
 
 ------------------------
 Permissions:
 ------------------------
+ToDo- edit this to reflect the new files
 Make sure the following directories/files have permissions:
 1. chmod 777 feats
-2. chmod 777 feats/emobase2010_haoqi_revised.conf
-3. chmod 755 feats/run_all_nopre.sh
-4. chmod 755 models/NED/run_all_nopre.sh
+2. chmod 777 model/NED
+3. chmod 777 feats/emobase2010_haoqi_revised.conf
+4. chmod 777 models/NED/emobase2010_revised.conf
+~~3. chmod 755 feats/run_all_nopre.sh
+~4. chmod 755 models/NED/run_all_nopre.sh
