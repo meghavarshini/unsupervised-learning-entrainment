@@ -5,7 +5,7 @@
 # Parameters
 # ----------
 # Location of the corpus (transcripts + sound files)
-CORPUS=/media/mule/projects/ldc/Fisher_sample
+CORPUS=/media/mule/projects/ldc/fisher-corpus
 
 # Location of the corpus sound files 
 AUDIO_DIR_ROOT=$(CORPUS)/fisher_eng_tr_sp_LDC2004S13_zip
