@@ -24,7 +24,7 @@ SPH_FILES:= $(shell find $(AUDIO_DIR_ROOT) -type f -name '*.sph')
 
 # Replace .sph suffix with .wav suffix, then replace AUDIO_DIR_ROOT with feat_files
 # (output files will go into the feat_files folder).
-WAV_FILES:= $(patsubst $(AUDIO_DIR_ROOT)%, feat_files%, $(SPH_FILES:.sph=.wav))
+WAV_FILES:= $(patsubst $(AUDIO_DIR_ROOT)%, temp%, $(SPH_FILES:.sph=.wav))
 
 # Construct file names for raw CSV files
 BASELINE_RAW_CSV_FILES:= $(WAV_FILES:.wav=_features_raw_baseline.csv)
@@ -39,11 +39,11 @@ NED_NORMED_CSV_FILES:= $(WAV_FILES:.wav=_features_normed_ned.csv)
 all: $(BASELINE_NORMED_CSV_FILES)
 
 # Recipe to convert .sph files to .wav files
-feat_files/%.wav: scripts/sph2wav $(AUDIO_DIR_ROOT)/%.sph
+temp/%.wav: scripts/sph2wav $(AUDIO_DIR_ROOT)/%.sph
 	@mkdir -p $(@D)
 	$^ $@
 
-feat_files/%_features_raw_baseline.csv: feat_files/%.wav
+temp/%_features_raw_baseline.csv: temp/%.wav
 	SMILExtract -C $(OPENSMILE_CONFIG_BASELINE) -I $< -O $@
 
 #feat_files/%_features_raw_ned.csv: feat_files/%.wav
@@ -52,8 +52,8 @@ feat_files/%_features_raw_baseline.csv: feat_files/%.wav
 # We define the special target .SECONDEXPANSION in order to handle expansions
 # in prerequisites ($$).
 .SECONDEXPANSION:
-feat_files/%_features_normed_baseline.csv: feats/feat_extract_nopre.py\
-							 feat_files/%_features_raw_baseline.csv\
+temp/%_features_normed_baseline.csv: feats/feat_extract_nopre.py\
+							 temp/%_features_raw_baseline.csv\
 							 $(TRANSCRIPT_DIR)/$$(notdir %).txt
 	$^ $@
 
