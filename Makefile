@@ -22,9 +22,9 @@ TRANSCRIPT_DIR=$(CORPUS)/fe_03_p1_tran/data/trans/all_trans
 # Find all .sph files recursively inside AUDIO_DIR_ROOT
 SPH_FILES:= $(shell find $(AUDIO_DIR_ROOT) -type f -name '*.sph')
 
-# Replace .sph suffix with .wav suffix, then replace AUDIO_DIR_ROOT with build
-# (output files will go into the build folder).
-WAV_FILES:= $(patsubst $(AUDIO_DIR_ROOT)%, build%, $(SPH_FILES:.sph=.wav))
+# Replace .sph suffix with .wav suffix, then replace AUDIO_DIR_ROOT with feat_files
+# (output files will go into the feat_files folder).
+WAV_FILES:= $(patsubst $(AUDIO_DIR_ROOT)%, feat_files%, $(SPH_FILES:.sph=.wav))
 
 # Construct file names for raw CSV files
 BASELINE_RAW_CSV_FILES:= $(WAV_FILES:.wav=_features_raw_baseline.csv)
@@ -38,28 +38,29 @@ NED_NORMED_CSV_FILES:= $(WAV_FILES:.wav=_features_normed_ned.csv)
 all: $(NED_NORMED_CSV_FILES) $(BASELINE_NORMED_CSV_FILES)
 
 # Recipe to convert .sph files to .wav files
-build/%.wav: scripts/sph2wav $(AUDIO_DIR_ROOT)/%.sph
+feat_files/%.wav: scripts/sph2wav $(AUDIO_DIR_ROOT)/%.sph
 	@mkdir -p $(@D)
 	$^ $@
 
-build/%_features_raw_baseline.csv: build/%.wav
+feat_files/%_features_raw_baseline.csv: feat_files/%.wav
 	SMILExtract -C $(OPENSMILE_CONFIG_BASELINE) -I $< -O $@
 
-build/%_features_raw_ned.csv: build/%.wav
-	SMILExtract -C $(OPENSMILE_CONFIG_NED) -I $< -O $@
+#feat_files/%_features_raw_ned.csv: feat_files/%.wav
+#	SMILExtract -C $(OPENSMILE_CONFIG_NED) -I $< -O $@
 
 # We define the special target .SECONDEXPANSION in order to handle expansions
 # in prerequisites ($$).
 .SECONDEXPANSION:
-build/%_features_normed_baseline.csv: feats/feat_extract_nopre.py\
-							 build/%_features_raw_baseline.csv\
+feat_files/%_features_normed_baseline.csv: feats/feat_extract_nopre.py\
+							 feat_files/%_features_raw_baseline.csv\
 							 $(TRANSCRIPT_DIR)/$$(notdir %).txt
 	$^ $@
 
 # We define the special target .SECONDEXPANSION in order to handle expansions
 # in prerequisites ($$).
-.SECONDEXPANSION:
-build/%_features_normed_ned.csv: feats/feat_extract_nopre.py\
-							 build/%_features_raw_ned.csv\
-							 $(TRANSCRIPT_DIR)/$$(notdir %).txt
-	$^ $@
+
+#.SECONDEXPANSION:
+#feat_files/%_features_normed_ned.csv: feats/feat_extract_nopre.py\
+#							 feat_files/%_features_raw_ned.csv\
+#							 $(TRANSCRIPT_DIR)/$$(notdir %).txt
+#	$^ $@

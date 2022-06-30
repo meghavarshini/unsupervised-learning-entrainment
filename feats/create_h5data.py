@@ -1,4 +1,6 @@
-from entrainment.config import *
+from os import path
+from glob import glob
+feats_dir = "../"
 
 SEED=448
 frac_train = 0.8
@@ -8,7 +10,7 @@ frac_val = 0.1
 # h5 files, the same randomized list of feature files is called, thus saving time and effort.
 # Comment out 13-30 and uncomment 33-35 if you wish to avoid saving the file list.
 # Create h5 files
-sess_files = os.path.isfile("data/sessList.txt")
+sess_files = path.isfile("data/sessList.txt")
 if sess_files == 1:
 	with open("data/sessList.txt", 'r') as f:
 		temp = f.read().splitlines()
@@ -16,7 +18,7 @@ if sess_files == 1:
 			print("list of shuffled files exists, importing...")
 			sessList = temp
 else:
-	sessList= sorted(glob.glob(feats_dir + '/*.csv'))
+	sessList= sorted(glob(feats_dir + '/*.csv'))
 	print("creating a list of shuffled feature files and saving to disk...")
 	# print("sessList", sessList)
 	random.seed(SEED)
