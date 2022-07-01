@@ -42,8 +42,8 @@ def split_files(feats_dir,sess_List= None):
 		# print("sessList", sessList)
 		random.seed(SEED)
 		random.shuffle(sessList)
-                f_ran = Path("data/sessList.txt") 
-                f_ran.touch(exist_ok=True)
+		f_ran = Path("data/sessList.txt")
+		f_ran.touch(exist_ok=True)
 		with open(f_ran, 'w') as f:
 			f.writelines( "%s\n" % i for i in sessList)
 
