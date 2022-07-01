@@ -1,5 +1,6 @@
 from os import path
 from glob import glob
+from pathlib import Path
 import argparse
 import random
 import numpy as np
@@ -41,7 +42,9 @@ def split_files(feats_dir,sess_List= None):
 		# print("sessList", sessList)
 		random.seed(SEED)
 		random.shuffle(sessList)
-		with open("data/sessList.txt", 'w') as f:
+                f_ran = Path("data/sessList.txt") 
+                f_ran.touch(exist_ok=True)
+		with open(f_ran, 'w') as f:
 			f.writelines( "%s\n" % i for i in sessList)
 
 		with open("data/sessList.txt", 'r') as f:
