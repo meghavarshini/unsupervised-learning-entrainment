@@ -42,13 +42,11 @@ def split_files(feats_dir,sess_List= None):
 		# print("sessList", sessList)
 		random.seed(SEED)
 		random.shuffle(sessList)
-		f_ran = Path("data/sessList.txt")
-		f_ran.touch(exist_ok=True)
-		with open(f_ran, 'w') as f:
+		with open("./data/sessList.txt", 'w') as f:
 			f.writelines( "%s\n" % i for i in sessList)
 
-		with open("data/sessList.txt", 'r') as f:
-			sessList = f.read().splitlines()
+		with open("./data/sessList.txt", 'r') as f:
+                	sessList = f.read().splitlines()
 
 	#Alternative to 13-30:
 	# sessList= sorted(glob.glob(feats_dir + '/*.csv'))
@@ -233,7 +231,7 @@ if __name__ == "__main__":
 	frac_train = 0.8
 	frac_val = 0.1
 
-	tr, v, te = split_files(feats_dir=args.features_dir, sess_List="data/sessList.txt")
+	tr, v, te = split_files(feats_dir=args.features_dir, sess_List="./data/sessList.txt")
 	create_train(tr)
 	create_val(v)
 	create_Test(te)
