@@ -26,7 +26,6 @@ def split_files(feats_dir,sess_List= None):
 			# print(temp)
 			# print(sorted(glob(feats_dir + '/*.csv')))
 			print(len(temp), len(sorted(glob(feats_dir + '/*.csv'))))
-			print([x for x in sorted(glob(feats_dir + '/*.csv')) if x not in temp])
 			if len(temp) == len(sorted(glob(feats_dir + '/*.csv'))):
 				print("list of shuffled files exists, importing...")
 				sessList = temp
