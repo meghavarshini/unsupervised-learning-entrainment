@@ -6,13 +6,15 @@ test_data
 entrainment_config.pyc
 */__pycache__/
 
-# Kaldi files:
- models/triplet/prep/data/
- models/NED/data
- feats/data
- feats/model
- models/NED/models
- models/triplet/train/models
+# Output data files:
+models/triplet/prep/data
+models/triplet/prep/data/
+models/NED/data
+feats/data
+
+feats/model
+models/NED/models
+models/triplet/train/models
 .venv
 
 *.DS_Store

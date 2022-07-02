@@ -1,5 +1,5 @@
 from entrainment.config import *
-
+import h5py
 SEED=448
 frac_train = 0.8
 frac_val = 0.1

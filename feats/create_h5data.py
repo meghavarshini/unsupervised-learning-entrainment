@@ -5,6 +5,7 @@ import argparse
 import random
 import numpy as np
 import pandas as pd
+import h5py
 
 def make_argument_parser():
 	parser = argparse.ArgumentParser(
