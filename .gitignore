@@ -7,7 +7,7 @@ entrainment_config.pyc
 */__pycache__/
 
 # Kaldi files:
- models/triplet/prep/data
+ models/triplet/prep/data/
  models/NED/data
  feats/data
  feats/model
