@@ -25,3 +25,6 @@ models/triplet/train/models
 *.pt
 *.h5
 *.egg-info
+*.scp
+*.h5
+*.pt
