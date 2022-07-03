@@ -1,9 +1,7 @@
 import argparse
 import csv
 from os import listdir
-from glob import glob
 from pathlib import Path
-
 
 def make_argument_parser():
 	#ToDo: add kraken defaults

@@ -1,11 +1,11 @@
 from os import path
 from glob import glob
-from pathlib import Path
 import argparse
 import random
 import numpy as np
 import pandas as pd
-import h5py
+import math
+
 
 def make_argument_parser():
 	parser = argparse.ArgumentParser(
@@ -110,7 +110,7 @@ def create_val(sessVal):
 	return None
 
 #### Create Test Data file ####
-def create_Test(sessTest):
+def create_test(sessTest):
 	spk_base = 1
 	X_test =np.array([])
 	for sess_file in sessTest:
@@ -232,6 +232,6 @@ if __name__ == "__main__":
 	frac_val = 0.1
 
 	tr, v, te = split_files(feats_dir=args.features_dir, sess_List="./data/sessList.txt")
-	create_train(tr)
-	create_val(v)
-	create_Test(te)
+	# create_train(tr)
+	# create_val(v)
+	create_test(te)
