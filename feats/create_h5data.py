@@ -1,5 +1,6 @@
 from os import path
 from glob import glob
+import h5py
 import argparse
 import random
 import numpy as np
@@ -98,7 +99,7 @@ def create_val(sessVal):
 		df_i = pd.read_csv(sess_file)
 		xx = np.array(df_i)
 		X_val = np.vstack([X_val, xx]) if X_val.size else xx
-		print(sess_file, "examined and training array created")
+		print(sess_file, "examined and validation array created")
 	print(X_val.shape)
 	X_val = X_val.astype('float64')
 	hf = h5py.File('data/val_Fisher_nonorm.h5', 'w')
@@ -128,7 +129,7 @@ def create_test(sessTest):
 			spk_label = np.tile([spk_base, spk_base+1], [1, math.floor(N/2)])
 			spk_label = np.append(spk_label, spk_base)
 		xx = np.hstack((xx, spk_label.T.reshape([N,1])))
-		print(sess_file, "examined and training array created")
+		print(sess_file, "examined and test array created")
 		X_test=np.vstack([X_test, xx]) if X_test.size else xx
 		spk_base += 1
 		# print(X_test[:10])
