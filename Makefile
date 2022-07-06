@@ -36,7 +36,7 @@ BASELINE_NORMED_CSV_FILES:= $(WAV_FILES:.wav=_features_normed_baseline.csv)
 # NED_NORMED_CSV_FILES:= $(WAV_FILES:.wav=_features_normed_ned.csv)
 
 # all: $(NED_NORMED_CSV_FILES) $(BASELINE_NORMED_CSV_FILES)
-all: $(BASELINE_NORMED_CSV_FILES)
+all: $(firstword $(BASELINE_NORMED_CSV_FILES))
 
 # Recipe to convert .sph files to .wav files
 feat_files/%.wav: scripts/sph2wav $(AUDIO_DIR_ROOT)/%.sph
