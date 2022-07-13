@@ -36,12 +36,12 @@ if args.cuda:
 # dataset=f['dataset']
 
 
-fdset = EntDataset(args.data_directory + "train_Fisher_nonorm.h5")
+fdset = EntDataset(args.data_directory + "/" + "train_Fisher_nonorm.h5")
 
 train_loader = torch.utils.data.DataLoader(fdset, batch_size=128, shuffle=True)
 
 
-fdset_val = EntDataset(args.data_directory + "val_Fisher_nonorm.h5")
+fdset_val = EntDataset(args.data_directory + "/" + "val_Fisher_nonorm.h5")
 
 val_loader = torch.utils.data.DataLoader(fdset_val, batch_size=128, shuffle=True)
 

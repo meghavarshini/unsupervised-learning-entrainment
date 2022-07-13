@@ -18,7 +18,7 @@ def make_argument_parser():
 						default = "/media/mule/projects/ldc/fisher-corpus/Fisher_meta.csv",
 						help="location of metadata file")
 	parser.add_argument("-sph2pipe",
-						default = "/../../scripts/sph2wav",
+						default = "/../../../scripts/sph2wav",
 						help="location of sph2pipe software")
 	return parser
 
