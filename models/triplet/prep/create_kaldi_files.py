@@ -76,9 +76,9 @@ if __name__ == "__main__":
 	args = parser.parse_args()
 
 
-	wavscp = open("./data/wav.scp", "a" if path.is_file("./data/wav.scp") else "w")
-	segments = open("./data/segments", "a" if path.is_file("./data/segments") else "w")
-	utt2spk = open("./data/utt2spk", "a" if path.is_file("./data/utt2spk") else "w")
+	wavscp = open("./data/wav.scp", "a" if Path.is_file("./data/wav.scp") else "w")
+	segments = open("./data/segments", "a" if Path.is_file("./data/segments") else "w")
+	utt2spk = open("./data/utt2spk", "a" if Path.is_file("./data/utt2spk") else "w")
 	print("output files created...")
 
 	metaf = create_meta_dict(args.meta_file)
