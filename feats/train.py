@@ -8,6 +8,8 @@ else:
     print("model file not found")
 #Uncomment for parsing inputs
 parser = argparse.ArgumentParser(description='VAE MNIST Example')
+parser.add_argument('--data_directory', type=str, default="/home/tomcat/entrainment/feat_files/data",
+	help='location of h5 files')
 parser.add_argument('--batch-size', type=int, default=128, metavar='N',
 	help='input batch size for training (default: 128)')
 parser.add_argument('--epochs', type=int, default=10, metavar='N',
@@ -34,12 +36,12 @@ if args.cuda:
 # dataset=f['dataset']
 
 
-fdset = EntDataset('data/train_Fisher_nonorm.h5')
+fdset = EntDataset(args.data_directory + "train_Fisher_nonorm.h5")
 
 train_loader = torch.utils.data.DataLoader(fdset, batch_size=128, shuffle=True)
 
 
-fdset_val = EntDataset('data/val_Fisher_nonorm.h5')
+fdset_val = EntDataset(args.data_directory + "val_Fisher_nonorm.h5")
 
 val_loader = torch.utils.data.DataLoader(fdset_val, batch_size=128, shuffle=True)
 
