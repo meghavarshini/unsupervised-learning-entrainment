@@ -7,7 +7,7 @@ from typing import Dict
 
 
 def make_argument_parser():
-    parser = argparse.ArgumentParser(description="Create real and fake data")
+    parser = ArgumentParser(description="Create real and fake data")
     parser.add_argument("input_files", help="input files", nargs="+")
     return parser
 
