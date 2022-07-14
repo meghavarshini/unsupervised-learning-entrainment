@@ -75,6 +75,9 @@ if __name__ == "__main__":
 	parser = make_argument_parser()
 	args = parser.parse_args()
 
+	Path("./data/wav.scp").touch(exist_ok=True)
+	Path("./data/segments").touch(exist_ok=True)
+	Path("./data/utt2spk").touch(exist_ok=True)
 
 	wavscp = open("./data/wav.scp", "w")
 	segments = open("./data/segments", "w")
