@@ -13,13 +13,14 @@ def make_argument_parser():
 
 def create_sessions_dict(data_dir: str):
 
-    SEED = 448
+    # Set random seed for reproducibility purposes
+    seed = 448
     frac_train = 0.8
     frac_val = 0.1
     session_list = sorted(glob(data_dir + "/*.csv"))
 
     # Set random seed
-    random.seed(SEED)
+    random.seed(seed)
     random.shuffle(session_list)
 
     num_files_all = len(session_list)
@@ -88,8 +89,8 @@ def create_test_file(sessions: Dict, dataset_type: str):
 
 
 def create_data_files(sessions, dataset_type: str):
-    create_data_file(sessions, "train", dataset_type)
-    create_data_file(sessions, "val", dataset_type)
+    for split in ("train", "val"):
+        create_data_file(sessions, split, dataset_type)
     create_test_data_file(sessions, dataset_type)
 
 
