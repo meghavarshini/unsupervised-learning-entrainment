@@ -29,7 +29,6 @@ torch.manual_seed(args.seed)
 if args.cuda:
     torch.cuda.manual_seed(args.seed)
 
-
 # kwargs = {'num_workers': 1, 'pin_memory': True} if args.cuda else {}
 
 # f = h5py.File('interaction_Fisherfeats.h5','r')
