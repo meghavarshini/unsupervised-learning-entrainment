@@ -75,10 +75,13 @@ if __name__ == "__main__":
 	parser = make_argument_parser()
 	args = parser.parse_args()
 
+	Path("./data/wav.scp").touch(exist_ok=True)
+	Path("./data/segments").touch(exist_ok=True)
+	Path("./data/utt2spk").touch(exist_ok=True)
 
-	wavscp = open("./data/wav.scp", "a" if Path.is_file("./data/wav.scp") else "w")
-	segments = open("./data/segments", "a" if Path.is_file("./data/segments") else "w")
-	utt2spk = open("./data/utt2spk", "a" if Path.is_file("./data/utt2spk") else "w")
+	wavscp = open("./data/wav.scp", "w")
+	segments = open("./data/segments", "w")
+	utt2spk = open("./data/utt2spk", "w")
 	print("output files created...")
 
 	metaf = create_meta_dict(args.meta_file)
