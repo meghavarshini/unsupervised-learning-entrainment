@@ -1,170 +1,104 @@
-from entrainment.config import *
+#!/usr/bin/env python
+
+from glob import glob
+from argparse import ArgumentParser
 import h5py
-SEED=448
-frac_train = 0.8
-frac_val = 0.1
+from typing import Dict
 
 
+def make_argument_parser():
+    parser = argparse.ArgumentParser(description="Create real and fake data")
+    parser.add_argument("input_files", help="input files", nargs="+")
+    return parser
 
-## Create h5 files
+def create_sessions_dict(data_dir: str):
 
-# feats_nonorm_nopre
-sessList= sorted(glob.glob(data_dir + '/*.csv'))
-random.seed(SEED)
-random.shuffle(sessList)
+    SEED = 448
+    frac_train = 0.8
+    frac_val = 0.1
+    session_list = sorted(glob(data_dir + "/*.csv"))
 
-num_files_all = len(sessList)
-num_files_train = int(np.ceil((frac_train*num_files_all)))
-num_files_val = int(np.ceil((frac_val*num_files_all)))
-num_files_test = num_files_all - num_files_train - num_files_val
+    # Set random seed
+    random.seed(SEED)
+    random.shuffle(session_list)
 
-sessTrain = sessList[:num_files_train]
-sessVal = sessList[num_files_train:num_files_val+num_files_train]
-sessTest = sessList[num_files_val+num_files_train:]
-print(len(sessTrain) + len(sessVal) + len(sessTest))
+    num_files_all = len(session_list)
+    num_files = {
+        "train": int(np.ceil((frac_train * num_files_all))),
+        "val": int(np.ceil((frac_val * num_files_all))),
+    }
+    num_files["test"]: num_files_all - num_files["train"] - num_files["val"]
 
-## Create Train Data file
-
-X_train =np.array([])
-X_train = np.empty(shape=(0, 0), dtype='float64' )
-for sess_file in sessTrain:
-	df_i = pd.read_csv(sess_file)
-	xx=np.array(df_i)
-	X_train=np.vstack([X_train, xx]) if X_train.size else xx
-
-
-X_train = X_train.astype('float64')
-hf = h5py.File('data/train_Fisher_nonorm.h5', 'w')
-hf.create_dataset('dataset', data=X_train)
-hf.create_dataset('prosset', data=X_train[:,:24])
-hf.create_dataset('specset', data=X_train[:,24:150])
-hf.create_dataset('vqset', data=X_train[:,150:])
-hf.close()
+    sessions = {
+        "train": session_list[: num_files["train"]],
+        "val": session_list[
+            num_files["train"] : num_files["val"] + num_files["train"]
+        ],
+        "test": session_list[num_files["val"] + num_files["train"] :],
+    }
+    print(sum(len(x) for x in sessions.values()))
+    return sessions
 
 
-## Create Val Data file
-
-# X_val =np.array([])
-# for sess_file in sessVal:
-# 	df_i = pd.read_csv(sess_file)
-# 	xx=np.array(df_i)
-# 	X_val=np.vstack([X_val, xx]) if X_val.size else xx
-#
-# X_val = X_val.astype('float64')
-# hf = h5py.File('data/val_Fisher_nonorm.h5', 'w')
-# hf.create_dataset('dataset', data=X_val)
-# hf.create_dataset('prosset', data=X_val[:,:24])
-# hf.create_dataset('specset', data=X_val[:,24:150])
-# hf.create_dataset('vqset', data=X_val[:,150:])
-# hf.close()
+def create_h5_file(X, split: str, dataset_type: str):
+    """Save sub-arrays to h5 file"""
+    X = X.astype("float64")
+    hf = h5py.File(f"data/{split}_Fisher_{dataset_type}.h5", "w")
+    hf.create_dataset("dataset", data=X)
+    hf.create_dataset("prosset", data=X[:, :24])
+    hf.create_dataset("specset", data=X[:, 24:150])
+    hf.create_dataset("vqset", data=X[:, 150:])
+    hf.close()
 
 
+def create_data_file(sessions: Dict, split: str, dataset_type: str):
+    """Create a data file.
+    split should be either 'train', 'test', or 'val'
+    dataset_type should be either 'nonorm' or 'nonorm_nopre'
+    """
+    X = np.array([])
+    X = np.empty(shape=(0, 0), dtype="float64")
+    for session_file in sessions[dataset_type]:
+        df = pd.read_csv(session_file)
+        df_as_array = np.array(df)
+        X = np.vstack([X, df_as_array]) if X.size else df_as_array
+
+    create_h5_file(X, split, dataset_type)
 
 
-## Create Test Data file
-# spk_base = 1
-# X_test =np.array([])
-# for sess_file in sessTest:
-# 	df_i = pd.read_csv(sess_file)
-# 	xx=np.array(df_i)
-# 	N = xx.shape[0]
-# 	if np.mod(N,2)==0:
-# 		spk_label = np.tile([spk_base, spk_base+1], [1, N/2])
-# 	else:
-# 		spk_label = np.tile([spk_base, spk_base+1], [1, N/2])
-# 		spk_label = np.append(spk_label, spk_base)
-# 	xx = np.hstack((xx, spk_label.T.reshape([N,1])))
-# 	X_test=np.vstack([X_test, xx]) if X_test.size else xx
-# 	spk_base += 1
-#
-#
-# X_test = X_test.astype('float64')
-# hf = h5py.File('data/test_Fisher_nonorm.h5', 'w')
-# hf.create_dataset('dataset', data=X_test)
-# hf.create_dataset('prosset', data=X_test[:,:24])
-# hf.create_dataset('specset', data=X_test[:,24:150])
-# hf.create_dataset('vqset', data=X_test[:,150:])
-# hf.close()
+def create_test_file(sessions: Dict, dataset_type: str):
+    """Create test data file"""
+    spk_base = 1
+    X = np.array([])
+    for session_file in sessions["test"]:
+        df = pd.read_csv(session_file)
+        xx = np.array(df)
+        N = xx.shape[0]
+        # For testing, we need to repeat array of openSMILE features
+        if np.mod(N, 2) == 0:
+            spk_label = np.tile([spk_base, spk_base + 1], [1, N / 2])
+        else:
+            spk_label = np.tile([spk_base, spk_base + 1], [1, N / 2])
+            spk_label = np.append(spk_label, spk_base)
+        xx = np.hstack((xx, spk_label.T.reshape([N, 1])))
+        X = np.vstack([X, xx]) if X.size else xx
+        spk_base += 1
+
+    create_h5_file(X, "test", dataset_type)
 
 
+def create_data_files(sessions, dataset_type: str):
+    create_data_file(sessions, "train", dataset_type)
+    create_data_file(sessions, "val", dataset_type)
+    create_test_data_file(sessions, dataset_type)
 
 
-# # data_dir = '~/Downloads/Fisher_corpus/feats_nonorm_nopre/'
-# data_dir = out_dir
-#
-# sessList= sorted(glob.glob(data_dir + '/*.csv'))
-# random.seed(SEED)
-# random.shuffle(sessList)
-#
-# num_files_all = len(sessList)
-# num_files_train = int(np.ceil((frac_train*num_files_all)))
-# num_files_val = int(np.ceil((frac_val*num_files_all)))
-# num_files_test = num_files_all - num_files_train - num_files_val
-#
-# sessTrain = sessList[:num_files_train]
-# sessVal = sessList[num_files_train:num_files_val+num_files_train]
-# sessTest = sessList[num_files_val+num_files_train:]
-# print(len(sessTrain) + len(sessVal) + len(sessTest))
+if __name__ == "__main__":
+    parser = make_argument_parser()
+    parser.parse_args()
 
-## Create Train Data file
-
-# X_train =np.array([])
-# X_train = np.empty(shape=(0, 0), dtype='float64' )
-# for sess_file in sessTrain:
-# 	df_i = pd.read_csv(sess_file)
-# 	xx=np.array(df_i)
-# 	X_train=np.vstack([X_train, xx]) if X_train.size else xx
-#
-#
-# X_train = X_train.astype('float64')
-# hf = h5py.File('data/train_Fisher_nonorm_nopre.h5', 'w')
-# hf.create_dataset('dataset', data=X_train)
-# hf.create_dataset('prosset', data=X_train[:,:24])
-# hf.create_dataset('specset', data=X_train[:,24:150])
-# hf.create_dataset('vqset', data=X_train[:,150:])
-# hf.close()
-
-
-## Create Val Data file
-#
-# X_val =np.array([])
-# for sess_file in sessVal:
-# 	df_i = pd.read_csv(sess_file)
-# 	xx=np.array(df_i)
-# 	X_val=np.vstack([X_val, xx]) if X_val.size else xx
-#
-# X_val = X_val.astype('float64')
-# hf = h5py.File('data/val_Fisher_nonorm_nopre.h5', 'w')
-# hf.create_dataset('dataset', data=X_val)
-# hf.create_dataset('prosset', data=X_val[:,:24])
-# hf.create_dataset('specset', data=X_val[:,24:150])
-# hf.create_dataset('vqset', data=X_val[:,150:])
-# hf.close()
-
-
-
-
-## Create Test Data file
-# spk_base = 1
-# X_test =np.array([])
-# for sess_file in sessTest:
-# 	df_i = pd.read_csv(sess_file)
-# 	xx=np.array(df_i)
-# 	N = xx.shape[0]
-# 	if np.mod(N,2)==0:
-# 		spk_label = np.tile([spk_base, spk_base+1], [1, N/2])
-# 	else:
-# 		spk_label = np.tile([spk_base, spk_base+1], [1, N/2])
-# 		spk_label = np.append(spk_label, spk_base)
-# 	xx = np.hstack((xx, spk_label.T.reshape([N,1])))
-# 	X_test=np.vstack([X_test, xx]) if X_test.size else xx
-# 	spk_base += 1
-#
-#
-# X_test = X_test.astype('float64')
-# hf = h5py.File('data/test_Fisher_nonorm_nopre.h5', 'w')
-# hf.create_dataset('dataset', data=X_test)
-# hf.create_dataset('prosset', data=X_test[:,:24])
-# hf.create_dataset('specset', data=X_test[:,24:150])
-# hf.create_dataset('vqset', data=X_test[:,150:])
-# hf.close()
+    ## Create h5 files
+    sessions = create_sessions_dict(args.data_dir)
+    create_data_files(sessions, "nonorm")
+    # # data_dir = '~/Downloads/Fisher_corpus/feats_nonorm_nopre/'
+    # create_data_files(sessions, "nonorm_nopre")
