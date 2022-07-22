@@ -14,8 +14,7 @@ OUTPUT_DIR=feat_files
 AUDIO_DIR_ROOT=$(CORPUS)/fisher_eng_tr_sp_LDC2004S13_zip
 
 # Path to OpenSMILE configuration files
-OPENSMILE_CONFIG_BASELINE=feats/emobase2010_haoqi_revised.conf
-OPENSMILE_CONFIG_NED=models/NED/emobase2010_mod.conf
+OPENSMILE_CONFIG=conf/emobase2010_entrainment.conf
 
 # Directory with all transcripts
 TRANSCRIPT_DIR=$(CORPUS)/fe_03_p1_tran/data/trans/all_trans
@@ -50,10 +49,10 @@ $(OUTPUT_DIR)/%.wav: scripts/sph2wav $(AUDIO_DIR_ROOT)/%.sph
 	$^ $@
 
 $(OUTPUT_DIR)/%_features_raw_baseline.csv: $(OUTPUT_DIR)/%.wav
-	SMILExtract -C $(OPENSMILE_CONFIG_BASELINE) -I $< -O $@
+	SMILExtract -C $(OPENSMILE_CONFIG) -I $< -O $@
 
 #$(OUTPUT_DIR)/%_features_raw_ned.csv: $(OUTPUT_DIR)/%.wav
-#	SMILExtract -C $(OPENSMILE_CONFIG_NED) -I $< -O $@
+#	SMILExtract -C $(OPENSMILE_CONFIG) -I $< -O $@
 
 # We define the special target .SECONDEXPANSION in order to handle expansions
 # in prerequisites ($$).
