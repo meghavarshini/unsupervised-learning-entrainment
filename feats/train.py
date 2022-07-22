@@ -1,29 +1,53 @@
-#To Run, use: CUDA_VISIBLE_DEVICES=1 python train.py --no-cuda
+# To Run, use: CUDA_VISIBLE_DEVICES=1 python train.py --no-cuda
 from ecdc import *
-#------------------------------------------------------------------
+
+# ------------------------------------------------------------------
 
 print(model_name)
 if os.path.exists(model_name):
     print("model file available for update: ", model_name)
 else:
     print("model file not found")
-#Uncomment for parsing inputs
-parser = argparse.ArgumentParser(description='VAE MNIST Example')
-parser.add_argument('--data_directory', type=str, default="/home/tomcat/entrainment/feat_files/data",
-	help='location of h5 files')
-parser.add_argument('--batch-size', type=int, default=128, metavar='N',
-	help='input batch size for training (default: 128)')
-parser.add_argument('--epochs', type=int, default=10, metavar='N',
-	help='number of epochs to train (default: 10)')
-parser.add_argument('--no-cuda', action='store_true', default=False,
-	help='enables CUDA training')
-parser.add_argument('--seed', type=int, default=1, metavar='S',
-	help='random seed (default: 1)')
-parser.add_argument('--log-interval', type=int, default=10, metavar='N',
-	help='how many batches to wait before logging training status')
+# Uncomment for parsing inputs
+parser = argparse.ArgumentParser(description="VAE MNIST Example")
+parser.add_argument(
+    "--data_directory",
+    type=str,
+    default="/home/tomcat/entrainment/feat_files/data",
+    help="location of h5 files",
+)
+parser.add_argument(
+    "--batch-size",
+    type=int,
+    default=128,
+    metavar="N",
+    help="input batch size for training (default: 128)",
+)
+parser.add_argument(
+    "--epochs",
+    type=int,
+    default=10,
+    metavar="N",
+    help="number of epochs to train (default: 10)",
+)
+parser.add_argument(
+    "--no-cuda",
+    action="store_true",
+    default=False,
+    help="enables CUDA training",
+)
+parser.add_argument(
+    "--seed", type=int, default=1, metavar="S", help="random seed (default: 1)"
+)
+parser.add_argument(
+    "--log-interval",
+    type=int,
+    default=10,
+    metavar="N",
+    help="how many batches to wait before logging training status",
+)
 args = parser.parse_args()
 args.cuda = not args.no_cuda and torch.cuda.is_available()
-
 
 
 torch.manual_seed(args.seed)
@@ -44,12 +68,15 @@ train_loader = torch.utils.data.DataLoader(fdset, batch_size=128, shuffle=True)
 
 fdset_val = EntDataset(args.data_directory + "/" + "val_Fisher_nonorm.h5")
 
-val_loader = torch.utils.data.DataLoader(fdset_val, batch_size=128, shuffle=True)
+val_loader = torch.utils.data.DataLoader(
+    fdset_val, batch_size=128, shuffle=True
+)
 
 model = VAE().double()
 if args.cuda:
-	model.cuda()
+    model.cuda()
 optimizer = optim.Adam(model.parameters(), lr=1e-3)
+
 
 def train(epoch):
     model.train()
@@ -67,22 +94,22 @@ def train(epoch):
         recon_batch = model(data)
         loss = loss_function(recon_batch, y_data)
         loss.backward()
-        print("loss data: ",loss.data)
+        print("loss data: ", loss.data)
         train_loss += loss.data
         # train_loss += loss.data[0]
         optimizer.step()
         # if batch_idx % args.log_interval == 0:
-            # print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
-                # epoch, batch_idx * len(data), len(train_loader.dataset),
-                # 100. * batch_idx / len(train_loader),
-                # loss.data[0] / len(data)))
-    train_loss /=  len(train_loader.dataset)
-    print(('====> Epoch: {} Average loss: {:.4f}'.format(
-          epoch, train_loss)))
+        # print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
+        # epoch, batch_idx * len(data), len(train_loader.dataset),
+        # 100. * batch_idx / len(train_loader),
+        # loss.data[0] / len(data)))
+    train_loss /= len(train_loader.dataset)
+    print(("====> Epoch: {} Average loss: {:.4f}".format(epoch, train_loss)))
 
     return train_loss
 
-#Lines 88,89 depreciated
+
+# Lines 88,89 depreciated
 # https://stackoverflow.com/questions/61720460/volatile-was-removed-and-now-had-no-effect-use-with-torch-no-grad-instread
 def validate(epoch):
     model.eval()
@@ -100,13 +127,13 @@ def validate(epoch):
         # val_loss += loss_function(recon_batch, y_data).data[0]
 
     val_loss /= len(val_loader.dataset)
-    print(('====> Validation set loss: {:.4f}'.format(val_loss)))
+    print(("====> Validation set loss: {:.4f}".format(val_loss)))
     return val_loss
 
 
-Tloss =[]
-Vloss =[]
-best_loss=np.inf
+Tloss = []
+Vloss = []
+best_loss = np.inf
 print("This is Sparta!!")
 
 # for epoch in range(1, 3):
