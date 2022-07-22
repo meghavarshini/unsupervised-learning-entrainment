@@ -51,8 +51,8 @@ $(OUTPUT_DIR)/%.wav: scripts/sph2wav $(AUDIO_DIR_ROOT)/%.sph
 $(OUTPUT_DIR)/%_features_raw_baseline.csv: $(OUTPUT_DIR)/%.wav
 	SMILExtract -C $(OPENSMILE_CONFIG) -I $< -O $@
 
-#$(OUTPUT_DIR)/%_features_raw_ned.csv: $(OUTPUT_DIR)/%.wav
-#	SMILExtract -C $(OPENSMILE_CONFIG) -I $< -O $@
+$(OUTPUT_DIR)/%_features_raw_ned.csv: $(OUTPUT_DIR)/%.wav
+	SMILExtract -C $(OPENSMILE_CONFIG) -I $< -O $@
 
 # We define the special target .SECONDEXPANSION in order to handle expansions
 # in prerequisites ($$).
@@ -64,9 +64,8 @@ $(OUTPUT_DIR)/%_features_normed_baseline.csv: feats/feat_extract_nopre.py\
 
 # We define the special target .SECONDEXPANSION in order to handle expansions
 # in prerequisites ($$).
-
-# .SECONDEXPANSION:
-#$(OUTPUT_DIR)/%_features_normed_ned.csv: feats/feat_extract_nopre.py\
-#							 $(OUTPUT_DIR)/%_features_raw_ned.csv\
-#							 $(TRANSCRIPT_DIR)/$$(notdir %).txt
-#	$^ $@
+ .SECONDEXPANSION:
+$(OUTPUT_DIR)/%_features_normed_ned.csv: feats/feat_extract_nopre.py\
+							 $(OUTPUT_DIR)/%_features_raw_ned.csv\
+							 $(TRANSCRIPT_DIR)/$$(notdir %).txt
+	$^ $@

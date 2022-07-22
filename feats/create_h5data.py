@@ -1,3 +1,6 @@
+"""Code for splitting data files into training/validation/test splits and
+computing L1 baseline."""
+
 from os import path
 from glob import glob
 import h5py
@@ -27,19 +30,16 @@ Create h5 files
 """
 
 
-def split_files(feats_dir, sess_List=None):
+def split_files(feats_dir, sess_List, seed):
     sess_files = path.isfile(sess_List)
     if sess_files == 1:
         print("list of transcripts exists")
         with open(sess_List, "r") as f:
-            temp = f.read().splitlines()
-            # print(temp)
-            # print(sorted(glob(feats_dir + '/*.csv')))
-            print(len(temp), len(sorted(glob(feats_dir + "/*.csv"))))
-            if len(temp) == len(sorted(glob(feats_dir + "/*.csv"))):
+            lines = f.read().splitlines()
+            shuffled_files = sorted(glob(feats_dir + "/*.csv"))
+            if len(lines) == len(shuffled_files):
                 print("list of shuffled files exists, importing...")
-                sessList = temp
-                print(sessList)
+                sessList = lines
             else:
                 print("error in importing files")
                 raise ValueError(
@@ -48,11 +48,9 @@ def split_files(feats_dir, sess_List=None):
     else:
         print("list of transcripts does not exist")
         sessList = sorted(glob(feats_dir + "/*.csv"))
-        print(sessList)
         print(
             "creating a list of shuffled feature files and saving to disk..."
         )
-        # print("sessList", sessList)
         random.seed(SEED)
         random.shuffle(sessList)
         with open("./data/sessList.txt", "w") as f:
@@ -250,7 +248,7 @@ if __name__ == "__main__":
     frac_val = 0.1
 
     tr, v, te = split_files(
-        feats_dir=args.features_dir, sess_List="./data/sessList.txt"
+        args.features_dir, "./data/sessList.txt", SEED
     )
     create_train(tr)
     create_val(v)
