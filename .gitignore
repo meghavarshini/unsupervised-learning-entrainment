@@ -2,9 +2,8 @@ output
 test_data
 
 .idea/
-*/.DS_Store
 entrainment_config.pyc
-*/__pycache__/
+__pycache__
 
 # Output data files:
 models/triplet/prep/data
