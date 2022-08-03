@@ -1,4 +1,12 @@
-from entrainment.config import *
+from os import path
+from glob import glob
+import h5py
+import argparse
+import random
+import numpy as np
+import pandas as pd
+import math
+# from entrainment.config import *
 SEED=448
 frac_train = 0.8
 frac_val = 0.1
@@ -16,11 +24,11 @@ sess_files = os.path.isfile("data/sessList.txt")
 if sess_files == 1:
 	with open("data/sessList.txt", 'r') as f:
 		temp = f.read().splitlines()
-		if len(temp) == len(sorted(glob.glob(feats_dir + '/*.csv'))):
+		if len(temp) == len(sorted(glob.glob(feats_dir + '/*normed_ned.csv'))):
 			print("list of shuffled files exists, importing...")
 			sessList = temp
 else:
-	sessList= sorted(glob.glob(feats_dir + '/*.csv'))
+	sessList= sorted(glob.glob(feats_dir + '/*normed_ned.csv'))
 	print("creating a list of shuffled feature files and saving to disk...")
 	# print("sessList", sessList)
 	random.seed(SEED)
