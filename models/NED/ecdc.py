@@ -42,7 +42,7 @@ class EntDataset(Dataset):
 class VAE(nn.Module):
     def __init__(self):
         super(VAE, self).__init__()
-
+        # Tensor with many dimensions to one with 30- see Pg 5 of the paper
         zdim=30
         intDim = 128                                 # CHANGE zdim here
         self.fc1 = nn.Linear(featDim, intDim)
@@ -57,6 +57,7 @@ class VAE(nn.Module):
 
         self.relu = nn.ReLU()
         # self.sigmoid = nn.Sigmoid()
+
 
     def encode(self, x):
         h1 = self.fc1(x)

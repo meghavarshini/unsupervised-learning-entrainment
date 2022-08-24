@@ -110,6 +110,9 @@ best_loss=np.inf
 print("This is Sparta!!")
 
 # for epoch in range(1, 3):
+#Notes- torch.save saves both the state dict as well as the optimizer-
+# if we have a model and all we want to do is use it, then we save the state dict. bUT if we want
+# further trqin, fine-tune, then we need botht he optimizer as well as the state dict.
 for epoch in range(1, args.epochs + 1):
     tloss = train(epoch)
     vloss = validate(epoch)
