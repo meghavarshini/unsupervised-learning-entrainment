@@ -1,7 +1,10 @@
-from entrainment.config import *
-
+# from entrainment.config import *
+import argparse
+import torch
+import numpy as np
+from ecdc import *
 # from aeent import *
-model_name = model_name
+model_name = "./models/trained_VAE_nonorm_nopre_l1.pt"
 import h5py
 
 SEED=448
@@ -25,7 +28,7 @@ if args.cuda:
 
 
 
-hff = h5py.File('data/test_Fisher_nonorm_nopre.h5', 'r')
+hff = h5py.File('data/test_Fisher_nonorm.h5', 'r')
 X_test = np.array(hff['dataset'])
 
 
