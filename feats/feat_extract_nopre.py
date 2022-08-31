@@ -145,7 +145,7 @@ def create_normed_features_csv(
     # convert the first column index to int index
     sample_index = list(map(int, list((feat_data[:, 0]))))
 
-    ##TODO Looks like this wasn't done by the author.
+    ## Orginal code line 178
     # def turn_level_index(spk_list, sample_index):
     # '''generate indices for different turns'''
 
@@ -196,13 +196,13 @@ def create_normed_features_csv(
         else:
             s2_list.append(itm)
 
-    ##-----------------------------------------------------------------------
-    ## feature selection and normalization
-    ##-----------------------------------------------------------------------
-    # remove the mean for mfcc
-    # normalize for pitch = log(f_0/u_0)
-    # normalize for loudness
+    """
+    ## feature selection and normalization (original comments)
 
+    - remove the mean for mfcc
+    - normalize for pitch = log(f_0/u_0)
+    - normalize for loudness
+    """
     # f0 normalization
     f0 = np.copy(feat_data[:, 70])
 

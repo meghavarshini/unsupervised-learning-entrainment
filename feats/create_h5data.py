@@ -15,10 +15,14 @@ def make_argument_parser():
 	parser.add_argument("features_dir", help="features directory")
 	return parser
 
-## Writing the shuffled list of feature files to a text file. This way, if you run into any issues while generating
-# h5 files, the same randomized list of feature files is called, thus saving time and effort.
-# Comment out 13-30 and uncomment 33-35 if you wish to avoid saving the file list.
-# Create h5 files
+""" 
+Writing the shuffled list of feature files to a text file. This way, 
+if you run into any issues while generating h5 files, 
+the same randomized list of feature files is called, 
+thus saving time and effort. Comment out 13-30 and uncomment 33-35 
+if you wish to avoid saving the file list.
+ Create h5 files 
+ """
 def split_files(feats_dir,sess_List= None):
 	sess_files = path.isfile(sess_List)
 	if sess_files == 1:
@@ -47,7 +51,7 @@ def split_files(feats_dir,sess_List= None):
 			f.writelines( "%s\n" % i for i in sessList)
 
 		with open("./data/sessList.txt", 'r') as f:
-                	sessList = f.read().splitlines()
+			sessList = f.read().splitlines()
 
 	#Alternative to 13-30:
 	# sessList= sorted(glob.glob(feats_dir + '/*.csv'))
@@ -233,6 +237,6 @@ if __name__ == "__main__":
 	frac_val = 0.1
 
 	tr, v, te = split_files(feats_dir=args.features_dir, sess_List="./data/sessList.txt")
-	# create_train(tr)
-	# create_val(v)
+	create_train(tr)
+	create_val(v)
 	create_test(te)
