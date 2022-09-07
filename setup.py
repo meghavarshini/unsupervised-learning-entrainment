@@ -12,8 +12,8 @@ setup(
     # zip_safe=False,
     install_requires=[
         "wheel",
-        "torch==1.11.0",
-        "torchvision==0.12.0",
+        "torch==1.9.0+cu111",
+        "torchvision==0.10.0+cu111",
         "pandas",
         "numpy",
         "sklearn",
