@@ -1,15 +1,12 @@
 #To Run, use: CUDA_VISIBLE_DEVICES=1 python train.py --no-cuda
-from ecdc import *
+# from ecdc import *
 #------------------------------------------------------------------
 
-print(model_name)
-if os.path.exists(model_name):
-    print("model file available for update: ", model_name)
-else:
-    print("model file not found")
 #Uncomment for parsing inputs
 parser = argparse.ArgumentParser(description='VAE MNIST Example')
-parser.add_argument('--data_directory', type=str, default="/home/tomcat/entrainment/feat_files/data",
+parser.add_argument('--model_name', type=str, default= "/home/tomcat/entrainment/feat_files/baseline_1_models/trained_VAE_nonorm_nopre_l1.pt",
+                    help="name of model file")
+parser.add_argument('--h5_directory', type=str, default="/home/tomcat/entrainment/feat_files/baseline_1_h5",
 	help='location of h5 files')
 parser.add_argument('--batch-size', type=int, default=128, metavar='N',
 	help='input batch size for training (default: 128)')
@@ -24,7 +21,11 @@ parser.add_argument('--log-interval', type=int, default=10, metavar='N',
 args = parser.parse_args()
 args.cuda = not args.no_cuda and torch.cuda.is_available()
 
-
+print(model_name)
+if os.path.exists(model_name):
+    print("model file available for update: ", model_name)
+else:
+    print("model file not found")
 
 torch.manual_seed(args.seed)
 if args.cuda:
@@ -121,4 +122,6 @@ for epoch in range(1, args.epochs + 1):
         best_loss = vloss
         best_epoch = epoch
         print("epoch: ", vloss, "epoch: ", epoch)
-        torch.save(model, model_name)
+        torch.save(model, str(data_directory + "/" + model_name))
+        model = torch.load(PATH)
+        model.eval()
