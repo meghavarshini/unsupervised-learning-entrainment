@@ -122,6 +122,6 @@ for epoch in range(1, args.epochs + 1):
         best_loss = vloss
         best_epoch = epoch
         print("epoch: ", vloss, "epoch: ", epoch)
-        torch.save(model, str(data_directory + "/" + model_name))
+        torch.save(model, model_name)
         model = torch.load(PATH)
         model.eval()
