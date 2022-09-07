@@ -1,7 +1,6 @@
 #To Run, use: CUDA_VISIBLE_DEVICES=1 python train.py --no-cuda
-# from ecdc import *
+from ecdc import *
 #------------------------------------------------------------------
-
 #Uncomment for parsing inputs
 parser = argparse.ArgumentParser(description='VAE MNIST Example')
 parser.add_argument('--model_name', type=str, default= "/home/tomcat/entrainment/feat_files/baseline_1_models/trained_VAE_nonorm_nopre_l1.pt",
@@ -21,9 +20,9 @@ parser.add_argument('--log-interval', type=int, default=10, metavar='N',
 args = parser.parse_args()
 args.cuda = not args.no_cuda and torch.cuda.is_available()
 
-print(model_name)
-if os.path.exists(model_name):
-    print("model file available for update: ", model_name)
+print(args.model_name)
+if os.path.exists(args.model_name):
+    print("model file available for update: ", args.model_name)
 else:
     print("model file not found")
 
@@ -122,6 +121,6 @@ for epoch in range(1, args.epochs + 1):
         best_loss = vloss
         best_epoch = epoch
         print("epoch: ", vloss, "epoch: ", epoch)
-        torch.save(model, model_name)
-        model = torch.load(PATH)
-        model.eval()
+        torch.save(model, args.model_name)
+        #model = torch.load(PATH)
+        #model.eval()
