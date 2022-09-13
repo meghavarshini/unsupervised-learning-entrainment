@@ -109,7 +109,7 @@ test_loss /= X_test.shape[0]
 
 fake_test_loss /= X_test.shape[0]
 
-Loss=np.array(Tensor)
+Loss=np.array(Loss)
 Fake_loss=np.array(Fake_loss)
 print("Total Real Loss:"+str(test_loss) + "Total Fake Loss:" + str(fake_test_loss))
 
