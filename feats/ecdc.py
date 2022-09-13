@@ -6,6 +6,7 @@ import argparse
 import torch
 import torch.utils.data
 import os
+import random
 from torch.utils.data import Dataset
 from torch import nn, optim
 from torch.autograd import Variable
