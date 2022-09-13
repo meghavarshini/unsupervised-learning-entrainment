@@ -124,3 +124,4 @@ for epoch in range(1, args.epochs + 1):
         torch.save(model, args.model_name)
         #model = torch.load(PATH)
         #model.eval()
+        #parameters- check they are non-empty
