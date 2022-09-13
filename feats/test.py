@@ -99,8 +99,9 @@ for idx, data in enumerate(X_test):
     test_loss += loss_real
     fake_test_loss += loss_fake 
 
-    Loss.append(loss_real)
-    Fake_loss.append(loss_fake)
+# this is inefficient- find a way to do everything on CPU
+    Loss.append(loss_real.cpu())
+    Fake_loss.append(loss_fake.cpu())
     # print loss_real, loss_fake
 
 
@@ -111,7 +112,8 @@ fake_test_loss /= X_test.shape[0]
 
 Loss=np.array(Loss)
 Fake_loss=np.array(Fake_loss)
-print("Total Real Loss:"+str(test_loss) + "Total Fake Loss:" + str(fake_test_loss))
+print("Total Real Loss:"+ str(test_loss))
+print("Total Fake Loss:" + str(fake_test_loss)))
 
 print(float(np.sum(Loss < Fake_loss))/Loss.shape[0])
 
