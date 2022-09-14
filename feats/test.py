@@ -25,7 +25,6 @@ def make_argument_parser():
     parser.add_argument('--model_name', default= "./models/trained_VAE_nonorm_nopre_l1.pt",
                         help='name associated with the trained model')
     args = parser.parse_args()
-    args.cuda = not args.no_cuda and torch.cuda.is_available()
     return parser
 
 
@@ -122,6 +121,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     print(args)
     torch.manual_seed(args.seed)
+    args.cuda = not args.no_cuda and torch.cuda.is_available()
     if args.cuda:
         torch.cuda.manual_seed(args.seed)
 
