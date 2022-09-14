@@ -16,7 +16,6 @@ def make_argument_parser():
     parser = argparse.ArgumentParser(
         description="Processing filepaths and values required for setup"
     )
-
     parser.add_argument("raw_features_csv", help="Input raw features CSV")
     parser.add_argument("transcript", help="Input transcript")
     parser.add_argument("output_csv", help="output_normed_features_csv")
