@@ -110,7 +110,7 @@ Loss = np.array(Loss)
 Fake_loss = np.array(Fake_loss)
 
 print("Total Real Loss: "+ str(test_loss))
-print("Total Fake Loss: " + str(fake_test_loss)))
+print("Total Fake Loss: " + str(fake_test_loss))
 
 print(float(np.sum(Loss < Fake_loss))/Loss.shape[0])
 
