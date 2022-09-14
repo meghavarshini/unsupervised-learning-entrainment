@@ -120,7 +120,7 @@ def model_testing(model_name, X_test,cuda):
 if __name__ == "__main__":
     parser = make_argument_parser()
     args = parser.parse_args()
-
+    print(args)
     torch.manual_seed(args.seed)
     if args.cuda:
         torch.cuda.manual_seed(args.seed)
