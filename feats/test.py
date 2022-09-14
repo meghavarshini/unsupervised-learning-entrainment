@@ -4,9 +4,10 @@ import torch
 import pdb
 import numpy as np
 import random
-
-# from aeent import *
 import h5py
+import os
+
+os.getcwd()
 
 SEED=448
 
@@ -27,11 +28,6 @@ def make_argument_parser():
     args = parser.parse_args()
     return parser
 
-
-
-# torch.manual_seed(args.seed)
-# if args.cuda:
-#     torch.cuda.manual_seed(args.seed)
 
 
 def load_h5(file):
