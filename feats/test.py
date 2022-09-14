@@ -119,10 +119,10 @@ def model_testing(model_name, X_test,cuda):
 if __name__ == "__main__":
     parser = make_argument_parser()
     args = parser.parse_args()
-    print(args)
+
     torch.manual_seed(args.seed)
-    args.cuda = not args.no_cuda and torch.cuda.is_available()
-    if args.cuda:
+
+    if not args.no_cuda and torch.cuda.is_available():
         torch.cuda.manual_seed(args.seed)
 
     X_test = load_h5(args.hff)
