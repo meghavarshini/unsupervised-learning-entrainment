@@ -114,6 +114,7 @@ def model_testing(model_name, X_test,cuda):
 
 
 if __name__ == "__main__":
+    os.getcwd()
     parser = make_argument_parser()
     args = parser.parse_args()
 
