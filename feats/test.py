@@ -59,7 +59,9 @@ fake_test_loss = 0
 Loss=[]
 Fake_loss = []
 # for batch_idx, (x_data, y_data) in enumerate(test_loader):
+
 for idx, data in enumerate(X_test):
+
     x_data = data[:228]
     y_data = data[228:-1]
     idx_same_spk =list(np.where(X_test[:,-1]==data[-1]))[0]
