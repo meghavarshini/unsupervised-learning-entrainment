@@ -1,3 +1,4 @@
+# to run: use `train.py`
 from os import path
 from glob import glob
 import h5py
@@ -10,9 +11,13 @@ import math
 
 def make_argument_parser():
 	parser = argparse.ArgumentParser(
-        description="Processing filepaths and values required for setup"
-    )
-	parser.add_argument("features_dir", help="features directory")
+        description="Processing filepaths and values required for setup")
+	parser.add_argument("features_dir",
+						default = "/home/tomcat/entrainment/feat_files/baseline_1_feats",
+						description = "features directory")
+	parser.add_argument("h5_directory",
+						default="/home/tomcat/entrainment/feat_files/baseline_1_h5",
+						description= "directory for storing h5 files")
 	return parser
 
 """ 
