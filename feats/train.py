@@ -3,20 +3,22 @@ from ecdc import *
 #------------------------------------------------------------------
 #Uncomment for parsing inputs
 parser = argparse.ArgumentParser(description='VAE MNIST Example')
-parser.add_argument('--model_name', type=str, default= "/home/tomcat/entrainment/feat_files/baseline_1_models/trained_VAE_nonorm_nopre_l1.pt",
+parser.add_argument('--model_name', type=str,
+                    default= "/home/tomcat/entrainment/feat_files/baseline_1_models/trained_VAE_nonorm_nopre_l1.pt",
                     help="name of model file")
-parser.add_argument('--h5_directory', type=str, default="/home/tomcat/entrainment/feat_files/baseline_1_h5",
-	help='location of h5 files')
+parser.add_argument('--h5_directory', type=str,
+                    default="/home/tomcat/entrainment/feat_files/baseline_1_h5",
+	                help='location of h5 files')
 parser.add_argument('--batch-size', type=int, default=128, metavar='N',
-	help='input batch size for training (default: 128)')
+	                help='input batch size for training (default: 128)')
 parser.add_argument('--epochs', type=int, default=10, metavar='N',
-	help='number of epochs to train (default: 10)')
+	                help='number of epochs to train (default: 10)')
 parser.add_argument('--no-cuda', action='store_true', default=False,
-	help='enables CUDA training')
+	                help='enables CUDA training')
 parser.add_argument('--seed', type=int, default=1, metavar='S',
-	help='random seed (default: 1)')
+	                help='random seed (default: 1)')
 parser.add_argument('--log-interval', type=int, default=10, metavar='N',
-	help='how many batches to wait before logging training status')
+	                help='how many batches to wait before logging training status')
 args = parser.parse_args()
 args.cuda = not args.no_cuda and torch.cuda.is_available()
 

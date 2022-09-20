@@ -26,7 +26,7 @@ def make_argument_parser():
     parser.add_argument('--model_name',
                         default= "/home/tomcat/entrainment/feat_files/baseline_1_models/trained_VAE_nonorm_nopre_l1.pt",
                         help='name associated with the trained model')
-    args = parser.parse_args()
+    # args = parser.parse_args()
     return parser
 
 
