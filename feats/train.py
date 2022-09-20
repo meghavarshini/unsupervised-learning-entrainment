@@ -21,7 +21,7 @@ def make_argument_parser():
     parser.add_argument('--log-interval', type=int, default=10, metavar='N',
                         help='how many batches to wait before logging training status')
     # args = parser.parse_args()
-    args.cuda = not args.no_cuda and torch.cuda.is_available()
+    # args.cuda = not args.no_cuda and torch.cuda.is_available()
     return parser
 
 def model_setup(model_name, seed, cuda, data_directory):
