@@ -1,10 +1,8 @@
 from ecdc import *
 import argparse
-import torch
 import pdb
 import numpy as np
 import random
-import h5py
 import os
 
 os.getcwd()
