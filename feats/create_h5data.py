@@ -11,7 +11,7 @@ import math
 
 def make_argument_parser():
 	parser = argparse.ArgumentParser(
-        description="Processing filepaths and values required for setup")
+        				description="Processing filepaths and values required for setup")
 	parser.add_argument("features_dir",
 						default = "/home/tomcat/entrainment/feat_files/baseline_1_feats",
 						description = "features directory")
