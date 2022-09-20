@@ -47,7 +47,7 @@ def split_files(feats_dir,sess_List= None):
 	else:
 		print("list of transcripts does not exist")
 		sessList= sorted(glob(feats_dir + '/*.csv'))
-		print(sessList)
+		print("sessList: ", sessList)
 		print("creating a list of shuffled feature files and saving to disk...")
 		# print("sessList", sessList)
 		random.seed(SEED)
