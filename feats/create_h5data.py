@@ -14,7 +14,7 @@ def make_argument_parser():
     )
 	parser.add_argument("-features_dir",
 						help="features directory",
-						default = "/home/tomcat/entrainment/feat_files/baseline_1_h5")
+						default = "/home/tomcat/entrainment/feat_files/baseline_1_feats")
 	return parser
 
 """ 
