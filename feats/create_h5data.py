@@ -28,7 +28,7 @@ if you wish to avoid saving the file list.
 def split_files(feats_dir,sess_List= None):
 	sess_files = path.isfile(sess_List)
 	if sess_files == 1:
-		print("list of transcripts exists")
+		print("list of transcripts exists: ", sess_files)
 		with open(sess_List, 'r') as f:
 			temp = f.read().splitlines()
 			# print(temp)
