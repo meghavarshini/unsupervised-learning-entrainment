@@ -28,7 +28,8 @@ thus saving time and effort. Comment out 13-30 and uncomment 33-35
 if you wish to avoid saving the file list.
  Create h5 files 
  """
-def split_files(feats_dir, data, sess_List= None):
+def split_files(feats_dir, data):
+	sess_List = data + "/sessList.txt"
 	sess_files = path.isfile(sess_List)
 	if sess_files == 1:
 		print("list of transcripts exists: ", sess_files)
