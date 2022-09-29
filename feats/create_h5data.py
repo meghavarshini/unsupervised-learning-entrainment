@@ -7,7 +7,6 @@ import numpy as np
 import pandas as pd
 import math
 
-
 def make_argument_parser():
 	parser = argparse.ArgumentParser(
         description="Processing filepaths and values required for setup"
@@ -17,8 +16,8 @@ def make_argument_parser():
 						default = "/home/tomcat/entrainment/feat_files/baseline_1_feats")
 	parser.add_argument("-h5_output_dir",
 						help="features directory",
-						# default="/home/tomcat/entrainment/feat_files/baseline_1_h5")
-						default = "./data")
+						default="/home/tomcat/entrainment/feat_files/test_dir")
+						# default = "./data")
 	return parser
 
 """ 
@@ -240,7 +239,7 @@ if __name__ == "__main__":
 	if path.exists(args.features_dir):
 		print("feature directory found")
 	if path.exists(args.h5_output_dir):
-		print("feature directory found")
+		print("output directory found")
 	SEED = 448
 	frac_train = 0.8
 	frac_val = 0.1
