@@ -237,6 +237,10 @@ def create_test(sessTest, data):
 if __name__ == "__main__":
 	parser = make_argument_parser()
 	args = parser.parse_args()
+	if path.exists(args.features_dir):
+		print("feature directory found")
+	if path.exists(args.h5_output_dir):
+		print("feature directory found")
 	SEED = 448
 	frac_train = 0.8
 	frac_val = 0.1
