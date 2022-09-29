@@ -240,6 +240,7 @@ if __name__ == "__main__":
 	SEED = 448
 	frac_train = 0.8
 	frac_val = 0.1
+	print(args)
 
 	tr, v, te = split_files(feats_dir=args.features_dir, data=args.h5_output_dir)
 	create_train(sessTrain = tr, data=args.h5_output_dir)
