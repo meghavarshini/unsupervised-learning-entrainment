@@ -15,6 +15,10 @@ def make_argument_parser():
 	parser.add_argument("-features_dir",
 						help="features directory",
 						default = "/home/tomcat/entrainment/feat_files/baseline_1_feats")
+	parser.add_argument("-h5_output_dir",
+						help="features directory",
+						# default="/home/tomcat/entrainment/feat_files/baseline_1_h5")
+						default = "./data")
 	return parser
 
 """ 
@@ -25,7 +29,7 @@ thus saving time and effort. Comment out 13-30 and uncomment 33-35
 if you wish to avoid saving the file list.
  Create h5 files 
  """
-def split_files(feats_dir,sess_List= None):
+def split_files(feats_dir,sess_List= None, data):
 	sess_files = path.isfile(sess_List)
 	if sess_files == 1:
 		print("list of transcripts exists: ", sess_files)
@@ -39,8 +43,7 @@ def split_files(feats_dir,sess_List= None):
 				sessList = temp
 				print(sessList)
 			else:
-				print("error in importing files")
-				raise ValueError("sessList.txt is not an accurate list of files")
+				raise ValueError("Import error. sessList.txt is not an accurate list of files. did you choose the wrong features directory?")
 	else:
 		print("list of transcripts does not exist")
 		sessList= sorted(glob(feats_dir + '/*.csv'))
@@ -49,10 +52,10 @@ def split_files(feats_dir,sess_List= None):
 		# print("sessList", sessList)
 		random.seed(SEED)
 		random.shuffle(sessList)
-		with open("./data/sessList.txt", 'w') as f:
+		with open(data+"/sessList.txt", 'w') as f:
 			f.writelines( "%s\n" % i for i in sessList)
 
-		with open("./data/sessList.txt", 'r') as f:
+		with open(data+"/sessList.txt", 'r') as f:
 			sessList = f.read().splitlines()
 
 	#Alternative to 13-30:
@@ -74,7 +77,7 @@ def split_files(feats_dir,sess_List= None):
 	return(sessTrain, sessVal, sessTest)
 
 #### Create Train Data file #####
-def create_train(sessTrain):
+def create_train(sessTrain, data):
 	X_train =np.array([])
 	X_train = np.empty(shape=(0, 0), dtype='float64' )
 	for sess_file in sessTrain:
@@ -86,7 +89,7 @@ def create_train(sessTrain):
 
 
 	X_train = X_train.astype('float64')
-	hf = h5py.File('data/train_Fisher_nonorm.h5', 'w')
+	hf = h5py.File(data+"/train_Fisher_nonorm.h5", 'w')
 	hf.create_dataset('dataset', data=X_train)
 	hf.create_dataset('prosset', data=X_train[:,:24])
 	hf.create_dataset('specset', data=X_train[:,24:150])
@@ -95,7 +98,7 @@ def create_train(sessTrain):
 	return None
 
 #### Create Val Data file ####
-def create_val(sessVal):
+def create_val(sessVal, data):
 	if sessVal != []:
 		print(sessVal, "exists and valid")
 
@@ -108,7 +111,7 @@ def create_val(sessVal):
 		print(sess_file, "examined and validation array created")
 	print(X_val.shape)
 	X_val = X_val.astype('float64')
-	hf = h5py.File('data/val_Fisher_nonorm.h5', 'w')
+	hf = h5py.File(data+"/val_Fisher_nonorm.h5", 'w')
 	hf.create_dataset('dataset', data=X_val)
 	hf.create_dataset('prosset', data=X_val[:,:24])
 	hf.create_dataset('specset', data=X_val[:,24:150])
@@ -117,7 +120,7 @@ def create_val(sessVal):
 	return None
 
 #### Create Test Data file ####
-def create_test(sessTest):
+def create_test(sessTest, data):
 	spk_base = 1
 	X_test =np.array([])
 	for sess_file in sessTest:
@@ -142,7 +145,7 @@ def create_test(sessTest):
 
 
 	X_test = X_test.astype('float64')
-	hf = h5py.File('data/test_Fisher_nonorm.h5', 'w')
+	hf = h5py.File(data+"/test_Fisher_nonorm.h5", 'w')
 	hf.create_dataset('dataset', data=X_test)
 	hf.create_dataset('prosset', data=X_test[:,:24])
 	hf.create_dataset('specset', data=X_test[:,24:150])
@@ -238,7 +241,7 @@ if __name__ == "__main__":
 	frac_train = 0.8
 	frac_val = 0.1
 
-	tr, v, te = split_files(feats_dir=args.features_dir, sess_List="./data/sessList.txt")
-	create_train(tr)
-	create_val(v)
-	create_test(te)
+	tr, v, te = split_files(feats_dir=args.features_dir, data=args.h5_output_dir)
+	create_train(sessTrain = tr, data=args.h5_output_dir)
+	create_val(sessVal= v, data=args.h5_output_dir)
+	create_test(sessTest=te, data=args.h5_output_dir)
