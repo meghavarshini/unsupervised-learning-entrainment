@@ -15,7 +15,7 @@ def make_argument_parser():
 	return parser
 
 
-def line_file_creator(metaf1, wavscpf1, segf1, uttf1, linef1, audio_dir_root1):
+def line_file_creator(metaf1, wavscpf1, segf1, uttf1, linef1, audio_dir_root1, sph2pipe, transcript_dir):
 	## read csv file with speaker details:
 	reader = csv.reader(metaf1)
 	metadata ={}
@@ -42,8 +42,8 @@ def line_file_creator(metaf1, wavscpf1, segf1, uttf1, linef1, audio_dir_root1):
 						# print("audio_path", audio_path)
 						audio = audio.split(".")[0]
 						sess_id = audio.split('_')[-1]
-						wavscpf.write(audio + ' '+ sph2pipe+' -f wav -p -c 1 ' + audio_path + ' |\n')
-						transcript = transcript_dir + "/" + audio + '.txt'
+						wavscpf.write( audio + " sph2pipe -f wav -p -c 1 " + audio_path + ' |\n' )
+						transcript = transcript_dir + "/" + audio + ".txt"
 						trans = open(transcript).readlines()
 						spk_list = []
 						j = 0
@@ -81,6 +81,7 @@ if __name__ == "__main__":
 	uttf = args.kaldi_output + "/utt2spk"
 	linef = args.kaldi_output + "/file2line"
 	audio_dir_root = args.fisher_corpus + "/fisher_eng_tr_sp_LDC2004S13_zip"
+	transcript_dir = args.fisher_corpus + "/fe_03_p1_tran/data/trans/all_trans"
 
 	line = line_file_creator(metaf1 = metaf, wavscpf1 = wavscpf,
 							 segf1 = segf, uttf1 = uttf, linef1 = linef,
