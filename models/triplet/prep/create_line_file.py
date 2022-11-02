@@ -15,7 +15,7 @@ def make_argument_parser():
 	return parser
 
 
-def line_file_creator(metaf1, wavscpf1, segf1, uttf1, linef1, audio_dir_root1, sph2pipe, transcript_dir):
+def line_file_creator(metaf1, wavscpf1, segf1, uttf1, linef1, audio_dir_root1, transcript_dir1):
 	## read csv file with speaker details:
 	reader = csv.reader(metaf1)
 	metadata ={}
@@ -43,7 +43,7 @@ def line_file_creator(metaf1, wavscpf1, segf1, uttf1, linef1, audio_dir_root1, s
 						audio = audio.split(".")[0]
 						sess_id = audio.split('_')[-1]
 						wavscpf.write( audio + " sph2pipe -f wav -p -c 1 " + audio_path + ' |\n' )
-						transcript = transcript_dir + "/" + audio + ".txt"
+						transcript = transcript_dir1 + "/" + audio + ".txt"
 						trans = open(transcript).readlines()
 						spk_list = []
 						j = 0
@@ -85,7 +85,7 @@ if __name__ == "__main__":
 
 	line = line_file_creator(metaf1 = metaf, wavscpf1 = wavscpf,
 							 segf1 = segf, uttf1 = uttf, linef1 = linef,
-							 audio_dir_root1 = audio_dir_root)
+							 audio_dir_root1 = audio_dir_root transcript_dir1 = transcript_dir)
 
 
 
