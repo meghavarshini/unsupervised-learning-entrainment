@@ -4,10 +4,10 @@ import argparse
 def make_argument_parser():
 	parser = argparse.ArgumentParser(
         				description="Processing filepaths and values required for setup")
-	parser.add_argument("fisher_corpus",
+	parser.add_argument("--fisher_corpus", type=str,
 						default = "/media/mule/projects/ldc/fisher-corpus",
 						help = "corpus directory")
-	parser.add_argument("kaldi_output",
+	parser.add_argument("--kaldi_output", type=str,
 						default="/home/tomcat/entrainment/feat_files/kaldi_output",
 						help= "directory for kaldi_output from create_kaldi.py")
 	return parser
