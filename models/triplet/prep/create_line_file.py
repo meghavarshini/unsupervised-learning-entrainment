@@ -6,10 +6,10 @@ def make_argument_parser():
         				description="Processing filepaths and values required for setup")
 	parser.add_argument("fisher_corpus",
 						default = "/media/mule/projects/ldc/fisher-corpus",
-						description = "corpus directory")
+						help = "corpus directory")
 	parser.add_argument("kaldi_output",
 						default="/home/tomcat/entrainment/feat_files/kaldi_output",
-						description= "directory for kaldi_output from create_kaldi.py")
+						help= "directory for kaldi_output from create_kaldi.py")
 	return parser
 
 # metaf = open(args.fisher_corpus + "/Fisher_meta.csv", 'r')
