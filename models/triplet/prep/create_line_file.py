@@ -14,9 +14,9 @@ def make_argument_parser():
 	return parser
 
 
-def line_file_creator(metaf, wavscpf1, segf1, uttf1, linef1, audio_dir_root1):
+def line_file_creator(metaf1, wavscpf1, segf1, uttf1, linef1, audio_dir_root1):
 	## read csv file with speaker details:
-	reader = csv.reader(metaf)
+	reader = csv.reader(metaf1)
 	metadata ={}
 	for row in reader:
 		metadata[row[0]] = row[1:]
@@ -81,7 +81,7 @@ if __name__ == "__main__":
 	linef = args.kaldi_output + "/file2line"
 	audio_dir_root = args.fisher_corpus + "/fisher_eng_tr_sp_LDC2004S13_zip"
 
-	line = line_file_creator(fisher_corpus = args.fisher_corpus, wavscpf1 = wavscpf,
+	line = line_file_creator(metaf1 = metaf, wavscpf1 = wavscpf,
 							 segf1 = segf, uttf1 = uttf, linef1 = linef,
 							 audio_dir_root1 = audio_dir_root)
 
