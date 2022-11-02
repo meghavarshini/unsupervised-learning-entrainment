@@ -80,7 +80,7 @@ if __name__ == "__main__":
 	audio_dir_root = args.fisher_corpus + "/fisher_eng_tr_sp_LDC2004S13_zip"
 
 	line = line_file_creator(fisher_corpus = args.fisher_corpus, wavscpf1 = wavscpf,
-							 segf1 = segf, utt1 = utt, linef1 = linef,
+							 segf1 = segf, uttf1 = uttf, linef1 = linef,
 							 audio_dir_root1 = audio_dir_root)
 
 
