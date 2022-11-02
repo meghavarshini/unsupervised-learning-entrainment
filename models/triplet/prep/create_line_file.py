@@ -13,8 +13,8 @@ def make_argument_parser():
 						help= "directory for kaldi_output from create_kaldi.py")
 	return parser
 
-# metaf = open(args.fisher_corpus + "/Fisher_meta.csv", 'r')
-def line_file_creator(fisher_corpus, wavscpf1, segf1, uttf1, linef1, audio_dir_root1):
+
+def line_file_creator(metaf, wavscpf1, segf1, uttf1, linef1, audio_dir_root1):
 	## read csv file with speaker details:
 	reader = csv.reader(metaf)
 	metadata ={}
@@ -23,7 +23,7 @@ def line_file_creator(fisher_corpus, wavscpf1, segf1, uttf1, linef1, audio_dir_r
 
 	## read kaldi output files:
 	wavscpf = open(wavscpf1, 'w')
-	segf = open(segf, 'w')
+	segf = open(segf1, 'w')
 	uttf = open(uttf1, 'w')
 	linef = open(linef1, 'wb')
 
@@ -74,6 +74,7 @@ if __name__ == "__main__":
 	parser = make_argument_parser()
 	args = parser.parse_args()
 
+	metaf = args.fisher_corpus + "/Fisher_meta.csv"
 	wavscpf = args.kaldi_output + "/wav.scp"
 	segf = args.kaldi_output + "/segments"
 	uttf = args.kaldi_output + "/utt2spk"
