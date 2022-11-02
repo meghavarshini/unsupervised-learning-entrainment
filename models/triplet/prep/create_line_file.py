@@ -85,7 +85,8 @@ if __name__ == "__main__":
 
 	line = line_file_creator(metaf1 = metaf, wavscpf1 = wavscpf,
 							 segf1 = segf, uttf1 = uttf, linef1 = linef,
-							 audio_dir_root1 = audio_dir_root transcript_dir1 = transcript_dir)
+							 audio_dir_root1 = audio_dir_root,
+							 transcript_dir1 = transcript_dir)
 
 
 
