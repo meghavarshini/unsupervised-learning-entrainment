@@ -1,4 +1,6 @@
 import pickle
+import argparse
+
 def make_argument_parser():
 	parser = argparse.ArgumentParser(
         				description="Processing filepaths and values required for setup")
