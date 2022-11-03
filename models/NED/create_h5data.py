@@ -7,20 +7,64 @@ import numpy as np
 import pandas as pd
 import math
 
-SEED=448
-frac_train = 0.8
-frac_val = 0.1
+def make_argument_parser():
+    parser = argparse.ArgumentParser(
+            description="Processing filepaths and values required for setup")
+    parser.add_argument("feature_dir",
+            default = "/home/tomcat/entrainment/feat_files/baseline_2_feats",
+            description = "features directory")
+    parser.add_argument("h5_directory",
+            default = "/home/tomcat/entrainment/feat_files/baseline_2_h5",
+            description = "directory for storing h5 files")
+    return parser
 
+"""
+Writing the shuffled list of feature files to a text file. This way,
+if you run into any issues while generating h5 files,
+the same randomized list of feature files is called,
+thus saving time and effort. Comment out 13-30 and uncomment 33-35
+if you wish to avoid saving the file list.
+ Create h5 files
+ """
 
-def clean_feat(XX, dim):
-	ind = []
-	for i, pair in enumerate(XX):
-		x = pair[0:dim]
-		y = pair[dim:]
-		if np.any(x) and np.any(y) and (not np.any(np.isnan(x))) and (not np.any(np.isnan(y))):
-			ind.append(i)
-	XX = XX[ind,:]
-	return XX
+def split_files(feats_dir, sess_List=None):
+    sess_files = path.isfile(sess_List)
+    if sess_files == 1:
+        print("list of transcripts exists")
+        with open(sess_List, 'r') as f:
+            temp = f.read().splitlines()
+            print(len(temp), len(sorted(glob(feats_dir + '/*.csv'))))
+            if len(temp) == len(sorted(glob(feats_dir + '/*.csv'))):
+                print("list of shuffled files exists, importing...")
+                sessList = temp
+                print(sessList)
+            else:
+                print("error in importing files")
+                raise ValueError("sessList.txt is not an accurate list of files")
+    else:
+        print("list of transcripts does not exist")
+        sessList = sorted(glob(feats_dir + '/*.csv'))
+        print("sessList: ", sessList)
+        print("creating a list of shuffled feature files and saving to disk...")
+        random.seed(SEED)
+        random.shuffle(sessList)
+        with open("./data/sessList.txt", 'w') as f:
+            f.writelines("%s\n" % i for i in sessList)
+        with open("./data/sessList.txt", 'r') as f:
+            sessList = f.read().splitlines()
+
+    num_files_all = len(sessList)
+    num_files_train = int(np.ceil((frac_train * num_files_all)))
+    print("num_files_train: ", num_files_train)
+    num_files_val = int(np.ceil((frac_val * num_files_all)))
+    print("num_files_val", num_files_val)
+    num_files_test = num_files_all - num_files_train - num_files_val
+    print("num_files_test", num_files_test)
+    sessTrain = sessList[:num_files_train]
+    sessVal = sessList[num_files_train:num_files_val+num_files_train]
+    sessTest = sessList[num_files_val+num_files_train:]
+    print(len(sessTrain) + len(sessVal) + len(sessTest))
+    return(sessTrain, sessVal, sessTest)
 
 # Create h5 files
 
