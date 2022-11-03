@@ -17,11 +17,12 @@ def make_argument_parser():
 
 def line_file_creator(metaf1, wavscpf1, segf1, uttf1, linef1, audio_dir_root1, transcript_dir1):
 	## read csv file with speaker details:
-	reader = csv.reader(metaf1)
 	metadata ={}
-	for row in reader:
-		print(row)
-		metadata[row[0]] = row[1:]
+	with open(metaf1, newline='') as f:
+		reader = csv.reader(f, delimiter=',')
+		for row in reader:
+			print(row)
+			metadata[row[0]] = row[1:]
 	print(metadata)
 
 	## read kaldi output files:
