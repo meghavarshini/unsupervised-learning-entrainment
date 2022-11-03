@@ -21,6 +21,7 @@ def line_file_creator(metaf1, wavscpf1, segf1, uttf1, linef1, audio_dir_root1, t
 	metadata ={}
 	for row in reader:
 		metadata[row[0]] = row[1:]
+	print(metadata)
 
 	## read kaldi output files:
 	wavscpf = open(wavscpf1, 'w')
