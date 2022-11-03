@@ -48,12 +48,13 @@ def line_file_creator(metaf1, wavscpf1, segf1, uttf1, linef1, audio_dir_root1, t
 						spk_list = []
 						j = 0
 						for i, line in enumerate(trans):
-							if line!='\n':
+							if line!= '\n':
 								if line[0] !='#':
 									start, stop, spk = line.split(':')[0].split(' ')
-									if spk=="A":
+									if spk == "A":
 										spk = metadata[sess_id][1]
 									else:
+										print("sess_id: ", sess_id)
 										spk = metadata[sess_id][3]
 									spk_list.append([start, stop, spk])
 									utt_id = spk + '-' + audio + '_' + str(int(1000*float(start))) + '-' + str(int(1000*float(stop)))
