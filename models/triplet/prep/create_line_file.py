@@ -20,6 +20,7 @@ def line_file_creator(metaf1, wavscpf1, segf1, uttf1, linef1, audio_dir_root1, t
 	reader = csv.reader(metaf1)
 	metadata ={}
 	for row in reader:
+		print(row)
 		metadata[row[0]] = row[1:]
 	print(metadata)
 
