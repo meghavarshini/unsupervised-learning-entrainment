@@ -121,5 +121,5 @@ if __name__ == "__main__":
     if not args.no_cuda and torch.cuda.is_available():
         torch.cuda.manual_seed(args.seed)
 
-    X_test = load_h5(args.hff)
-    test_run = model_testing(args.model_name, X_test, args.cuda)
+    X_test1 = load_h5(args.hff)
+    test_run = model_testing(args.model_name, X_test1, args.cuda)
