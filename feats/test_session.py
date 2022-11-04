@@ -5,7 +5,8 @@ SEED=448
 #Uncomment for parsing inputs
 def make_argument_parser():
     parser = argparse.ArgumentParser(description='entrainment testing')
-    parser.add_argument('--hff', action='store_true', default="./data/test_Fisher_nonorm.h5",
+    parser.add_argument('--hff', action='store_true',
+            default="/home/tomcat/entrainment/feat_files/baseline_1_h5/test_Fisher_nonorm.h5",
             help='enables CUDA training')
     parser.add_argument('--no-cuda', action='store_true', default=False,
             help='enables CUDA training')
