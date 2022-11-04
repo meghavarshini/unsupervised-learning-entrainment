@@ -114,6 +114,7 @@ if __name__ == "__main__":
     os.getcwd()
     parser = make_argument_parser()
     args = parser.parse_args()
+    args.cuda = not args.no_cuda and torch.cuda.is_available()
 
     torch.manual_seed(args.seed)
 
