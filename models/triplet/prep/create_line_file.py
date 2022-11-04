@@ -21,9 +21,9 @@ def line_file_creator(metaf1, wavscpf1, segf1, uttf1, linef1, audio_dir_root1, t
 	with open(metaf1, newline='') as f:
 		reader = csv.reader(f, delimiter=',')
 		for row in reader:
-			print(row)
+			# print(row)
 			metadata[row[0]] = row[1:]
-	print(metadata)
+	# print(metadata)
 
 	## read kaldi output files:
 	wavscpf = open(wavscpf1, 'w')
@@ -45,7 +45,7 @@ def line_file_creator(metaf1, wavscpf1, segf1, uttf1, linef1, audio_dir_root1, t
 						# print("audio_path", audio_path)
 						audio = audio.split(".")[0]
 						sess_id = audio.split('_')[-1]
-						wavscpf.write( audio + " sph2pipe -f wav -p -c 1 " + audio_path + ' |\n' )
+						#wavscpf.write(str(audio) + ' '+ sph2pipe +' -f wav -p -c 1 ' + audio.name + ' |\n')
 						transcript = transcript_dir1 + "/" + audio + ".txt"
 						trans = open(transcript).readlines()
 						spk_list = []
@@ -57,7 +57,6 @@ def line_file_creator(metaf1, wavscpf1, segf1, uttf1, linef1, audio_dir_root1, t
 									if spk == "A":
 										spk = metadata[sess_id][1]
 									else:
-										print("sess_id: ", sess_id)
 										spk = metadata[sess_id][3]
 									spk_list.append([start, stop, spk])
 									utt_id = spk + '-' + audio + '_' + str(int(1000*float(start))) + '-' + str(int(1000*float(stop)))
