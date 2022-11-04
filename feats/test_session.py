@@ -27,7 +27,7 @@ def make_argument_parser():
 
 def load_h5(file):
     print("h5 file: ", file)
-    hff = h5py.File(file, 'r')
+    file = h5py.File(file, 'r')
     test = np.array(file['dataset'])
     return test
 # hff = h5py.File('data/test_Fisher_nonorm.h5', 'r')
