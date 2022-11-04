@@ -46,6 +46,8 @@ def model_testing(model_name, X_test, cuda= False):
     model = VAE().double()
     model = torch.load(model_name)
     model.eval()
+    print("model loaded")
+
     if cuda:
         model.cuda()
 
@@ -73,6 +75,7 @@ def model_testing(model_name, X_test, cuda= False):
             fake_test_loss = 0
 
             for idx in idx_same_spk:
+                print("working on file: ", idx)
 
                 ll = random.choice(list(set(idx_same_spk) - set([idx])))
                 x_data = X_test[idx,:228]
@@ -101,8 +104,9 @@ def model_testing(model_name, X_test, cuda= False):
             Fake_loss.append(fake_test_loss)
             # print loss_real, loss_fake
 
-        Loss=np.array(Loss)
-        Fake_loss=np.array(Fake_loss)
+        # this is inefficient- find a way to do everything on CPU
+        Loss.append(loss_real.cpu())
+        Fake_loss.append(loss_fake.cpu())
 
         total_test_loss = np.sum(Loss)/Loss.shape[0]
         total_fake_test_loss = np.sum(Fake_loss)/Loss.shape[0]
