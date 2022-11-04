@@ -55,6 +55,7 @@ def model_testing(model_name, X_test,cuda):
     Fake_loss = []
     # for batch_idx, (x_data, y_data) in enumerate(test_loader):
     for idx, data in enumerate(X_test):
+        print("working on file: ", idx)
         x_data = data[:228]
         y_data = data[228:-1]
         idx_same_spk =list(np.where(X_test[:,-1]==data[-1]))[0]
@@ -68,6 +69,7 @@ def model_testing(model_name, X_test,cuda):
         y_fake_data = X_test[ll,228:-1]
 
         y_fake_data = torch.from_numpy(y_fake_data)
+        print("data loaded!")
 
         if cuda:
             x_data = x_data.cuda()
@@ -93,6 +95,7 @@ def model_testing(model_name, X_test,cuda):
 
         test_loss += loss_real
         fake_test_loss += loss_fake
+        print("model run complete!")
 
     # this is inefficient- find a way to do everything on CPU
         Loss.append(loss_real.cpu())
