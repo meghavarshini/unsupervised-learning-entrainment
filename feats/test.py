@@ -61,12 +61,12 @@ def model_testing(model_name, X_test,cuda):
         ll = random.choice(list(set(idx_same_spk) -set([idx])))
         spk = int(data[-1])
 
-        x_data = Variable(torch.from_numpy(x_data))
-        y_data = Variable(torch.from_numpy(y_data))
+        x_data = torch.from_numpy(x_data)
+        y_data = torch.from_numpy(y_data)
 
         y_fake_data = X_test[ll,228:-1]
 
-        y_fake_data = Variable(torch.from_numpy(y_fake_data))
+        y_fake_data = torch.from_numpy(y_fake_data)
 
         if cuda:
             x_data = x_data.cuda()
