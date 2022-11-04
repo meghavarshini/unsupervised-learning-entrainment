@@ -2,19 +2,20 @@ output
 test_data
 
 .idea/
+.venv
 entrainment_config.pyc
 __pycache__
 
 # Output data files:
 models/triplet/prep/data
-models/triplet/prep/data/
 models/NED/data
 feats/data
 
-feats/model
+feats/models
 models/NED/models
 models/triplet/train/models
-.venv
+
+
 
 *.DS_Store
 *.csv
@@ -25,5 +26,3 @@ models/triplet/train/models
 *.h5
 *.egg-info
 *.scp
-*.h5
-*.pt

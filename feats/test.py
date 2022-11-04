@@ -9,8 +9,6 @@ os.getcwd()
 
 SEED=448
 
-#------------------------------------------------------------------
-#Uncomment for parsing inputs
 def make_argument_parser():
     parser = argparse.ArgumentParser(description='entrainment testing')
     parser.add_argument('--no-cuda', action='store_true',
@@ -39,7 +37,7 @@ def model_testing(model_name, X_test,cuda):
     model = VAE().double()
     model = torch.load(model_name)
     model.eval()
-    if args.cuda:
+    if cuda:
         model.cuda()
     if 'l1' in model_name:
         p=1
