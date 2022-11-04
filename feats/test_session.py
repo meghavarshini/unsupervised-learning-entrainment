@@ -79,9 +79,9 @@ def model_testing(model_name, X_test, cuda= False):
                 y_data = X_test[idx,228:-1]
                 y_fake_data = X_test[ll,228:-1]
 
-                x_data = Variable(torch.from_numpy(x_data))
-                y_data = Variable(torch.from_numpy(y_data))
-                y_fake_data = Variable(torch.from_numpy(y_fake_data))
+                x_data = torch.from_numpy(x_data)
+                y_data = torch.from_numpy(y_data)
+                y_fake_data = torch.from_numpy(y_fake_data)
 
                 if cuda:
                     x_data = x_data.cuda()
