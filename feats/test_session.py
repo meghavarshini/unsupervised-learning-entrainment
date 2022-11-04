@@ -100,13 +100,12 @@ def model_testing(model_name, X_test, cuda= False):
                 test_loss += loss_real
                 fake_test_loss += loss_fake
             # pdb.set_trace()
-            Loss.append(test_loss)
-            Fake_loss.append(fake_test_loss)
-            # print loss_real, loss_fake
 
-        # this is inefficient- find a way to do everything on CPU
-        Loss.append(loss_real.cpu())
-        Fake_loss.append(loss_fake.cpu())
+            # this is inefficient- find a way to do everything on CPU
+            Loss.append(loss_real.cpu())
+            Fake_loss.append(loss_fake.cpu())
+            print("loss values computed!")
+            # print loss_real, loss_fake
 
         total_test_loss = np.sum(Loss)/Loss.shape[0]
         total_fake_test_loss = np.sum(Fake_loss)/Loss.shape[0]
