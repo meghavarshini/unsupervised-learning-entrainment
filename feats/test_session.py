@@ -23,7 +23,6 @@ def make_argument_parser():
             default= "/home/tomcat/entrainment/feat_files/baseline_1_models/trained_VAE_nonorm_nopre_l1.pt",
             help='name associated with the trained model')
     args = parser.parse_args()
-    args.cuda = not args.no_cuda and torch.cuda.is_available()
     return parser
 
 
@@ -122,6 +121,8 @@ if __name__ == "__main__":
     os.getcwd()
     parser = make_argument_parser()
     args = parser.parse_args()
+    args.cuda = not args.no_cuda and torch.cuda.is_available()
+
 
     torch.manual_seed(args.seed)
 

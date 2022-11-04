@@ -28,9 +28,10 @@ def make_argument_parser():
 
 
 def load_h5(file):
-    print("h5 file: ", file)
+    print("loading h5 file: ", file)
     file = h5py.File(file, 'r')
     test = np.array(file['dataset'])
+    print("loading complete!")
     return test
 
 def model_testing(model_name, X_test,cuda):
