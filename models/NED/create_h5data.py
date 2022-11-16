@@ -232,7 +232,7 @@ def create_test(sessTest):
 	hf = h5py.File('data/test_' + dataset_id + '_' + norm_id + '.h5', 'w')
 	hf.create_dataset('dataset', data=X_test)
 	hf.close()
-return None
+	return None
 
 # os.remove(temp_testfile)
 
