@@ -241,7 +241,7 @@ if __name__ == "__main__":
 	frac_train = 0.8
 	frac_val = 0.1
 
-	tr, v, te = split_files(feats_dir = args.features_dir, sess_List="./data/sessList.txt")
+	tr, v, te = split_files(feats_dir = args.features_dir, sess_List=args.h5_directory+"/sessList.txt")
 	create_train(tr)
 	create_val(v)
 	create_test(te)
