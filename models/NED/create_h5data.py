@@ -163,101 +163,76 @@ def create_train(sessTrain):
 	print ('Writing Train takes '+"{0:.2f}".format(time.time() - start) )
 	return None
 
+###### Create Validation Data file ######
+def create_val(sessVal):
+	dataset_id = 'Fisher_acoustic'
+	norm_id = 'nonorm'
+	dim = 228
+	if sessVal != []:
+		print(sessVal, "exists and valid")
+	X_val = np.empty(shape=(0, 0), dtype='float64' )
+	temp_valfile = os.getcwd()+"/data/tmp.csv"
+	ftmp = open(temp_valfile, 'a')
+	for sess_file in sorted(sessVal):
+		start = time.time()
+		print(sess_file)
+		xx = np.genfromtxt(sess_file, delimiter= ",")
+		xx = np.hstack((xx[0:-1,:], xx[1:,:]))
+		xx = clean_feat(xx, dim)
+		nn = xx.shape[0]
+		np.savetxt(ftmp, xx, delimiter=',')
+		print ('Val: ' +  sess_file + '  '+"{0:.2f}".format(time.time() - start) + '  '+ str(nn))
+
+	ftmp.close()
+	start = time.time()
+	X_val = np.genfromtxt(temp_valfile, delimiter= ",")
+	X_val = X_val.astype('float64')
+	os.remove(temp_valfile)
+
+	print ('Reading Val takes  '+"{0:.2f}".format(time.time() - start) )
+
+	start = time.time()
+	hf = h5py.File('data/val_' + dataset_id + '_' + norm_id + '.h5', 'w')
+	hf.create_dataset('dataset', data=X_val)
+	hf.close()
+	print ('Writing Val takes '+"{0:.2f}".format(time.time() - start) )
+	return None
 ############ Uncomment the following chunks one by one to create data files ###################
-
-###### Create Train Data file ######
-#temp_trainfile = os.getcwd()+"/data/tmp.csv"
-#try:
-#    os.remove(temp_trainfile)
-#except OSError:
-#    pass
-#ftmp = open(temp_trainfile, 'a')
-#for sess_file in sorted(sessTrain):
-#	start = time.time()
-#	print("sess_file: ", sess_file)
-#	########## ToDo: find out IPU feat files that don't have enough rows ########
-#	xx = np.genfromtxt(sess_file, delimiter= ",")
-#	xx = np.hstack((xx[0:-1,:], xx[1:,:]))
-#	xx = clean_feat(xx, dim)
-#	nn = xx.shape[0]
-#	np.savetxt(ftmp, xx, delimiter=',')
-#	print ('Train: ' +  sess_file + '  '+"{0:.2f}".format(time.time() - start) + '  '+ str(nn))
-
-#ftmp.close()
-#start = time.time()
-#X_train = np.genfromtxt(temp_trainfile, delimiter= ",")
-#X_train = X_train.astype('float64')
-# os.remove(temp_trainfile)
-
-#print ('Reading Train takes  '+"{0:.2f}".format(time.time() - start) )
-
-#start = time.time()
-#hf = h5py.File('data/train_' + dataset_id + '_' + norm_id + '.h5', 'w')
-#hf.create_dataset('dataset', data=X_train)
-#hf.close()
-#print ('Writing Train takes '+"{0:.2f}".format(time.time() - start) )
-
-
-
-###### Create Val Data file ######
-
-# X_val = np.empty(shape=(0, 0), dtype='float64' )
-# temp_valfile = os.getcwd()+"/data/tmp.csv"
-# ftmp = open(temp_valfile, 'a')
-# for sess_file in sorted(sessVal):
-# 	start = time.time()
-# 	print(sess_file)
-# 	xx = np.genfromtxt(sess_file, delimiter= ",")
-# 	xx = np.hstack((xx[0:-1,:], xx[1:,:]))
-# 	xx = clean_feat(xx, dim)
-# 	nn = xx.shape[0]
-# 	np.savetxt(ftmp, xx, delimiter=',')
-# 	print ('Val: ' +  sess_file + '  '+"{0:.2f}".format(time.time() - start) + '  '+ str(nn))
-#
-# ftmp.close()
-# start = time.time()
-# X_val = np.genfromtxt(temp_valfile, delimiter= ",")
-# X_val = X_val.astype('float64')
-# os.remove(temp_valfile)
-#
-# print ('Reading Val takes  '+"{0:.2f}".format(time.time() - start) )
-#
-# start = time.time()
-# hf = h5py.File('data/val_' + dataset_id + '_' + norm_id + '.h5', 'w')
-# hf.create_dataset('dataset', data=X_val)
-# hf.close()
-# print ('Writing Val takes '+"{0:.2f}".format(time.time() - start) )
 
 
 ###### Create Test Data file ######
-# temp_testfile = temp_testfile
-# ftmp = open(temp_testfile, 'a')
-#
-# spk_base = 1
-# for sess_file in sessTest:
-# 	xx = np.genfromtxt(sess_file, delimiter= ",")
-# 	xx = np.hstack((xx[0:-1,:], xx[1:,:]))
-# 	xx = clean_feat(xx, dim)
-# 	N = xx.shape[0]
-# 	if np.mod(N,2)==0:
-# 		spk_label = np.tile([spk_base, spk_base+1], [1, N/2])
-# 	else:
-# 		spk_label = np.tile([spk_base, spk_base+1], [1, N/2])
-# 		spk_label = np.append(spk_label, spk_base)
-# 	xx = np.hstack((xx, spk_label.T.reshape([N,1])))
-# 	spk_base += 1
-# 	np.savetxt(ftmp, xx, delimiter=',')
-# 	print('Test: ' +  sess_file , xx.shape[1])
-#
-# 	if xx.shape[1]!=913:
-# 		print(sess_file)
-# ftmp.close()
-# X_test = np.genfromtxt(temp_testfile, delimiter= ",")
-# X_test = X_test.astype('float64')
-# hf = h5py.File('data/test_' + dataset_id + '_' + norm_id + '.h5', 'w')
-# hf.create_dataset('dataset', data=X_test)
-# hf.close()
+def create_test(sessTest):
+	dataset_id = 'Fisher_acoustic'
+	norm_id = 'nonorm'
+	dim = 228
+	temp_testfile = temp_testfile
+	ftmp = open(temp_testfile, 'a')
 
+	spk_base = 1
+	for sess_file in sessTest:
+		xx = np.genfromtxt(sess_file, delimiter= ",")
+		xx = np.hstack((xx[0:-1,:], xx[1:,:]))
+		xx = clean_feat(xx, dim)
+		N = xx.shape[0]
+		if np.mod(N,2)==0:
+			spk_label = np.tile([spk_base, spk_base+1], [1, N/2])
+		else:
+			spk_label = np.tile([spk_base, spk_base+1], [1, N/2])
+			spk_label = np.append(spk_label, spk_base)
+		xx = np.hstack((xx, spk_label.T.reshape([N,1])))
+		spk_base += 1
+		np.savetxt(ftmp, xx, delimiter=',')
+		print('Test: ' +  sess_file , xx.shape[1])
+
+		if xx.shape[1]!=913:
+			print(sess_file)
+	ftmp.close()
+	X_test = np.genfromtxt(temp_testfile, delimiter= ",")
+	X_test = X_test.astype('float64')
+	hf = h5py.File('data/test_' + dataset_id + '_' + norm_id + '.h5', 'w')
+	hf.create_dataset('dataset', data=X_test)
+	hf.close()
+return None
 
 # os.remove(temp_testfile)
 
@@ -269,3 +244,6 @@ if __name__ == "__main__":
 	frac_val = 0.1
 
 	tr, v, te = split_files(feats_dir = args.features_dir, sess_List = args.h5_directory+"/sessList.txt")
+	create_train(tr)
+	# create_val(v)
+	# create_test(te)
