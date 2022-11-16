@@ -62,9 +62,9 @@ def split_files(feats_dir, sess_List=None):
 		print("creating a list of shuffled feature files and saving to disk...")
 		random.seed(SEED)
 		random.shuffle(sessList)
-		with open("./data/sessList.txt", 'w') as f:
+		with open(sess_List, 'w') as f:
 			f.writelines("%s\n" % i for i in sessList)
-		with open("./data/sessList.txt", 'r') as f:
+		with open(sess_List, 'r') as f:
 			sessList = f.read().splitlines()
 
 	num_files_all = len(sessList)
@@ -268,4 +268,4 @@ if __name__ == "__main__":
 	frac_train = 0.8
 	frac_val = 0.1
 
-	tr, v, te = split_files(feats_dir = args.features_dir, sess_List = "/home/tomcat/entrainment/feat_files/baseline_1_h5/sessList.txt")
+	tr, v, te = split_files(feats_dir = args.features_dir, sess_List = args.h5_directory+"/sessList.txt")
