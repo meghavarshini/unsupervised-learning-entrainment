@@ -7,8 +7,7 @@ import h5py
 import argparse
 import random
 import numpy as np
-import pandas as pd
-import math
+import time
 import os
 
 def make_argument_parser():
