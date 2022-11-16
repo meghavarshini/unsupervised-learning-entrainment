@@ -52,10 +52,10 @@ def split_files(feats_dir,sess_List= None):
 		# print("sessList", sessList)
 		random.seed(SEED)
 		random.shuffle(sessList)
-		with open("./data/sessList.txt", 'w') as f:
+		with open(sess_List, 'w') as f:
 			f.writelines( "%s\n" % i for i in sessList)
 
-		with open("./data/sessList.txt", 'r') as f:
+		with open(sess_List, 'r') as f:
 			sessList = f.read().splitlines()
 
 	#Alternative to 13-30:
