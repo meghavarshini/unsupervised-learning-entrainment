@@ -12,12 +12,12 @@ import math
 def make_argument_parser():
 	parser = argparse.ArgumentParser(
         				description="Processing filepaths and values required for setup")
-	parser.add_argument("features_dir",
+	parser.add_argument("--features_dir",
 						default = "/home/tomcat/entrainment/feat_files/baseline_1_feats",
-						description = "features directory")
-	parser.add_argument("h5_directory",
+						help = "features directory")
+	parser.add_argument("--h5_directory",
 						default="/home/tomcat/entrainment/feat_files/baseline_1_h5",
-						description= "directory for storing h5 files")
+						help= "directory for storing h5 files")
 	return parser
 
 """ 
