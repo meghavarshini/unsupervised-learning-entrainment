@@ -79,52 +79,6 @@ def split_files(feats_dir, sess_List=None):
 	print(len(sessTrain) + len(sessVal) + len(sessTest))
 	return(sessTrain, sessVal, sessTest)
 
-# Create h5 files
-
-#dataset_id = 'Fisher_acoustic'
-#norm_id = 'nonorm'
-#dim = 228
-# Making files for the test partition, with train and val commented out. Try uncommenting, and make this happen
-#data_dir = feats_dir
-
-# Try to generate this sessList correctly
-#sess_files = os.path.isfile("data/sessList.txt")
-#if sess_files == 1:
-#	with open("data/sessList.txt", 'r') as f:
-#		temp = f.read().splitlines()
-#		if len(temp) == len(sorted(glob.glob(feats_dir + '/*.csv'))):
-#			print("list of shuffled files exists, importing...")
-#			sessList = temp
-#else:
-#	sessList= sorted(glob.glob(feats_dir + '/*.csv'))
-#	print("creating a list of shuffled feature files and saving to disk...")
-#	# print("sessList", sessList)
-#	random.seed(SEED)
-#	random.shuffle(sessList)
-#	with open("data/sessList.txt", 'w') as f:
-#		f.writelines( "%s\n" % i for i in sessList)
-
-#	with open("data/sessList.txt", 'r') as f:
-#		sessList = f.read().splitlines()
-
-## Alternative to 27-45
-# sessList = sorted(glob.glob(data_dir + '/*.csv'))
-## sessList= [f for f in sorted(glob.glob(data_dir + '/*.csv')) if int(os.path.basename(f).split('.')[0].split('_')[-2]) < 800]
-# random.seed(SEED)
-# random.shuffle(sessList)
-
-#num_files_all = len(sessList)
-#num_files_train = int(np.ceil((frac_train*num_files_all)))
-#num_files_val = int(np.ceil((frac_val*num_files_all)))
-#num_files_test = num_files_all - num_files_train - num_files_val
-#print("num_files_all: ", num_files_all)
-#print("num_files_train: ", num_files_train)
-#sessTrain = sessList[:num_files_train]
-#sessVal = sessList[num_files_train:num_files_val+num_files_train]
-#sessTest = sessList[num_files_val+num_files_train:]
-#print("Total File = ", len(sessTrain) + len(sessVal) + len(sessTest))
-
-
 ###### Create Train Data file ######
 def create_train(sessTrain):
 	dataset_id = 'Fisher_acoustic'
@@ -139,7 +93,6 @@ def create_train(sessTrain):
 	for sess_file in sorted(sessTrain):
 		start = time.time()
 		print("sess_file: ", sess_file)
-		########## ToDo: find out IPU feat files that don't have enough rows ########
 		xx = np.genfromtxt(sess_file, delimiter= ",")
 		xx = np.hstack((xx[0:-1,:], xx[1:,:]))
 		xx = clean_feat(xx, dim)
