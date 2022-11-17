@@ -96,7 +96,7 @@ def create_train(sessTrain):
 		xx = np.genfromtxt(sess_file, delimiter= ",")
 		print("dimensions of array: ", np.shape(xx))
 		if xx.ndim == 1:
-			print("encountered a CSV file with the incorrect shape. It has ", xx.ndim, " dimensions!"
+			print("encountered a CSV file with the incorrect shape. It has ", xx.ndim, " dimensions!")
 			print("Proceeding to converting this vector into an array...")
 			xx = xx.reshape(len(xx), 1)
 			xx = np.hstack((xx[0:-1, :], xx[1:, :]))
