@@ -24,13 +24,6 @@ def make_argument_parser():
             help  = "directory for storing h5 files")
     return parser
 
-#SEED=448
-#frac_train = 0.8
-#frac_val = 0.1
-
-#fisher_corpus = "/media/mule/projects/ldc/fisher-corpus/"
-#feats_dir = fisher_corpus+"/feats"
-
 def clean_feat(XX, dim):
 	ind = []
 	for i, pair in enumerate(XX):
@@ -180,8 +173,6 @@ def create_val(sessVal):
 	hf.close()
 	print ('h5 data written to disk! Writing Val takes '+"{0:.2f}".format(time.time() - start) )
 	return None
-############ Uncomment the following chunks one by one to create data files ###################
-
 
 ###### Create Test Data file ######
 def create_test(sessTest):
@@ -196,6 +187,9 @@ def create_test(sessTest):
 		xx = np.genfromtxt(sess_file, delimiter= ",")
 		xx = np.hstack((xx[0:-1,:], xx[1:,:]))
 		xx = clean_feat(xx, dim)
+		'''Now, in order to correctly generate a test set array, we need an even number of rows- 
+		because we will be dividing them up in half. The row numbers also need to be an integer, not a float. 
+		So, we use math.floor to round down the number of rows to the nearest integer.'''
 		N = xx.shape[0]
 		if np.mod(N,2)==0:
 			print("array dimension is an even number")
@@ -232,6 +226,6 @@ if __name__ == "__main__":
 	frac_val = 0.1
 
 	tr, v, te = split_files(feats_dir = args.features_dir, sess_List = args.h5_directory+"/sessList.txt")
-	# create_train(tr)
-	# create_val(v)
+	create_train(tr)
+	create_val(v)
 	create_test(te)
