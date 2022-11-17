@@ -94,6 +94,7 @@ def create_train(sessTrain):
 		start = time.time()
 		print("sess_file: ", sess_file)
 		xx = np.genfromtxt(sess_file, delimiter= ",")
+		print("dimensions of array: ", np.shape(xx))
 		xx = np.hstack((xx[0:-1,:], xx[1:,:]))
 		xx = clean_feat(xx, dim)
 		nn = xx.shape[0]
