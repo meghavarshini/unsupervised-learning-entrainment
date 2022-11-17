@@ -144,13 +144,26 @@ def create_val(sessVal):
 		start = time.time()
 		print(sess_file)
 		xx = np.genfromtxt(sess_file, delimiter= ",")
-		xx = np.hstack((xx[0:-1,:], xx[1:,:]))
-		xx = clean_feat(xx, dim)
-		nn = xx.shape[0]
-		np.savetxt(ftmp, xx, delimiter=',')
-		print ('Validation file: ' +  sess_file
-			   + '  duration:  '+"{0:.2f}".format(time.time() - start)
-			   + '  rows of data to be processed:  '+ str(nn))
+		print("dimensions of array: ", np.shape(xx))
+		if xx.ndim == 1:
+			print("encountered a CSV file with the incorrect shape. It has ", xx.ndim, " dimensions!")
+			print("Proceeding to converting this vector into an array...")
+			xx = xx.reshape(len(xx), 1)
+			xx = np.hstack((xx[0:-1, :], xx[1:, :]))
+			xx = clean_feat(xx, dim)
+			nn = xx.shape[0]
+			np.savetxt(ftmp, xx, delimiter=',')
+			print('Validation file: ' + sess_file
+				  + '  duration:  ' + "{0:.2f}".format(time.time() - start)
+				  + '  rows of data to be processed:  ' + str(nn))
+		else:
+			xx = np.hstack((xx[0:-1,:], xx[1:,:]))
+			xx = clean_feat(xx, dim)
+			nn = xx.shape[0]
+			np.savetxt(ftmp, xx, delimiter=',')
+			print ('Validation file: ' +  sess_file
+				   + '  duration:  '+"{0:.2f}".format(time.time() - start)
+				   + '  rows of data to be processed:  '+ str(nn))
 
 	ftmp.close()
 	start = time.time()
@@ -174,7 +187,7 @@ def create_test(sessTest):
 	dataset_id = 'Fisher_acoustic'
 	norm_id = 'nonorm'
 	dim = 228
-	temp_testfile = temp_testfile
+	temp_testfile = os.getcwd()+"/data/tmp.csv"
 	ftmp = open(temp_testfile, 'a')
 
 	spk_base = 1
@@ -215,5 +228,5 @@ if __name__ == "__main__":
 
 	tr, v, te = split_files(feats_dir = args.features_dir, sess_List = args.h5_directory+"/sessList.txt")
 	# create_train(tr)
-	create_val(v)
+	# create_val(v)
 	create_test(te)
