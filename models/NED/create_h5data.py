@@ -74,7 +74,7 @@ def split_files(feats_dir, sess_List=None):
 	return(sessTrain, sessVal, sessTest)
 
 ###### Create Train Data file ######
-def create_train(sessTrain):
+def create_train(sessTrain, h5_dir):
 	dataset_id = 'Fisher_acoustic'
 	norm_id = 'nonorm'
 	dim = 228
@@ -118,14 +118,14 @@ def create_train(sessTrain):
 	print ('Reading Train takes  '+"{0:.2f}".format(time.time() - start) )
 
 	start = time.time()
-	hf = h5py.File('data/train_' + dataset_id + '_' + norm_id + '.h5', 'w')
+	hf = h5py.File(h5_dir+'/train_' + dataset_id + '_' + norm_id + '.h5', 'w')
 	hf.create_dataset('dataset', data=X_train)
 	hf.close()
 	print ('h5 data written to disk! Writing Train takes '+"{0:.2f}".format(time.time() - start) )
 	return None
 
 ###### Create Validation Data file ######
-def create_val(sessVal):
+def create_val(sessVal,h5_dir):
 	dataset_id = 'Fisher_acoustic'
 	norm_id = 'nonorm'
 	dim = 228
@@ -168,14 +168,14 @@ def create_val(sessVal):
 	print ('Reading Val takes  '+"{0:.2f}".format(time.time() - start) )
 
 	start = time.time()
-	hf = h5py.File('data/val_' + dataset_id + '_' + norm_id + '.h5', 'w')
+	hf = h5py.File(h5_dir +'/val_' + dataset_id + '_' + norm_id + '.h5', 'w')
 	hf.create_dataset('dataset', data=X_val)
 	hf.close()
 	print ('h5 data written to disk! Writing Val takes '+"{0:.2f}".format(time.time() - start) )
 	return None
 
 ###### Create Test Data file ######
-def create_test(sessTest):
+def create_test(sessTest,h5_dir):
 	dataset_id = 'Fisher_acoustic'
 	norm_id = 'nonorm'
 	dim = 228
@@ -210,7 +210,7 @@ def create_test(sessTest):
 	ftmp.close()
 	X_test = np.genfromtxt(temp_testfile, delimiter= ",")
 	X_test = X_test.astype('float64')
-	hf = h5py.File('data/test_' + dataset_id + '_' + norm_id + '.h5', 'w')
+	hf = h5py.File(h5_dir+'/test_' + dataset_id + '_' + norm_id + '.h5', 'w')
 	hf.create_dataset('dataset', data=X_test)
 	hf.close()
 	print('h5 data written to disk!')
@@ -226,6 +226,6 @@ if __name__ == "__main__":
 	frac_val = 0.1
 
 	tr, v, te = split_files(feats_dir = args.features_dir, sess_List = args.h5_directory+"/sessList.txt")
-	create_train(tr)
-	create_val(v)
-	create_test(te)
+	create_train(sessTrain = tr, h5_dir= args.h5_directory)
+	create_val(sessVal= v, h5_dir= args.h5_directory)
+	create_test(sessTest= te, h5_dir= args.h5_directory)
