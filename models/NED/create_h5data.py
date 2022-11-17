@@ -209,7 +209,7 @@ def create_test(sessTest):
 		xx = np.hstack((xx, spk_label.T.reshape([N,1])))
 		spk_base += 1
 		np.savetxt(ftmp, xx, delimiter=',')
-		print('Test file: ' +  sess_file + 'rows: ' + xx.shape[1])
+		print('Test file: ' +  sess_file + 'rows: ' + str(xx.shape[1]))
 
 		if xx.shape[1]!=913:
 			print("rows in file "+ sess_file + " are not 913!")
