@@ -95,11 +95,20 @@ def create_train(sessTrain):
 		print("sess_file: ", sess_file)
 		xx = np.genfromtxt(sess_file, delimiter= ",")
 		print("dimensions of array: ", np.shape(xx))
-		xx = np.hstack((xx[0:-1,:], xx[1:,:]))
-		xx = clean_feat(xx, dim)
-		nn = xx.shape[0]
-		np.savetxt(ftmp, xx, delimiter=',')
-		print ('Train: ' +  sess_file + '  '+"{0:.2f}".format(time.time() - start) + '  '+ str(nn))
+		if xx.ndim != 2:
+			print("encountered a CSV file with the incorrect shape. It has ", xx.ndim, " dimensions!")
+			xx = xx.reshape(len(xx), 1)
+			xx = np.hstack((xx[0:-1, :], xx[1:, :]))
+			xx = clean_feat(xx, dim)
+			nn = xx.shape[0]
+			np.savetxt(ftmp, xx, delimiter=',')
+			print('Train: ' + sess_file + '  ' + "{0:.2f}".format(time.time() - start) + '  ' + str(nn))
+		else:
+			xx = np.hstack((xx[0:-1,:], xx[1:,:]))
+			xx = clean_feat(xx, dim)
+			nn = xx.shape[0]
+			np.savetxt(ftmp, xx, delimiter=',')
+			print ('Train: ' +  sess_file + '  '+"{0:.2f}".format(time.time() - start) + '  '+ str(nn))
 
 	ftmp.close()
 	start = time.time()
