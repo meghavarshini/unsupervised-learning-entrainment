@@ -200,7 +200,7 @@ def create_test(sessTest):
 		if np.mod(N,2)==0:
 			print("array dimension is an even number")
 			print("N/2: ", math.floor(N / 2), N/2)
-			spk_label = np.tile([spk_base, spk_base+1], [1, N/2])
+			spk_label = np.tile([spk_base, spk_base+1], [1, math.floor(N/2)])
 		else:
 			print("array dimnsion is an odd number")
 			print("N/2: ", math.floor(N / 2), N/2)
