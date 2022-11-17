@@ -95,20 +95,25 @@ def create_train(sessTrain):
 		print("sess_file: ", sess_file)
 		xx = np.genfromtxt(sess_file, delimiter= ",")
 		print("dimensions of array: ", np.shape(xx))
-		if xx.ndim != 2:
-			print("encountered a CSV file with the incorrect shape. It has ", xx.ndim, " dimensions!")
+		if xx.ndim == 1:
+			print("encountered a CSV file with the incorrect shape. It has ", xx.ndim, " dimensions!"
+			print("Proceeding to converting this vector into an array...")
 			xx = xx.reshape(len(xx), 1)
 			xx = np.hstack((xx[0:-1, :], xx[1:, :]))
 			xx = clean_feat(xx, dim)
 			nn = xx.shape[0]
 			np.savetxt(ftmp, xx, delimiter=',')
-			print('Train: ' + sess_file + '  ' + "{0:.2f}".format(time.time() - start) + '  ' + str(nn))
+			print('Train file: ' + sess_file + '  duration:  '
+				  +"{0:.2f}".format(time.time() - start)
+				  + '  rows of data to be processed:  ' + str(nn))
 		else:
 			xx = np.hstack((xx[0:-1,:], xx[1:,:]))
 			xx = clean_feat(xx, dim)
 			nn = xx.shape[0]
 			np.savetxt(ftmp, xx, delimiter=',')
-			print ('Train: ' +  sess_file + '  '+"{0:.2f}".format(time.time() - start) + '  '+ str(nn))
+			print ('Train: ' +  sess_file + '  duration:  '
+				   +"{0:.2f}".format(time.time() - start)
+				   + '  rows of data to be processed:  '+ str(nn))
 
 	ftmp.close()
 	start = time.time()
@@ -122,7 +127,7 @@ def create_train(sessTrain):
 	hf = h5py.File('data/train_' + dataset_id + '_' + norm_id + '.h5', 'w')
 	hf.create_dataset('dataset', data=X_train)
 	hf.close()
-	print ('Writing Train takes '+"{0:.2f}".format(time.time() - start) )
+	print ('h5 data written to disk! Writing Train takes '+"{0:.2f}".format(time.time() - start) )
 	return None
 
 ###### Create Validation Data file ######
@@ -143,7 +148,9 @@ def create_val(sessVal):
 		xx = clean_feat(xx, dim)
 		nn = xx.shape[0]
 		np.savetxt(ftmp, xx, delimiter=',')
-		print ('Val: ' +  sess_file + '  '+"{0:.2f}".format(time.time() - start) + '  '+ str(nn))
+		print ('Validation file: ' +  sess_file
+			   + '  duration:  '+"{0:.2f}".format(time.time() - start)
+			   + '  rows of data to be processed:  '+ str(nn))
 
 	ftmp.close()
 	start = time.time()
@@ -157,7 +164,7 @@ def create_val(sessVal):
 	hf = h5py.File('data/val_' + dataset_id + '_' + norm_id + '.h5', 'w')
 	hf.create_dataset('dataset', data=X_val)
 	hf.close()
-	print ('Writing Val takes '+"{0:.2f}".format(time.time() - start) )
+	print ('h5 data written to disk! Writing Val takes '+"{0:.2f}".format(time.time() - start) )
 	return None
 ############ Uncomment the following chunks one by one to create data files ###################
 
@@ -184,16 +191,17 @@ def create_test(sessTest):
 		xx = np.hstack((xx, spk_label.T.reshape([N,1])))
 		spk_base += 1
 		np.savetxt(ftmp, xx, delimiter=',')
-		print('Test: ' +  sess_file , xx.shape[1])
+		print('Test file: ' +  sess_file + 'rows: ' + xx.shape[1])
 
 		if xx.shape[1]!=913:
-			print(sess_file)
+			print("rows in file "+ sess_file + " are not 913!")
 	ftmp.close()
 	X_test = np.genfromtxt(temp_testfile, delimiter= ",")
 	X_test = X_test.astype('float64')
 	hf = h5py.File('data/test_' + dataset_id + '_' + norm_id + '.h5', 'w')
 	hf.create_dataset('dataset', data=X_test)
 	hf.close()
+	print('h5 data written to disk!')
 	return None
 
 # os.remove(temp_testfile)
@@ -206,6 +214,6 @@ if __name__ == "__main__":
 	frac_val = 0.1
 
 	tr, v, te = split_files(feats_dir = args.features_dir, sess_List = args.h5_directory+"/sessList.txt")
-	create_train(tr)
-	# create_val(v)
-	# create_test(te)
+	# create_train(tr)
+	create_val(v)
+	create_test(te)
