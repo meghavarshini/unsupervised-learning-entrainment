@@ -1,4 +1,6 @@
-import os
+"""Code for splitting data files into training/validation/test splits and
+computing L1 baseline."""
+
 from os import path
 from glob import glob
 import h5py
@@ -6,26 +8,21 @@ import argparse
 import random
 import numpy as np
 import time
+import os
+import math
 
 def make_argument_parser():
     parser = argparse.ArgumentParser(
-            description="Processing filepaths and values required for setup")
-    parser.add_argument("feature_dir",
-            default = "/home/tomcat/entrainment/feat_files/baseline_2_feats",
-            description = "features directory")
-    parser.add_argument("h5_directory",
-            default = "/home/tomcat/entrainment/feat_files/baseline_2_h5",
-            description = "directory for storing h5 files")
+            description  = "Processing filepaths and values required for setup")
+    # input dir
+    parser.add_argument("--features_dir",
+            default = "/home/tomcat/entrainment/feat_files/baseline_1_feats",
+            help  = "features directory")
+    # output dir (should be changed depending on your needs)
+    parser.add_argument("--h5_directory",
+            default="/home/tomcat/entrainment/NED_files/baseline_1_h5",
+            help  = "directory for storing h5 files")
     return parser
-
-"""
-Writing the shuffled list of feature files to a text file. This way,
-if you run into any issues while generating h5 files,
-the same randomized list of feature files is called,
-thus saving time and effort. Comment out 13-30 and uncomment 33-35
-if you wish to avoid saving the file list.
- Create h5 files
- """
 
 def clean_feat(XX, dim):
 	ind = []
@@ -58,9 +55,9 @@ def split_files(feats_dir, sess_List=None):
 		print("creating a list of shuffled feature files and saving to disk...")
 		random.seed(SEED)
 		random.shuffle(sessList)
-		with open("./data/sessList.txt", 'w') as f:
+		with open(sess_List, 'w') as f:
 			f.writelines("%s\n" % i for i in sessList)
-		with open("./data/sessList.txt", 'r') as f:
+		with open(sess_List, 'r') as f:
 			sessList = f.read().splitlines()
 
 	num_files_all = len(sessList)
@@ -76,18 +73,8 @@ def split_files(feats_dir, sess_List=None):
 	print(len(sessTrain) + len(sessVal) + len(sessTest))
 	return(sessTrain, sessVal, sessTest)
 
-# Making files for the test partition, with train and val commented out. Try uncommenting, and make this happen
-
-## Alternative to 27-45
-# sessList = sorted(glob.glob(data_dir + '/*.csv'))
-## sessList= [f for f in sorted(glob.glob(data_dir + '/*.csv')) if int(os.path.basename(f).split('.')[0].split('_')[-2]) < 800]
-# random.seed(SEED)
-# random.shuffle(sessList)
-
-############ Uncomment the following chunks one by one to create data files ###################
-
 ###### Create Train Data file ######
-def create_train(sessTrain):
+def create_train(sessTrain, h5_dir):
 	dataset_id = 'Fisher_acoustic'
 	norm_id = 'nonorm'
 	dim = 228
@@ -100,13 +87,27 @@ def create_train(sessTrain):
 	for sess_file in sorted(sessTrain):
 		start = time.time()
 		print("sess_file: ", sess_file)
-		########## ToDo: find out IPU feat files that don't have enough rows ########
 		xx = np.genfromtxt(sess_file, delimiter= ",")
-		xx = np.hstack((xx[0:-1,:], xx[1:,:]))
-		xx = clean_feat(xx, dim)
-		nn = xx.shape[0]
-		np.savetxt(ftmp, xx, delimiter=',')
-		print ('Train: ' +  sess_file + '  '+"{0:.2f}".format(time.time() - start) + '  '+ str(nn))
+		print("dimensions of array: ", np.shape(xx))
+		if xx.ndim == 1:
+			print("encountered a CSV file with the incorrect shape. It has ", xx.ndim, " dimensions!")
+			print("Proceeding to converting this vector into an array...")
+			xx = xx.reshape(len(xx), 1)
+			xx = np.hstack((xx[0:-1, :], xx[1:, :]))
+			xx = clean_feat(xx, dim)
+			nn = xx.shape[0]
+			np.savetxt(ftmp, xx, delimiter=',')
+			print('Train file: ' + sess_file + '  duration:  '
+				  +"{0:.2f}".format(time.time() - start)
+				  + '  rows of data to be processed:  ' + str(nn))
+		else:
+			xx = np.hstack((xx[0:-1,:], xx[1:,:]))
+			xx = clean_feat(xx, dim)
+			nn = xx.shape[0]
+			np.savetxt(ftmp, xx, delimiter=',')
+			print ('Train: ' +  sess_file + '  duration:  '
+				   +"{0:.2f}".format(time.time() - start)
+				   + '  rows of data to be processed:  '+ str(nn))
 
 	ftmp.close()
 	start = time.time()
@@ -117,79 +118,103 @@ def create_train(sessTrain):
 	print ('Reading Train takes  '+"{0:.2f}".format(time.time() - start) )
 
 	start = time.time()
-	hf = h5py.File('data/train_' + dataset_id + '_' + norm_id + '.h5', 'w')
+	hf = h5py.File(h5_dir+'/train_' + dataset_id + '_' + norm_id + '.h5', 'w')
 	hf.create_dataset('dataset', data=X_train)
 	hf.close()
-	print ('Writing Train takes '+"{0:.2f}".format(time.time() - start) )
+	print ('h5 data written to disk! Writing Train takes '+"{0:.2f}".format(time.time() - start) )
 	return None
 
+###### Create Validation Data file ######
+def create_val(sessVal,h5_dir):
+	dataset_id = 'Fisher_acoustic'
+	norm_id = 'nonorm'
+	dim = 228
+	if sessVal != []:
+		print(sessVal, "exists and valid")
+	X_val = np.empty(shape=(0, 0), dtype='float64' )
+	temp_valfile = os.getcwd()+"/data/tmp.csv"
+	ftmp = open(temp_valfile, 'a')
+	for sess_file in sorted(sessVal):
+		start = time.time()
+		print(sess_file)
+		xx = np.genfromtxt(sess_file, delimiter= ",")
+		print("dimensions of array: ", np.shape(xx))
+		if xx.ndim == 1:
+			print("encountered a CSV file with the incorrect shape. It has ", xx.ndim, " dimensions!")
+			print("Proceeding to converting this vector into an array...")
+			xx = xx.reshape(len(xx), 1)
+			xx = np.hstack((xx[0:-1, :], xx[1:, :]))
+			xx = clean_feat(xx, dim)
+			nn = xx.shape[0]
+			np.savetxt(ftmp, xx, delimiter=',')
+			print('Validation file: ' + sess_file
+				  + '  duration:  ' + "{0:.2f}".format(time.time() - start)
+				  + '  rows of data to be processed:  ' + str(nn))
+		else:
+			xx = np.hstack((xx[0:-1,:], xx[1:,:]))
+			xx = clean_feat(xx, dim)
+			nn = xx.shape[0]
+			np.savetxt(ftmp, xx, delimiter=',')
+			print ('Validation file: ' +  sess_file
+				   + '  duration:  '+"{0:.2f}".format(time.time() - start)
+				   + '  rows of data to be processed:  '+ str(nn))
 
+	ftmp.close()
+	start = time.time()
+	X_val = np.genfromtxt(temp_valfile, delimiter= ",")
+	X_val = X_val.astype('float64')
+	os.remove(temp_valfile)
 
-###### Create Val Data file ######
-# dataset_id = 'Fisher_acoustic'
-# norm_id = 'nonorm'
-# dim = 228
+	print ('Reading Val takes  '+"{0:.2f}".format(time.time() - start) )
 
-# X_val = np.empty(shape=(0, 0), dtype='float64' )
-# temp_valfile = os.getcwd()+"/data/tmp.csv"
-# ftmp = open(temp_valfile, 'a')
-# for sess_file in sorted(sessVal):
-# 	start = time.time()
-# 	print(sess_file)
-# 	xx = np.genfromtxt(sess_file, delimiter= ",")
-# 	xx = np.hstack((xx[0:-1,:], xx[1:,:]))
-# 	xx = clean_feat(xx, dim)
-# 	nn = xx.shape[0]
-# 	np.savetxt(ftmp, xx, delimiter=',')
-# 	print ('Val: ' +  sess_file + '  '+"{0:.2f}".format(time.time() - start) + '  '+ str(nn))
-#
-# ftmp.close()
-# start = time.time()
-# X_val = np.genfromtxt(temp_valfile, delimiter= ",")
-# X_val = X_val.astype('float64')
-# os.remove(temp_valfile)
-#
-# print ('Reading Val takes  '+"{0:.2f}".format(time.time() - start) )
-#
-# start = time.time()
-# hf = h5py.File('data/val_' + dataset_id + '_' + norm_id + '.h5', 'w')
-# hf.create_dataset('dataset', data=X_val)
-# hf.close()
-# print ('Writing Val takes '+"{0:.2f}".format(time.time() - start) )
-
+	start = time.time()
+	hf = h5py.File(h5_dir +'/val_' + dataset_id + '_' + norm_id + '.h5', 'w')
+	hf.create_dataset('dataset', data=X_val)
+	hf.close()
+	print ('h5 data written to disk! Writing Val takes '+"{0:.2f}".format(time.time() - start) )
+	return None
 
 ###### Create Test Data file ######
-# dataset_id = 'Fisher_acoustic'
-# norm_id = 'nonorm'
-# dim = 228
-# temp_testfile = temp_testfile
-# ftmp = open(temp_testfile, 'a')
-#
-# spk_base = 1
-# for sess_file in sessTest:
-# 	xx = np.genfromtxt(sess_file, delimiter= ",")
-# 	xx = np.hstack((xx[0:-1,:], xx[1:,:]))
-# 	xx = clean_feat(xx, dim)
-# 	N = xx.shape[0]
-# 	if np.mod(N,2)==0:
-# 		spk_label = np.tile([spk_base, spk_base+1], [1, N/2])
-# 	else:
-# 		spk_label = np.tile([spk_base, spk_base+1], [1, N/2])
-# 		spk_label = np.append(spk_label, spk_base)
-# 	xx = np.hstack((xx, spk_label.T.reshape([N,1])))
-# 	spk_base += 1
-# 	np.savetxt(ftmp, xx, delimiter=',')
-# 	print('Test: ' +  sess_file , xx.shape[1])
-#
-# 	if xx.shape[1]!=913:
-# 		print(sess_file)
-# ftmp.close()
-# X_test = np.genfromtxt(temp_testfile, delimiter= ",")
-# X_test = X_test.astype('float64')
-# hf = h5py.File('data/test_' + dataset_id + '_' + norm_id + '.h5', 'w')
-# hf.create_dataset('dataset', data=X_test)
-# hf.close()
+def create_test(sessTest,h5_dir):
+	dataset_id = 'Fisher_acoustic'
+	norm_id = 'nonorm'
+	dim = 228
+	temp_testfile = os.getcwd()+"/data/tmp.csv"
+	ftmp = open(temp_testfile, 'a')
 
+	spk_base = 1
+	for sess_file in sessTest:
+		xx = np.genfromtxt(sess_file, delimiter= ",")
+		xx = np.hstack((xx[0:-1,:], xx[1:,:]))
+		xx = clean_feat(xx, dim)
+		'''Now, in order to correctly generate a test set array, we need an even number of rows- 
+		because we will be dividing them up in half. The row numbers also need to be an integer, not a float. 
+		So, we use math.floor to round down the number of rows to the nearest integer.'''
+		N = xx.shape[0]
+		if np.mod(N,2)==0:
+			print("array dimension is an even number")
+			print("N/2: ", math.floor(N / 2), N/2)
+			spk_label = np.tile([spk_base, spk_base+1], [1, math.floor(N/2)])
+		else:
+			print("array dimnsion is an odd number")
+			print("N/2: ", math.floor(N / 2), N/2)
+			spk_label = np.tile([spk_base, spk_base+1], [1, math.floor(N/2)])
+			spk_label = np.append(spk_label, spk_base)
+		xx = np.hstack((xx, spk_label.T.reshape([N,1])))
+		spk_base += 1
+		np.savetxt(ftmp, xx, delimiter=',')
+		print('Test file: ' +  sess_file + 'rows: ' + str(xx.shape[1]))
+
+		if xx.shape[1]!=913:
+			print("rows in file "+ sess_file + " are not 913!")
+	ftmp.close()
+	X_test = np.genfromtxt(temp_testfile, delimiter= ",")
+	X_test = X_test.astype('float64')
+	hf = h5py.File(h5_dir+'/test_' + dataset_id + '_' + norm_id + '.h5', 'w')
+	hf.create_dataset('dataset', data=X_test)
+	hf.close()
+	print('h5 data written to disk!')
+	return None
 
 # os.remove(temp_testfile)
 
@@ -200,4 +225,7 @@ if __name__ == "__main__":
 	frac_train = 0.8
 	frac_val = 0.1
 
-	tr, v, te = split_files(feats_dir = args.features_dir, sess_List="./data/sessList.txt")
+	tr, v, te = split_files(feats_dir = args.features_dir, sess_List = args.h5_directory+"/sessList.txt")
+	create_train(sessTrain = tr, h5_dir= args.h5_directory)
+	create_val(sessVal= v, h5_dir= args.h5_directory)
+	create_test(sessTest= te, h5_dir= args.h5_directory)

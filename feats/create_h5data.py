@@ -77,7 +77,7 @@ def split_files(feats_dir,sess_List= None):
 	return(sessTrain, sessVal, sessTest)
 
 #### Create Train Data file #####
-def create_train(sessTrain):
+def create_train(sessTrain, h5_dir):
 	X_train =np.array([])
 	X_train = np.empty(shape=(0, 0), dtype='float64' )
 	for sess_file in sessTrain:
@@ -89,7 +89,7 @@ def create_train(sessTrain):
 
 
 	X_train = X_train.astype('float64')
-	hf = h5py.File('data/train_Fisher_nonorm.h5', 'w')
+	hf = h5py.File(h5_dir + '/train_Fisher_nonorm.h5', 'w')
 	hf.create_dataset('dataset', data=X_train)
 	hf.create_dataset('prosset', data=X_train[:,:24])
 	hf.create_dataset('specset', data=X_train[:,24:150])
@@ -98,7 +98,7 @@ def create_train(sessTrain):
 	return None
 
 #### Create Val Data file ####
-def create_val(sessVal):
+def create_val(sessVal, h5_dir):
 	if sessVal != []:
 		print(sessVal, "exists and valid")
 
@@ -111,7 +111,7 @@ def create_val(sessVal):
 		print(sess_file, "examined and validation array created")
 	print(X_val.shape)
 	X_val = X_val.astype('float64')
-	hf = h5py.File('data/val_Fisher_nonorm.h5', 'w')
+	hf = h5py.File(h5_dir + '/val_Fisher_nonorm.h5', 'w')
 	hf.create_dataset('dataset', data=X_val)
 	hf.create_dataset('prosset', data=X_val[:,:24])
 	hf.create_dataset('specset', data=X_val[:,24:150])
@@ -120,7 +120,7 @@ def create_val(sessVal):
 	return None
 
 #### Create Test Data file ####
-def create_test(sessTest):
+def create_test(sessTest, h5_dir):
 	spk_base = 1
 	X_test =np.array([])
 	for sess_file in sessTest:
@@ -145,7 +145,7 @@ def create_test(sessTest):
 
 
 	X_test = X_test.astype('float64')
-	hf = h5py.File('data/test_Fisher_nonorm.h5', 'w')
+	hf = h5py.File(h5_dir + '/test_Fisher_nonorm.h5', 'w')
 	hf.create_dataset('dataset', data=X_test)
 	hf.create_dataset('prosset', data=X_test[:,:24])
 	hf.create_dataset('specset', data=X_test[:,24:150])
@@ -241,7 +241,8 @@ if __name__ == "__main__":
 	frac_train = 0.8
 	frac_val = 0.1
 
-	tr, v, te = split_files(feats_dir = args.features_dir, sess_List=args.h5_directory+"/sessList.txt")
-	create_train(tr)
-	create_val(v)
-	create_test(te)
+	tr, v, te = split_files(feats_dir = args.features_dir,
+							sess_List=args.h5_directory+"/sessList.txt")
+	create_train(sessTrain = tr, h5_dir = args.h5_directory)
+	create_val(sessVal = v, h5_dir = args.h5_directory)
+	create_test(sessTest = te, h5_dir = args.h5_directory)
