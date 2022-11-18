@@ -14,6 +14,8 @@ feats/data
 feats/models
 models/NED/models
 models/triplet/train/models
+models/triplet/prep/pykaldi
+models/triplet/prep/kaldi
 
 
 

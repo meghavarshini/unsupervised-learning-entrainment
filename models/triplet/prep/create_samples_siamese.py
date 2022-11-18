@@ -65,7 +65,7 @@ for row in reader:
 
 # ivec_dict = pickle.load( open( "ivector.pkl", "rb" ) )
 ivec_norm_dict = pickle.load( open( "vectors/ivector_normalized.pkl", "rb" ) )
-line_dict = pickle.load( open( "meta/file2line.pkl", "rb" ) )
+line_dict = pickle.load( open( "/home/tomcat/entrainment/feat_files/kaldi_output/file2line", "rb" ) )
 
 # -----------------------------------------------------------------------------------------
 SEED=448
