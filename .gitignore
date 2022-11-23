@@ -16,6 +16,9 @@ models/NED/models
 models/triplet/train/models
 models/triplet/prep/pykaldi
 models/triplet/prep/kaldi
+models/triplet/prep/0007_voxceleb_v1_1a
+models/triplet/prep/ivector_extract
+models/triplet/prep/ivector-xvector
 
 
 
