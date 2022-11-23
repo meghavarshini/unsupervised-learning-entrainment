@@ -1,5 +1,5 @@
-#!/usr/bin/env bash
-printenv
+#!/usr/bin/env 
+echo '$PATH'
 #My notes for the Kalsi-asr file: /egs/sre08/v1/sid/extract_ivectors.sh
 
 # Copyright     2013  Daniel Povey
@@ -16,7 +16,6 @@ num_threads=1 # Number of threads used by ivector-extract.  It is usually not
               # fewer speakers than the number of jobs you want to run.
 echo "nj: $nj"
 echo "num_threads: $num_threads"
-printenv
 cmd="run.pl"
 stage=0
 num_gselect=20 # Gaussian-selection using diagonal model: number of Gaussians to select
@@ -25,14 +24,18 @@ posterior_scale=1.0 # This scale helps to control for successve features being h
                     # correlated.  E.g. try 0.1 or 0.3.
 apply_cmn=true # If true, apply sliding window cepstral mean normalization
 # End configuration section.
-printenv
 
+# prints arguments provided by user:
 echo "$0 $@"  # Print the command line for logging
 
+# if [ -f path.sh ] returns true
+# looks for path.sh, and then runs parse_options.sh??
 if [ -f path.sh ]; then . ./path.sh; fi
 . parse_options.sh || exit 1;
 
+echo "the code searched and found path.sh and parse_options.sh"
 
+# Here, the next chunk is assessing if  sdinput includes the correct number of commands and if not, it returns useful hints, including a sample command
 if [ $# != 3 ]; then
   echo "Usage: $0 <extractor-dir> <data> <ivector-dir>"
   echo " e.g.: $0 exp/extractor_2048_male data/train_male exp/ivectors_male"
