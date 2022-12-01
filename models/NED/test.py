@@ -9,7 +9,9 @@ from ecdc import *
 # import matplotlib
 # matplotlib.use('TkAgg')
 
-model_name = '/home/tomcat/entrainment/NED_files/models/trained_VAE_nonorm_nopre_l1.pt'
+#temp
+model_name = '/home/tomcat/entrainment/NED_files/models/trained_Fisher_acoustic_nonorm_l1_30dim.pt'
+# model_name = '/home/tomcat/entrainment/NED_files/models/trained_VAE_nonorm_nopre_l1.pt'
 
 
 SEED=448
@@ -31,7 +33,7 @@ torch.manual_seed(args.seed)
 if args.cuda:
     torch.cuda.manual_seed(args.seed)
 
-
+#temp
 hff = h5py.File('/home/tomcat/entrainment/NED_files/baseline_1_h5/test_Fisher_acoustic_nonorm.h5', 'r')
 # hff = h5py.File('/home/tomcat/entrainment/NED_files/baseline_1_h5/test_Fisher_nonorm_nopre.h5', 'r')
 X_test = np.array(hff['dataset'])
