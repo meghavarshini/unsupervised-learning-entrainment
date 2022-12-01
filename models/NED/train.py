@@ -94,10 +94,12 @@ def validate(epoch):
         if args.cuda:
             data = data.cuda()
             y_data = y_data.cuda()
+        #volatile was removed and now has no effect.
+        # Use `with torch.no_grad():` instead.
         data = Variable(data, volatile=True)
         y_data = Variable(y_data, volatile=True)
         recon_batch = model(data)
-        val_loss += loss_function(recon_batch, y_data).data[0]
+        val_loss += loss_function(recon_batch, y_data).data
 
     val_loss /= len(val_loader.dataset)
     print(('====> Validation set loss: {:.4f}'.format(val_loss)))
