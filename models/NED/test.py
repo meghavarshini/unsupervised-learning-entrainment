@@ -32,8 +32,8 @@ if args.cuda:
     torch.cuda.manual_seed(args.seed)
 
 
-
-hff = h5py.File('/home/tomcat/entrainment/NED_files/baseline_1_h5/test_Fisher_nonorm_nopre.h5', 'r')
+hff = h5py.File('/home/tomcat/entrainment/NED_files/baseline_1_h5/test_Fisher_acoustic_nonorm.h5', 'r')
+# hff = h5py.File('/home/tomcat/entrainment/NED_files/baseline_1_h5/test_Fisher_nonorm_nopre.h5', 'r')
 X_test = np.array(hff['dataset'])
 
 
