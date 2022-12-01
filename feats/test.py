@@ -19,7 +19,7 @@ def make_argument_parser():
     parser.add_argument('--seed', type=int,
                         default=1, metavar='S',
                         help='random seed (default: 1)')
-    parser.add_argument('--hff', default= './data/test_Fisher_nonorm.h5',
+    parser.add_argument('--hff', default= '/home/tomcat/entrainment/feat_files/baseline_2_h5/test_Fisher_nonorm.h5',
                         help='location of h5 file with the test data')
     parser.add_argument('--model_name',
                         default= "/home/tomcat/entrainment/feat_files/baseline_1_models/trained_VAE_nonorm_nopre_l1.pt",
