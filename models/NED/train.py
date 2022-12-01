@@ -71,8 +71,9 @@ def train(epoch):
         recon_batch = model(data)
         loss = loss_function(recon_batch, y_data)
         loss.backward()
-
-        train_loss += tensor.item(loss.data[0])
+        #IndexError: invalid index of a 0-dim tensor.
+        # Use `tensor.item()` in Python to convert a 0-dim tensor to a number
+        train_loss += loss.data
         optimizer.step()
         if batch_idx % args.log_interval == 0:
             print(('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
