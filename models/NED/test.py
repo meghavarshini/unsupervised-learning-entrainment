@@ -93,14 +93,14 @@ for idx, data in enumerate(X_test):
     z_y = model.embedding(y_data)
     # z_x = x_data
     # z_y = y_data
-    loss_real = lp_distance(z_x, z_y, p).data[0]
+    loss_real = lp_distance(z_x, z_y, p).data
     # loss_real = loss_function(z_x, z_y, mu, logvar)
     
 
     z_y_fake = model.embedding(y_fake_data)
     # z_y_fake = y_fake_data
 
-    loss_fake = lp_distance(z_x, z_y_fake, p).data[0]
+    loss_fake = lp_distance(z_x, z_y_fake, p).data
     # loss_fake = loss_function(z_x, z_y_fake, mu, logvar)
 
     test_loss += loss_real
