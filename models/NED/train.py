@@ -40,12 +40,12 @@ loss_id = 'l1'
 method_id = ''
 
 
-fdset = EntDataset('/home/tomcat/entrainment/NED_files/test_1_h5/train_' + dataset_id + '_' + norm_id +'.h5')
+fdset = EntDataset('/home/tomcat/entrainment/NED_files/baseline_1_h5/train_' + dataset_id + '_' + norm_id +'.h5')
 
 train_loader = torch.utils.data.DataLoader(fdset, batch_size=128, shuffle=True)
 
 
-fdset_val = EntDataset('/home/tomcat/entrainment/NED_files/test_1_h5/val_' + dataset_id + '_' + norm_id + '.h5')
+fdset_val = EntDataset('/home/tomcat/entrainment/NED_files/baseline_1_h5/val_' + dataset_id + '_' + norm_id + '.h5')
 
 val_loader = torch.utils.data.DataLoader(fdset_val, batch_size=128, shuffle=True)
 
