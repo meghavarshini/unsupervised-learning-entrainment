@@ -6,8 +6,8 @@ import random
 import os
 # from entrainment.config import *
 from ecdc import *
-import matplotlib
-matplotlib.use('TkAgg')
+# import matplotlib
+# matplotlib.use('TkAgg')
 
 model_name = '/home/tomcat/entrainment/NED_files/models/trained_VAE_nonorm_nopre_l1.pt'
 
