@@ -35,6 +35,8 @@ def load_h5(file):
     return test
 
 def model_testing(model_name, X_test,cuda):
+    #instantiate a VAE model, set it to evaluation,
+    # and make sure weights are not updated during the process
     model = VAE().double()
     model = torch.load(model_name)
     model.eval()
@@ -53,18 +55,39 @@ def model_testing(model_name, X_test,cuda):
     fake_test_loss = 0
     Loss=[]
     Fake_loss = []
-    # for batch_idx, (x_data, y_data) in enumerate(test_loader):
+    # load h5 test file- iterating over conversations:
+    #ToDo- check if iterated item is the same size both here and in train.py
     for idx, data in enumerate(X_test):
         print("working on file: ", idx)
+
+        # list split in half, saved as 2 variables, in opposite order
+        # Check: is this splitting the conversation in half? Or is this per utterance?
+        # When extracting embedding- typical way is to take the representation from the last layer of the network
+            # seems unlikely
+
+
+        print("length of test set list: ", len(data))
+        # Check the data type of the following, dimensions, size
+        # What is 228?- One possibility is that it's the number of hidden layers (output representation)
+
         x_data = data[:228]
         y_data = data[228:-1]
+
+        # speaker- last item in list. Create a variable where the utterances
+        # with the same speaker as the first utterance
         idx_same_spk =list(np.where(X_test[:,-1]==data[-1]))[0]
 
-        ll = random.choice(list(set(idx_same_spk) -set([idx])))
+        # choose an item from the index same speaker which is not the same speaker
+        ll = random.choice(list(set(idx_same_spk) - set([idx])))
         spk = int(data[-1])
 
         x_data = torch.from_numpy(x_data)
         y_data = torch.from_numpy(y_data)
+
+        #Go back into list of lists, pull out randomly selected item,
+        # and get the relevant cells from a different item of the same speaker
+        #So, for an utterance by speaker A, replace it by a different utterance by speaker A
+        # same for speaker B
 
         y_fake_data = X_test[ll,228:-1]
 
@@ -78,7 +101,8 @@ def model_testing(model_name, X_test,cuda):
 
         recon_batch = model(x_data)
 
-
+        # Looks like x, y means different speakers?
+        #ToDo: check if this is the case
         z_x = model.embedding(x_data)
         z_y = model.embedding(y_data)
         # z_x = x_data
@@ -86,7 +110,9 @@ def model_testing(model_name, X_test,cuda):
         loss_real = lp_distance(z_x, z_y, p).data
         # loss_real = loss_function(z_x, z_y, mu, logvar)
 
-
+        #randomly selected fake item ? FIND OUT how the data is split
+        # Is an item an utterance? A whole conversation?-
+        # Take half the conversation, compare it to a real second half, and a fake second half?
         z_y_fake = model.embedding(y_fake_data)
         # z_y_fake = y_fake_data
 
