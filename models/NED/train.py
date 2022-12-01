@@ -40,12 +40,12 @@ loss_id = 'l1'
 method_id = ''
 
 
-fdset = EntDataset('data/train_' + dataset_id + '_' + norm_id +'.h5')
+fdset = EntDataset('/home/tomcat/entrainment/NED_files/test_1_h5/train_' + dataset_id + '_' + norm_id +'.h5')
 
 train_loader = torch.utils.data.DataLoader(fdset, batch_size=128, shuffle=True)
 
 
-fdset_val = EntDataset('data/val_' + dataset_id + '_' + norm_id + '.h5')
+fdset_val = EntDataset('/home/tomcat/entrainment/NED_files/test_1_h5/val_' + dataset_id + '_' + norm_id + '.h5')
 
 val_loader = torch.utils.data.DataLoader(fdset_val, batch_size=128, shuffle=True)
 
@@ -72,7 +72,7 @@ def train(epoch):
         loss = loss_function(recon_batch, y_data)
         loss.backward()
 
-        train_loss += loss.data[0]
+        train_loss += tensor.item(loss.data[0])
         optimizer.step()
         if batch_idx % args.log_interval == 0:
             print(('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
@@ -117,4 +117,4 @@ for epoch in range(1, args.epochs + 1):
         best_loss = vloss
         best_epoch = epoch
         # pdb.set_trace()
-        torch.save(model, 'models/trained_' + dataset_id + '_' + norm_id + '_'+ loss_id + '_'+ dim_id + '.pt')
+        torch.save(model, '/home/tomcat/entrainment/NED_files/models/trained_' + dataset_id + '_' + norm_id + '_'+ loss_id + '_'+ dim_id + '.pt')

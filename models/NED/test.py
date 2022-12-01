@@ -4,7 +4,7 @@ from ecdc import *
 import matplotlib
 matplotlib.use('TkAgg')
 
-model_name = 'models/trained_VAE_nonorm_nopre_l1.pt'
+model_name = '/home/tomcat/entrainment/NED_files/models/trained_VAE_nonorm_nopre_l1.pt'
 
 
 SEED=448
