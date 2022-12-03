@@ -14,6 +14,7 @@ feats/data
 feats/model
 models/NED/models
 models/triplet/train/models
+models/triplet/prep/pykaldi
 .venv
 
 *.DS_Store

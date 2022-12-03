@@ -1,7 +1,6 @@
 from entrainment.config import *
 # from aeent import *
 from ecdc import *
-import h5py
 
 #------------------------------------------------------------------
 #Uncomment for parsing inputs
