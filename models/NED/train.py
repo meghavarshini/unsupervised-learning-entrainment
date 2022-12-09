@@ -67,7 +67,10 @@ def train(epoch):
 
         optimizer.zero_grad()
 
-        recon_batch = model(data)
+        # recon_batch = model(data)
+        # VAE's forward function contains both encoder and decoder.
+        # But for NED, only encoded items used for caculating distances
+        recon_batch = model.encode(data)
         loss = loss_function(recon_batch, y_data)
         loss.backward()
         #IndexError: invalid index of a 0-dim tensor.
@@ -94,10 +97,13 @@ def validate(epoch):
             data = data.cuda()
             y_data = y_data.cuda()
         # Used `with torch.no_grad():` instead of Volatile
+        #Tells the (y) variable (torch tensor) that it won't be updated with
+        # variable info
         with torch.no_grad():
             data = Variable(data)
             y_data = Variable(y_data)
-        recon_batch = model(data)
+        # recon_batch = model(data)
+        recon_batch = model.encode(data)
         val_loss += loss_function(recon_batch, y_data).data
 
     val_loss /= len(val_loader.dataset)
