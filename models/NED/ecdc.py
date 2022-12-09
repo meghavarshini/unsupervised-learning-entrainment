@@ -99,7 +99,9 @@ class VAE(nn.Module):
 # Reconstruction + KL divergence losses summed over all elements and batch
 def loss_function(recon_x1, x2):
     if loss=='l1':
-        BCE = F.smooth_l1_loss(recon_x1, x2.view(-1, featDim), size_average=False)
+        # BCE = F.smooth_l1_loss(recon_x1, x2.view(-1, featDim), size_average=False)
+        #changed x2 because in NED methodology, we use only the encoded layer
+        BCE = F.smooth_l1_loss(recon_x1, x2, size_average=False)
     elif loss=='l2':
         BCE = F.mse_loss(recon_x1, x2.view(-1, featDim), size_average=False)
     
