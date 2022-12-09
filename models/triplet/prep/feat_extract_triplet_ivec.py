@@ -38,6 +38,8 @@ triplet = False  # set True if getting triplets for training,
 # For posidon -----------------------------------
 # transcript_dir='/home/nasir/data/Fisher/transcripts/'
 # raw_dir = '/home/nasir/data/Fisher/raw_feats/'
+
+#Assess where this pkl file is created:
 if triplet:
 	ivec_norm_dict_nospk = pickle.load( open("vectors/ivector_normalized_nospk_py3.pkl","rb"))
 
@@ -143,7 +145,10 @@ trans = open(transcript).readlines()
 last_spk = None
 for line in trans:
 	start, stop, spk = line.split(':')[0].split(' ')
-	if float(stop)-float(start)<IPU_gap/1000:
+
+	# if the turn duration is less than 0.5s, then ignore it. Excludes very short turns
+	# Why are they doing this tho? One-word utterances are an issue?
+	if float(stop)-float(start) < IPU_gap/1000:
 		continue
 	spk_list.append([start, stop, spk])
 	if not last_spk:
@@ -169,22 +174,28 @@ sample_index = list(map(int,list((featdata[:,0]))))
 # def turn_level_index(spk_list, sample_index):
 	# '''generate indices for different turns'''
 turn_level_index_list=[]
+#find out if this means- 2 speakers are the same
 s2_found=True
 gap_found=True
 # pdb.set_trace()
+# iterate over list of turns
 for spch in spk_list:
+	# convert to miliseconds
 	start = int(float(spch[0])/0.01)
 	stop = int(float(spch[1])/0.01)
 	spk = spch[2]
 	if not turn_level_index_list:
+		# add acoustic features between 2 start and end time points in utterance
 		turn_level_index_list = [sample_index[start:stop]]
 		last_stop =stop
 		continue
 	if spk==last_spk:
+		# if same speaker, add features to previous entry, if gap is small
 		if start-last_stop < IPU_gap/10:
 			turn_level_index_list[-1].extend(sample_index[start:stop])
 
 		else:
+			# if  IPU gap is sufficient:
 			if s2_found:
 				if gap_found:
 					turn_level_index_list[-1]=sample_index[start:stop]
@@ -196,6 +207,7 @@ for spch in spk_list:
 				s2_found=True		
 			gap_found=True		
 	else:
+		# if IPU gap is insufficient:
 		if not gap_found:
 			turn_level_index_list.append(turn_level_index_list[-1])
 		gap_found=False
@@ -204,12 +216,14 @@ for spch in spk_list:
 	last_stop=stop
 	last_spk = spk
 
+#remove last item, so that every utterance is paired with another
 if len(turn_level_index_list)%2==1:
 	turn_level_index_list=turn_level_index_list[:-1]
 
 s1_list=[]
 s2_list=[]
 for i, itm in enumerate(turn_level_index_list):
+	# if i is even, i.e for every 2 utterances:
 	if i%2==0:
 		s1_list.append(itm)
 	else:
@@ -221,11 +235,13 @@ if seg:
 		start = turn2[0]
 		spk = format(i, '04d')
 		stop = turn2[-1]
+		# Check if this is an ivector extraction thing:
         #utt_id = sess_id +  '_' + str(0.01*float(start)) + '-' + str(0.01*float(stop))
 		utt_id_seg = sess_id + '-' +  spk +  '_' + format(int(float(start)), '06d') + '-' + format(int(float(stop)), '06d') 
 		# print(utt_id_seg + ' ' + sess_id + '-' + spk+  ' ' + format(0.01*float(start), '0.2f') + ' ' + format(0.01*float(stop), '0.2f') + '\n')
 		# pdb.set_trace()
-		segf.write(utt_id_seg + ' ' + sess_id + '-' + spk+  ' ' + format(0.01*float(start), '0.2f') + ' ' + format(0.01*float(stop), '0.2f') + '\n')
+		segf.write(utt_id_seg + ' ' + sess_id + '-' + spk+  ' '
+				   + format(0.01*float(start), '0.2f') + ' ' + format(0.01*float(stop), '0.2f') + '\n')
 	segf.close()
 
 
@@ -261,7 +277,7 @@ if triplet:
 		# 	utt_id_seg = str(i)+ '-' + sess_id +  '_' + str(int(10*float(start))) + '-' + str(int(10*float(stop))) 
 		# 	segf.write(utt_id_seg + ' ' + sess_id + ' ' + str(int(10*float(start))) + ' '+ str(int(10*float(stop)))  + '\n')
 
-
+		# we don't have this- find out how to get this.
 		if utt_id in ivec_norm_dict_nospk:
 			count+=1
 			target_id = get_neighbor(sess_id, ivec_norm_dict_nospk, utt_id)
