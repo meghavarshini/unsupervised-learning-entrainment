@@ -77,7 +77,8 @@ def train(each_epoch, model, train_loader, optimizer, cuda):
         optimizer.step()
         # if batch_idx % args.log_interval == 0:
             # print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
-                # epoch, batch_idx * len(data), len(train_loader.dataset),
+                # epoch, batch_idx * len
+        # (data), len(train_loader.dataset),
                 # 100. * batch_idx / len(train_loader),
                 # loss.data[0] / len(data)))
     train_loss /=  len(train_loader.dataset)

@@ -58,8 +58,10 @@ def train(epoch):
     train_loss = 0
     for batch_idx, (data, y_data) in enumerate(train_loader):
         data = Variable(data)
+        print("data dimensions: ",data.size())
         y_data = Variable(y_data)
-
+        print("data dimensions: ", y_data.size())
+        exit()
 
         if args.cuda:
             data = data.cuda()
