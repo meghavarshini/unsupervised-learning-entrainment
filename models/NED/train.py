@@ -71,9 +71,8 @@ def train(epoch):
         # recon_batch = model(data)
         # VAE's forward function contains both encoder and decoder.
         # But for NED, only encoded items used for caculating distances
-        recon_batch = model.encode(data)
-        encoded_y = model.encode(y_data)
-        loss = loss_function(recon_batch, encoded_y)
+        recon_batch = model(data)
+        loss = loss_function(recon_batch, y_data)
         loss.backward()
         #IndexError: invalid index of a 0-dim tensor.
         # Use `tensor.item()` in Python to convert a 0-dim tensor to a number
@@ -104,10 +103,10 @@ def validate(epoch):
         with torch.no_grad():
             data = Variable(data)
             y_data = Variable(y_data)
-        # recon_batch = model(data)
-        recon_batch = model.encode(data)
-        encoded_y = model.encode(y_data) # so that y is swapped with the encoded
-        val_loss += loss_function(recon_batch, encoded_y).data
+        recon_batch = model(data)
+        # recon_batch = model.encode(data)
+        # encoded_y = model.encode(y_data) # so that y is swapped with the encoded
+        val_loss += loss_function(recon_batch, y_data).data
 
     val_loss /= len(val_loader.dataset)
     print(('====> Validation set loss: {:.4f}'.format(val_loss)))

@@ -45,15 +45,16 @@ class VAE(nn.Module):
         # Tensor with many dimensions to one with 30- see Pg 5 of the paper
         zdim=30
         intDim = 128                                 # CHANGE zdim here
-        self.fc1 = nn.Linear(featDim, intDim)
+        self.featDim = 228
+        self.fc1 = nn.Linear(self.featDim, intDim)
         self.bn1 = nn.BatchNorm1d(intDim)
         self.fc2 = nn.Linear(intDim, zdim)
         self.bn2 = nn.BatchNorm1d(zdim)
 
         self.fc3 = nn.Linear(zdim, intDim)
         self.bn3 = nn.BatchNorm1d(intDim)
-        self.fc4 = nn.Linear(intDim, featDim)
-        self.bn4 = nn.BatchNorm1d(featDim)
+        self.fc4 = nn.Linear(intDim, self.featDim)
+        self.bn4 = nn.BatchNorm1d(self.featDim)
 
         self.relu = nn.ReLU()
         # self.sigmoid = nn.Sigmoid()
@@ -86,22 +87,21 @@ class VAE(nn.Module):
         return h4
 
     def forward(self, x):
-        z = self.encode(x.view(-1, featDim))
+        z = self.encode(x.view(-1, self.featDim))
         # z = self.reparameterize(mu, logvar)
         return self.decode(z)
 
     def embedding(self, x):
-        z = self.encode(x.view(-1, featDim))
+        z = self.encode(x.view(-1, self.featDim))
         return z
 
 
 
 # Reconstruction + KL divergence losses summed over all elements and batch
 def loss_function(recon_x1, x2):
+    featDim = 228
     if loss=='l1':
-        # BCE = F.smooth_l1_loss(recon_x1, x2.view(-1, featDim), size_average=False)
-        #changed x2 because in NED methodology, we use only the encoded layer
-        BCE = F.smooth_l1_loss(recon_x1, x2, size_average=False)
+        BCE = F.smooth_l1_loss(recon_x1, x2.view(-1, featDim), size_average=False)
     elif loss=='l2':
         BCE = F.mse_loss(recon_x1, x2.view(-1, featDim), size_average=False)
     
@@ -121,7 +121,7 @@ def lp_distance(x1, x2, p):
 
 # Parameters
 
-featDim =228
+
 zdim=30                     # CHANGE zdim here
 intDim = 64                                
 loss = 'l1'
