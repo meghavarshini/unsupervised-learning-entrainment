@@ -6,16 +6,17 @@
 # can be identified using the name of the transcript file + speaker info
 # NOTE: if speaker is described by role, there should be an associated speaker ID
 #   e.g. E000689 = 'transporter'
+# NOTE: RUN THIS FILE FROM THE BASE DIRECTORY
 
-import numpy as np
 import pandas as pd
-import asist2_transcript_manage
 from pathlib import Path
+import re
+import subprocess as sp
 
 
-def loop_through_data(combined_files_list, save_dir):
+def loop_through_data(combined_files_dict, save_dir):
     # go to an individual file in the data
-    for combined_file in combined_files_list:
+    for fpath, combined_file in combined_files_dict.items():
         # get the list of speakers from this file
         speakers = []  # todo: addme
 
@@ -31,13 +32,18 @@ def loop_through_data(combined_files_list, save_dir):
             for i, row in combined_file.iterrows():
 
                 if i < len(combined_file) - 1:
-                    extract_me = id_whether_to_extract(row, combined_file.iloc[i+1], speaker_pair)
+                    next_row = combined_file.iloc[i+1]
+                    extract_me = id_whether_to_extract(row, next_row, speaker_pair)
                     if extract_me:
+                        # create short wavfile at this time
+
+
                         # extract the relevant components of this row and the following row
                         # extract for this row
-                        this_row_feats = pass  # todo: addme
+                        this_row_feats = run_opensmile_over_utterance(row, fpath)
                         # extract for following row
-                        next_row_feats = pass  # todo: addme
+
+                        next_row_feats = run_opensmile_over_utterance(next_row, fpath)
 
                         saved_feats = this_row_feats + next_row_feats
                         all_features_for_this_list.append(saved_feats)
@@ -46,6 +52,59 @@ def loop_through_data(combined_files_list, save_dir):
             with open(savename, 'w') as savefile:
                 for row_pair in all_features_for_this_list:
                     savefile.write(row_pair)
+
+
+def run_opensmile_over_utterance(row, base_file):
+    # get start and end times, name of files
+    start = row.start
+    end = row.end
+    speaker = row.speaker
+
+    # get the name of the audio
+    # combined files are of format: Trial-T000604_Team-TM000202_combined.txt
+    filepath = base_file.parent
+    fname = base_file.stem
+    # re.sub(pattern, repl, string, count=0, flags=0)¶
+    if "NA" in fname:
+        audio_in_name = re.sub(r"NA", speaker, fname)
+    else:
+        audio_in_name = fname
+    audio_out_name = f"{audio_in_name}_{start}-{end}"
+    audio_out = filepath / audio_out_name
+    audio_out = str(audio_out)
+
+    # extract this short file to run feature extraction on
+    sp.run(["ffmpeg", "-ss", start, "-i", f"{str(filepath)}/{audio_in_name}",
+            "-to", end, "-c", "copy", audio_out])
+
+    feats_out = filepath / f"{speaker}_{start}-{end}"
+    feats_out = str(feats_out)
+
+    # run opensmile over a particular utterance
+    # feats to extract
+    OPENSMILE_CONFIG_BASELINE = "feats/emobase2010_haoqi_revised.conf"
+
+    # $(OUTPUT_DIR)/%_features_raw_baseline.csv: $(OUTPUT_DIR)/%.wav
+    # 	SMILExtract -C $(OPENSMILE_CONFIG_BASELINE) -I $< -O $@
+    # extract the features with opensmile
+    sp.run(["SMILExtract", "-C", OPENSMILE_CONFIG_BASELINE,
+           "-I", audio_out, "-O", feats_out])
+
+    # read in acoustic features
+    acoustic_feats = []
+    with open(feats_out, 'r') as feats:
+        c = 0
+        for line in feats:
+            c += 1
+            acoustic_feats.append(line)
+        if c > 1:
+            exit("Multiple lines in this file: this is not expected")
+
+    # remove generated files
+    sp.run(["rm", feats_out])
+    sp.run(["rm", audio_out])
+
+    return acoustic_feats
 
 
 def id_whether_to_extract(row, following_row, speaker_pair):
@@ -72,14 +131,14 @@ if __name__ == "__main__":
     savedir = "."
 
     # get location to dir with files of interest
-    data_dir = Path(".")  # change to path with files
+    data_dir = Path("/home/jculnan/Downloads/transcripts")  # todo: change to path with files
 
-    all_files_of_interest = []
+    all_files_of_interest = {}
 
     for datafile in data_dir.iterdir():
         # read in the file as a pd df
         this_file = pd.read_csv(datafile, sep="\t")  # \t for tab delimited text files
-        all_files_of_interest.append(this_file)
+        all_files_of_interest[datafile] = this_file
 
     # go through all files and generate output
     loop_through_data(all_files_of_interest, savedir)
