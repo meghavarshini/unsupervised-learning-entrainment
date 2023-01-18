@@ -8,7 +8,7 @@
 grid$ = selected$ ("TextGrid")
 resultfile$ = "'grid$'_info.txt"
 
-header_row$ = "#"+ tab$ + "start"+ " " + "end" + " " + "addressee" + " " + "transcript" + " " + newline$
+header_row$ = "#"+ tab$ + "start"+ " " + "end" + " " + "speaker" + " " + "addressee" + " " + "transcript" + " " + newline$
 fileappend "'resultfile$'" 'header_row$'
 
 
@@ -31,7 +31,7 @@ for i from 1 to numint
 		lab1$ = Get label of interval... 1 int1
 		# print "'vdur'"
 		prevint = int1 - 1
-		result_row$ =  "'vstart'" + " " + "'vend'" + " " + "'lab$'" + ": " + "'lab1$'" + " " + newline$ + newline$
+		result_row$ =  "'vstart'" + " " + "'vend'" + " " + "transporter" + " - " + "'lab$'" + ": " + "'lab1$'" + " " + newline$ + newline$
 		fileappend "'resultfile$'" 'result_row$'
 	endif	
 endfor
