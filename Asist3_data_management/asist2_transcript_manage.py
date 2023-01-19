@@ -2,7 +2,7 @@ import os
 import csv
 import pandas as pd
 dir = "/Users/meghavarshinikrishnaswamy/transcripts"
-unique_trials = ["T000603", "T000604"]
+unique_trials = ["T000719", "T000720"]
 def open_files(dir):
     file_list = []
     for file in os.listdir(dir):
@@ -25,8 +25,8 @@ def extract_utterances(dir, unique_trials, file_ls):
             team = data[3].split("-")
             speaker = data[4].split("-")
             if trial[1] == i:
-                print("trial information found, processing transcript...")
-                df = pd.read_csv(dir+"/"+file, sep='\t')
+                print("trial information found, processing transcript: ", filename)
+                df = pd.read_csv(dir+"/"+file, sep='\t', encoding='utf8')
                 print("data subset: ")
                 print("rows: ", df.axes[0])
                 print("cols: ", df.axes[1])
