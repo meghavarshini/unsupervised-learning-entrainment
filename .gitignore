@@ -1,6 +1,9 @@
 output
 test_data
 
+opensmile-3.0
+smile.log
+
 .idea/
 .venv
 entrainment_config.pyc

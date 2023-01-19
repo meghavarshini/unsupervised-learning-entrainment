@@ -14,7 +14,9 @@ import re
 import subprocess as sp
 import numpy as np
 import sys
-sys.path.append("/home/jculnan/github/unsupervised-learning-entrainment")
+
+############ edit this line if you have trouble with home path #######
+sys.path.append("/Users/meghavarshinikrishnaswamy/github/unsupervised-learning-entrainment")
 from feats.feat_extract_nopre import final_feat_calculate_multicat
 import copy
 
@@ -23,7 +25,7 @@ import copy
 def loop_through_data(combined_files_dict, save_dir):
     # go to an individual file in the data
     for fpath, combined_file in combined_files_dict.items():
-
+        print(combined_file)
         # speakers and addressees in CSV MUST be named their unique ID
         all_speakers = combined_file.speaker.unique().tolist()
 
@@ -149,19 +151,19 @@ def run_opensmile_over_utterance(row, base_file):
     sp.run(["ffmpeg", "-ss", str(start), "-i", f"{str(filepath)}/{audio_in_name}",
             "-t", str(length), "-c", "copy", audio_out])
 
-    feats_out = filepath / f"{speaker}_{start}-{end}"
+    feats_out = filepath / f"{speaker}_{start}-{end}.csv"
     feats_out = str(feats_out)
 
     # run opensmile over a particular utterance
     # feats to extract
-    OPENSMILE_CONFIG_BASELINE = "feats/emobase2010_haoqi_revised.conf"
+    OPENSMILE_CONFIG_BASELINE = "/Users/meghavarshinikrishnaswamy/github/unsupervised-learning-entrainment/feats/emobase2010_haoqi_revised.conf"
 
     # $(OUTPUT_DIR)/%_features_raw_baseline.csv: $(OUTPUT_DIR)/%.wav
     # 	SMILExtract -C $(OPENSMILE_CONFIG_BASELINE) -I $< -O $@
     # extract the features with opensmile
 
     # todo Megh: change the SMILExtract location
-    sp.run(["/home/jculnan/opensmile-3.0/bin/SMILExtract", "-C", OPENSMILE_CONFIG_BASELINE,
+    sp.run(["/Users/meghavarshinikrishnaswamy/github/unsupervised-learning-entrainment/opensmile-3.0/bin/SMILExtract", "-C", OPENSMILE_CONFIG_BASELINE,
            "-I", audio_out, "-O", feats_out])
 
     # read in acoustic features
@@ -294,17 +296,17 @@ def id_whether_to_extract(row, following_row, speaker_pair):
 if __name__ == "__main__":
     # todo: also change the path to SMILExtract in line 163
     # get location to savedir
-    savedir = "test_output"
+    savedir = "/Users/meghavarshinikrishnaswamy/transcripts/files_for_pipeline/output"
 
     # get location to dir with files of interest
-    data_dir = Path("test_data")  # todo: change to path with files
+    data_dir = Path("/Users/meghavarshinikrishnaswamy/transcripts/files_for_pipeline")  # todo: change to path with files
 
     all_files_of_interest = {}
 
     for datafile in data_dir.iterdir():
         if datafile.suffix == ".csv":
             # read in the file as a pd df
-            this_file = pd.read_csv(datafile, sep=",")  # \t for tab delimited text files
+            this_file = pd.read_csv(datafile, sep="\t")  # \t for tab delimited text files
             all_files_of_interest[datafile] = this_file
 
     # go through all files and generate output
