@@ -137,9 +137,6 @@ def create_normed_features_csv(
     )
     csv_feat = csv_feat.values.copy()
     print("feature array has the following shape: ", np.shape(csv_feat))
-    print(
-        "this is a temporary fix, need to figure out why these weird feature extraction lines are getting printed in the first place"
-    )
     feat_data = np.copy(csv_feat)
     # convert the first column index to int index
     sample_index = list(map(int, list((feat_data[:, 0]))))
@@ -205,7 +202,7 @@ def create_normed_features_csv(
     # f0 normalization
     f0 = np.copy(feat_data[:, 70])
 
-    # replace 0 in f0 with nan
+    # replace 0 in f0 with nan, get mean
     f0[f0 == 0.0] = np.nan
     f0_mean = np.nanmean(f0)
 
