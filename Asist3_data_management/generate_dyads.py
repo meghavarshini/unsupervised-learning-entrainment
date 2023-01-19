@@ -17,36 +17,47 @@ import subprocess as sp
 def loop_through_data(combined_files_dict, save_dir):
     # go to an individual file in the data
     for fpath, combined_file in combined_files_dict.items():
+
+        all_speakers = combined_file.speaker.unique().tolist()
+
+        combined_file = combined_file.sort_values(by=["start"], ascending=True)
+
+        speakers = []
         # get the list of speakers from this file
-        speakers = []  # todo: addme
+        for speaker in all_speakers:
+            if len(all_speakers) > 1:
+                all_speakers.remove(speaker)
+                for other in all_speakers:
+                    speakers.append([speaker, other])
 
         # iterate through pairs of speakers
         for speaker_pair in speakers:
+            print(f"SPEAKER PAIR IS: {speaker_pair}")
             # holder for all acoustic features
             all_features_for_this_list = []
 
             # create savename for this file
-            savename = f"{save_dir}/{combined_file}_{speaker_pair[0]}-{speaker_pair[1]}.csv"
+            fname = fpath.stem
+            savename = f"{save_dir}/{fname}_{speaker_pair[0]}-{speaker_pair[1]}.csv"
 
             # go through the combined file
             for i, row in combined_file.iterrows():
 
                 if i < len(combined_file) - 1:
                     next_row = combined_file.iloc[i+1]
-                    extract_me = id_whether_to_extract(row, next_row, speaker_pair)
-                    if extract_me:
-                        # create short wavfile at this time
+                    if row.speaker != next_row.speaker:
+                        # print(f"row {i}: {row.speaker}; row {i + 1}: {row.speaker}")
+                        extract_me = id_whether_to_extract(row, next_row, speaker_pair)
+                        if extract_me:
+                            # print(f"extract_me is True!")
+                            # extract the relevant components of this row and the following row
+                            # extract for this row
+                            this_row_feats = run_opensmile_over_utterance(row, fpath)
+                            # extract for following row
+                            next_row_feats = run_opensmile_over_utterance(next_row, fpath)
 
-
-                        # extract the relevant components of this row and the following row
-                        # extract for this row
-                        this_row_feats = run_opensmile_over_utterance(row, fpath)
-                        # extract for following row
-
-                        next_row_feats = run_opensmile_over_utterance(next_row, fpath)
-
-                        saved_feats = this_row_feats + next_row_feats
-                        all_features_for_this_list.append(saved_feats)
+                            saved_feats = this_row_feats + next_row_feats
+                            all_features_for_this_list.append(saved_feats)
 
             # save the features
             with open(savename, 'w') as savefile:
@@ -66,16 +77,16 @@ def run_opensmile_over_utterance(row, base_file):
     fname = base_file.stem
     # re.sub(pattern, repl, string, count=0, flags=0)¶
     if "NA" in fname:
-        audio_in_name = re.sub(r"NA", speaker, fname)
+        audio_in_name = re.sub(r"NA", speaker, fname) + ".wav"
     else:
-        audio_in_name = fname
-    audio_out_name = f"{audio_in_name}_{start}-{end}"
+        audio_in_name = fname + ".wav"
+    audio_out_name = f"{audio_in_name}_{start}-{end}.wav"
     audio_out = filepath / audio_out_name
     audio_out = str(audio_out)
 
     # extract this short file to run feature extraction on
-    sp.run(["ffmpeg", "-ss", start, "-i", f"{str(filepath)}/{audio_in_name}",
-            "-to", end, "-c", "copy", audio_out])
+    sp.run(["ffmpeg", "-ss", str(start), "-i", f"{str(filepath)}/{audio_in_name}",
+            "-to", str(end), "-c", "copy", audio_out])
 
     feats_out = filepath / f"{speaker}_{start}-{end}"
     feats_out = str(feats_out)
@@ -87,7 +98,8 @@ def run_opensmile_over_utterance(row, base_file):
     # $(OUTPUT_DIR)/%_features_raw_baseline.csv: $(OUTPUT_DIR)/%.wav
     # 	SMILExtract -C $(OPENSMILE_CONFIG_BASELINE) -I $< -O $@
     # extract the features with opensmile
-    sp.run(["SMILExtract", "-C", OPENSMILE_CONFIG_BASELINE,
+
+    sp.run(["/home/jculnan/opensmile-3.0/bin/SMILExtract", "-C", OPENSMILE_CONFIG_BASELINE,
            "-I", audio_out, "-O", feats_out])
 
     # read in acoustic features
@@ -128,17 +140,18 @@ def id_whether_to_extract(row, following_row, speaker_pair):
 
 if __name__ == "__main__":
     # get location to savedir
-    savedir = "."
+    savedir = "test_output"
 
     # get location to dir with files of interest
-    data_dir = Path("/home/jculnan/Downloads/transcripts")  # todo: change to path with files
+    data_dir = Path("test_data")  # todo: change to path with files
 
     all_files_of_interest = {}
 
     for datafile in data_dir.iterdir():
-        # read in the file as a pd df
-        this_file = pd.read_csv(datafile, sep="\t")  # \t for tab delimited text files
-        all_files_of_interest[datafile] = this_file
+        if datafile.suffix == ".csv":
+            # read in the file as a pd df
+            this_file = pd.read_csv(datafile, sep=",")  # \t for tab delimited text files
+            all_files_of_interest[datafile] = this_file
 
     # go through all files and generate output
     loop_through_data(all_files_of_interest, savedir)
