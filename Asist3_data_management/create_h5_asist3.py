@@ -28,6 +28,7 @@ if __name__ == "__main__":
     parser = make_argument_parser()
     args = parser.parse_args()
 
+    #Create h5 file
     sessTest = shuffle_files(args.h5_directory)
     create_test(sessTest=sessTest, h5_dir=args.h5_directory)
     test_h5 = args.h5_directory +'/test_Fisher_nonorm.h5'
