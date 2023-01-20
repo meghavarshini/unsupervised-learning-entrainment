@@ -138,7 +138,7 @@ if __name__ == "__main__":
 			best_loss = vloss
 			best_epoch = epoch
 			print("epoch: ", vloss, "epoch: ", epoch)
-			torch.save(model, args.model_name)
+			torch.save(baseline_model, args.model_name)
 			#model = torch.load(PATH)
 			#model.eval()
 			#parameters- check they are non-empty
