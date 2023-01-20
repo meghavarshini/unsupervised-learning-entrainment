@@ -82,7 +82,7 @@ def create_train(sessTrain, h5_dir):
 	X_train = np.empty(shape=(0, 0), dtype='float64' )
 	for sess_file in sessTrain:
 		print("working on file... ", sess_file)
-		df_i = pd.read_csv(sess_file)
+		df_i = pd.read_csv(sess_file,header=None)
 		xx = np.array(df_i)
 		X_train = np.vstack([X_train, xx]) if X_train.size else xx
 		print(sess_file, "examined and training array created")
@@ -105,7 +105,7 @@ def create_val(sessVal, h5_dir):
 	X_val =np.array([])
 	for sess_file in sessVal:
 		print("working on file... ", sess_file)
-		df_i = pd.read_csv(sess_file)
+		df_i = pd.read_csv(sess_file, header=None)
 		xx = np.array(df_i)
 		X_val = np.vstack([X_val, xx]) if X_val.size else xx
 		print(sess_file, "examined and validation array created")
@@ -124,7 +124,7 @@ def create_test(sessTest, h5_dir):
 	spk_base = 1
 	X_test =np.array([])
 	for sess_file in sessTest:
-		df_i = pd.read_csv(sess_file)
+		df_i = pd.read_csv(sess_file, header=None)
 		xx = np.array(df_i)
 		print("xx.shape[0]",xx.shape[0])
 		N = xx.shape[0]
