@@ -39,6 +39,7 @@ class EntDataset(Dataset):
 class VAE(nn.Module):
     def __init__(self):
         super(VAE, self).__init__()
+        # the model is run over
         zdim=30
 
         self.fc1 = nn.Linear(228, 128)
