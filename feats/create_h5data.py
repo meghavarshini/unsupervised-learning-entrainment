@@ -8,6 +8,9 @@ import numpy as np
 import pandas as pd
 import math
 
+# Major change: pd.read_csv(sess_file) to pd.read_csv(sess_file,header=None)
+# this ensures that the top row of sessList was read as data, not header
+# This significantly reduced the number of rows in the h5 file
 
 def make_argument_parser():
 	parser = argparse.ArgumentParser(
