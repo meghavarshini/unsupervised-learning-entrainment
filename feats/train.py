@@ -112,7 +112,8 @@ if __name__ == "__main__":
 	parser = make_argument_parser()
 	args = parser.parse_args()
 	args.cuda = not args.no_cuda and torch.cuda.is_available()
-	print("cuda availability:", args.cuda)
+	print("cuda availability: ", args.cuda)
+	print("gpu details: ", torch.cuda.get_device_name(0))
 	exit()
 
 
