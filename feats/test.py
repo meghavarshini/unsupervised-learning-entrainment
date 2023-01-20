@@ -58,7 +58,8 @@ def model_testing(model_name, X_test,cuda):
     # load h5 test file- iterating over conversations:
     #ToDo- check if iterated item is the same size both here and in train.py
     for idx, data in enumerate(X_test):
-        print("working on file: ", idx)
+        print("working on array: ", idx)
+        print(data)
 
         # list split in half, saved as 2 variables, in opposite order
         # Check: is this splitting the conversation in half? Or is this per utterance?
