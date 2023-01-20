@@ -1,4 +1,5 @@
 #To Run, use: CUDA_VISIBLE_DEVICES=1 python train.py --no-cuda
+import argparse
 from ecdc import *
 #------------------------------------------------------------------
 #Uncomment for parsing inputs
