@@ -1,0 +1,30 @@
+[ 19.01.2023 - 14:56:57 ]
+    (MSG) [2] SMILExtract: openSMILE starting!
+[ 19.01.2023 - 14:56:57 ]
+    (MSG) [2] SMILExtract: config file is: /Users/meghavarshinikrishnaswamy/github/unsupervised-learning-entrainment/feats/emobase2010_haoqi_revised.conf
+[ 19.01.2023 - 14:56:57 ]
+    (MSG) [2] cComponentManager: successfully registered 103 component types.
+[ 19.01.2023 - 14:56:57 ]
+    (MSG) [2] instance 'res': adjusting resampleRatio from 0.229167 to 0.229167 to match next integer frame size! (targetFs* = 11000.000000)
+[ 19.01.2023 - 14:56:57 ]
+    (WRN) [2] instance 'lld.reader': Inconsistency in input level parameters. growDyn on first (#1) input = 0, growDyn on input # 5 (pitch) = 1. This might cause the processing to hang unpredictably or cause incomplete processing.
+[ 19.01.2023 - 14:56:57 ]
+    (WRN) [2] instance 'lld.reader': Inconsistency in input level parameters. isRb on first (#1) input = 1, isRb on input # 5 (pitch) = 0. This might cause the processing to hang unpredictably or cause incomplete processing.
+[ 19.01.2023 - 14:56:57 ]
+    (WRN) [1] instance 'lld.reader': Input level buffer sizes (levelconf.nT) are inconsistent. Level 'intens' has size 2 which is smaller than the max. input size of all input levels (10). This might cause the processing to hang unpredictably or cause incomplete processing.
+[ 19.01.2023 - 14:56:57 ]
+    (WRN) [1] instance 'lld.reader': Input level buffer sizes (levelconf.nT) are inconsistent. Level 'mfcc' has size 2 which is smaller than the max. input size of all input levels (10). This might cause the processing to hang unpredictably or cause incomplete processing.
+[ 19.01.2023 - 14:56:57 ]
+    (WRN) [1] instance 'lld.reader': Input level buffer sizes (levelconf.nT) are inconsistent. Level 'mspec2log' has size 2 which is smaller than the max. input size of all input levels (10). This might cause the processing to hang unpredictably or cause incomplete processing.
+[ 19.01.2023 - 14:56:57 ]
+    (WRN) [1] instance 'lld.reader': Input level buffer sizes (levelconf.nT) are inconsistent. Level 'lsp' has size 2 which is smaller than the max. input size of all input levels (10). This might cause the processing to hang unpredictably or cause incomplete processing.
+[ 19.01.2023 - 14:56:57 ]
+    (WRN) [1] instance 'lld2.reader': Input level buffer sizes (levelconf.nT) are inconsistent. Level 'pitchF' has size 10 which is smaller than the max. input size of all input levels (100). This might cause the processing to hang unpredictably or cause incomplete processing.
+[ 19.01.2023 - 14:56:57 ]
+    (MSG) [2] cComponentManager: successfully finished createInstances (28 component instances were finalised, 1 data memories were finalised)
+[ 19.01.2023 - 14:56:57 ]
+    (MSG) [2] cComponentManager: starting single thread processing loop
+[ 19.01.2023 - 14:56:57 ]
+    (WRN) [2] cComponentManager: The following component(s) could not perform any work because destination levels are full but no other component performed any work either: mfcc vo lsp intens. Processing will possibly be incomplete. For more details, enable the execDebug option of cComponentManager.
+[ 19.01.2023 - 14:56:57 ]
+    (MSG) [2] cComponentManager: Processing finished! System ran for 277 ticks.
