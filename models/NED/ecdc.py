@@ -19,13 +19,14 @@ import matplotlib.pyplot as plt
 # Define the dataset class
 #-------------------------------------------------
 class EntDataset(Dataset):
-    def __init__(self, file_name):
+    def __init__(self, file_name, featDim=228):
         self.file_name = file_name
+        self.featDim = featDim
         
     def __getitem__(self, idx):
         hf = h5py.File(self.file_name, 'r')
-        X = hf['dataset'][idx,0:featDim]
-        Y = hf['dataset'][idx,featDim:2*featDim]
+        X = hf['dataset'][idx,0:self.featDim]
+        Y = hf['dataset'][idx,self.featDim:2*self.featDim]
         hf.close()
         return (X, Y)
 

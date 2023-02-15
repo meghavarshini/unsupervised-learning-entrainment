@@ -38,12 +38,12 @@ loss_id = 'l1'
 method_id = ''
 
 
-fdset = EntDataset('/home/tomcat/entrainment/NED_files/baseline_1_h5/train_' + dataset_id + '_' + norm_id +'.h5')
+fdset = EntDataset('/home/tomcat/entrainment/NED_files/mini/train_' + dataset_id + '_' + norm_id +'.h5')
 
 train_loader = torch.utils.data.DataLoader(fdset, batch_size=128, shuffle=True)
 
 
-fdset_val = EntDataset('/home/tomcat/entrainment/NED_files/baseline_1_h5/val_' + dataset_id + '_' + norm_id + '.h5')
+fdset_val = EntDataset('/home/tomcat/entrainment/NED_files/mini/val_' + dataset_id + '_' + norm_id + '.h5')
 
 val_loader = torch.utils.data.DataLoader(fdset_val, batch_size=128, shuffle=True)
 
@@ -127,4 +127,4 @@ for epoch in range(1, args.epochs + 1):
         best_loss = vloss
         best_epoch = epoch
         # pdb.set_trace()
-        torch.save(model, '/home/tomcat/entrainment/NED_files/models/trained_' + dataset_id + '_' + norm_id + '_'+ loss_id + '_'+ dim_id + '.pt')
+        torch.save(model, '/home/tomcat/entrainment/NED_files/mini/models/trained_' + dataset_id + '_' + norm_id + '_'+ loss_id + '_'+ dim_id + '.pt')
