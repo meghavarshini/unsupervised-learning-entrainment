@@ -17,7 +17,7 @@ parser.add_argument('--log-interval', type=int, default=10, metavar='N',
 	help='how many batches to wait before logging training status')
 args = parser.parse_args()
 args.cuda = not args.no_cuda and torch.cuda.is_available()
-
+print("argparse loaded")
 
 
 torch.manual_seed(args.seed)
@@ -47,12 +47,15 @@ fdset_val = EntDataset('/home/tomcat/entrainment/NED_files/mini/val_' + dataset_
 
 val_loader = torch.utils.data.DataLoader(fdset_val, batch_size=128, shuffle=True)
 
+print("data loaded")
+
 model = VAE().double()
 if args.cuda:
     model.cuda()
 optimizer = optim.Adam(model.parameters(), lr=1e-3)
 
 def train(epoch):
+    print("training...")
     model.train()
     train_loss = 0
     for batch_idx, (data, y_data) in enumerate(train_loader):
@@ -60,7 +63,7 @@ def train(epoch):
         print("data dimensions: ",data.size())
         y_data = Variable(y_data)
         print("data dimensions: ", y_data.size())
-        exit()
+        #exit()
 
         if args.cuda:
             data = data.cuda()
@@ -74,6 +77,7 @@ def train(epoch):
         recon_batch = model(data)
         loss = loss_function(recon_batch, y_data)
         loss.backward()
+        print("train loss calcutation: ", batch_idx % args.log_interval)
         #IndexError: invalid index of a 0-dim tensor.
         # Use `tensor.item()` in Python to convert a 0-dim tensor to a number
         train_loss += loss.data
@@ -119,11 +123,14 @@ best_loss=np.inf
 print("This is Sparta!!")
 
 for epoch in range(1, args.epochs + 1):
+    print("test")
     tloss = train(epoch)
     vloss = validate(epoch)
     Tloss.append(tloss)
     Vloss.append(vloss)
+    print("vloss")
     if vloss < best_loss:
+        print("model updated")
         best_loss = vloss
         best_epoch = epoch
         # pdb.set_trace()
