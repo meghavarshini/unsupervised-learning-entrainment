@@ -60,9 +60,9 @@ def train(epoch):
     train_loss = 0
     for batch_idx, (data, y_data) in enumerate(train_loader):
         data = Variable(data)
-        print("data dimensions: ",data.size())
+#        print("data dimensions: ",data.size())
         y_data = Variable(y_data)
-        print("data dimensions: ", y_data.size())
+ #       print("data dimensions: ", y_data.size())
         #exit()
 
         if args.cuda:
@@ -123,12 +123,12 @@ best_loss=np.inf
 print("This is Sparta!!")
 
 for epoch in range(1, args.epochs + 1):
-    print("test")
+  #  print("test")
     tloss = train(epoch)
     vloss = validate(epoch)
     Tloss.append(tloss)
     Vloss.append(vloss)
-    print("vloss")
+   # print("vloss")
     if vloss < best_loss:
         print("model updated")
         best_loss = vloss
