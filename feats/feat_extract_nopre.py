@@ -55,6 +55,23 @@ def final_feat_calculate(sample_index, all_raw_norm_feat, all_raw_feat_dim):
     return whole_output_feat
 
 
+def final_feat_calculate_multicat(row_ends, all_raw_norm_feat, all_raw_feat_dim):
+    whole_output_feat = np.array([], dtype=np.float32).reshape(
+        0, all_raw_feat_dim * 6
+    )
+    # if we are trying to get func_calculate to run over an entire utterance
+    # and only one utterance, utt_feats is this array
+    tmp_all_raw_norm_feat = np.copy(all_raw_norm_feat[row_ends[0]:row_ends[1], :])
+    # tmp_all_raw_norm_feat = np.copy(utt_feats)
+    print(f"Shape of all_raw_norm_feat: {np.shape(tmp_all_raw_norm_feat)}")
+    funcs_per_frame = func_calculate(tmp_all_raw_norm_feat)
+    print(f"Shape of funcs_per_frame: {np.shape(funcs_per_frame)}")
+    whole_output_feat = np.concatenate(
+        (whole_output_feat, funcs_per_frame), axis=0
+    )
+    return whole_output_feat
+
+
 def func_calculate(input_feat_matrix):
     """
     Given a numpy array calculate its statistic functions

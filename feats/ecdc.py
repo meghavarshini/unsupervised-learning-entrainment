@@ -1,10 +1,18 @@
+import os
 import h5py
+import pdb
+import numpy as np
+import csv
+import argparse
 import torch
 import torch.utils.data
 from torch.utils.data import Dataset
 from torch import nn, optim
+from torch.autograd import Variable
 from torch.nn import functional as F
-
+from torchvision import datasets, transforms
+from torchvision.utils import save_image
+import matplotlib.pyplot as plt
 #-------------------------------------------------
 # Define the dataset class
 #-------------------------------------------------
@@ -31,6 +39,7 @@ class EntDataset(Dataset):
 class VAE(nn.Module):
     def __init__(self):
         super(VAE, self).__init__()
+        # the model is run over
         zdim=30
 
         self.fc1 = nn.Linear(228, 128)
