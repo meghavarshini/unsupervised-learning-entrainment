@@ -1,16 +1,24 @@
 # Will Styler
-# ERROR: line 20- found string expression instead of a numeric expression
 # TextGrid information extraction script
 # Gathers labels from other tiers on Textgrids
 # So if you want to find the label from another tier corresponding to the time of another tier
 
+########## TODO ##########
+#PROMPT THE USER FOR INPUT Directory
+#path$ = chooseDirectory$: "Choose a directory for transcripts"
+
+
+form Speaker Info
+  text speaker E000
+endform
+
+header_row$ = "start"+ tab$ + "end" + tab$ + "speaker" + tab$ + "addressee" + tab$ + "transcript" + newline$
 
 grid$ = selected$ ("TextGrid")
-resultfile$ = "'grid$'_info.txt"
+resultfile$ = "'grid$'.txt"
 
-header_row$ = "#"+ tab$ + "start"+ " " + "end" + " " + "speaker" + " " + "addressee" + " " + "transcript" + " " + newline$
+
 fileappend "'resultfile$'" 'header_row$'
-
 
 selectObject: "TextGrid 'grid$'"
 
@@ -31,7 +39,7 @@ for i from 1 to numint
 		lab1$ = Get label of interval... 1 int1
 		# print "'vdur'"
 		prevint = int1 - 1
-		result_row$ =  "'vstart'" + " " + "'vend'" + " " + "transporter" + " - " + "'lab$'" + ": " + "'lab1$'" + " " + newline$ + newline$
+		result_row$ =  "'vstart'" + tab$ + "'vend'" + tab$ + "'speaker$'" + tab$ + "'lab$'" + ":" + tab$ + "'lab1$'" + newline$ + newline$
 		fileappend "'resultfile$'" 'result_row$'
 	endif	
 endfor
