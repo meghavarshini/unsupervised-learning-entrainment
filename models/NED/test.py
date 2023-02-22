@@ -40,7 +40,9 @@ model = VAE().double()
 
 
 
-model = torch.load(model_name)
+# todo: test out results on model without training
+#   and then uncomment this
+#model = torch.load(model_name)
 model.eval()
 if args.cuda:
     model.cuda()

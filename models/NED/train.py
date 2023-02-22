@@ -7,8 +7,8 @@ from ecdc import *
 parser = argparse.ArgumentParser(description='NED training')
 parser.add_argument('--batch-size', type=int, default=128, metavar='N',
 	help='input batch size for training (default: 128)')
-parser.add_argument('--epochs', type=int, default=10, metavar='N',
-	help='number of epochs to train (default: 10)')
+parser.add_argument('--epochs', type=int, default=100, metavar='N',
+	help='number of epochs to train (default: 10)')  # increased default from 10 to 100
 parser.add_argument('--no-cuda', action='store_true', default=False,
 	help='enables CUDA training')
 parser.add_argument('--seed', type=int, default=1, metavar='S',
@@ -80,13 +80,16 @@ def train(epoch):
         print("train loss calcutation: ", batch_idx % args.log_interval)
         #IndexError: invalid index of a 0-dim tensor.
         # Use `tensor.item()` in Python to convert a 0-dim tensor to a number
-        train_loss += loss.data
+        # todo: testing out changing .data for .item on loss calculations
+        # train_loss += loss.data
+        train_loss += loss.item
         optimizer.step()
         if batch_idx % args.log_interval == 0:
             print(('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
                 epoch, batch_idx * len(data), len(train_loader.dataset),
                 100. * batch_idx / len(train_loader),
-                loss.data / len(data))))
+                # loss.data / len(data))))
+                loss.item / len(data))))
     train_loss /=  len(train_loader.dataset)
     print(('====> Epoch: {} Average loss: {:.4f}'.format(
           epoch, train_loss)))
@@ -123,15 +126,26 @@ best_loss=np.inf
 print("This is Sparta!!")
 
 for epoch in range(1, args.epochs + 1):
-  #  print("test")
+    #  print("test")
     tloss = train(epoch)
     vloss = validate(epoch)
     Tloss.append(tloss)
     Vloss.append(vloss)
-   # print("vloss")
+
+    # patience for increases/plateau in loss
+    # number of epochs to run without loss decreasing
+    #   beyond best loss
+    patience = 2
+
+    # print("vloss")
     if vloss < best_loss:
+        patience = 2
         print("model updated")
         best_loss = vloss
         best_epoch = epoch
         # pdb.set_trace()
         torch.save(model, '/home/tomcat/entrainment/NED_files/mini/models/trained_' + dataset_id + '_' + norm_id + '_'+ loss_id + '_'+ dim_id + '.pt')
+    else:
+        patience -= 1
+        if patience == 0:
+            exit()
