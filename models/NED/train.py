@@ -89,7 +89,7 @@ def train(epoch):
                 epoch, batch_idx * len(data), len(train_loader.dataset),
                 100. * batch_idx / len(train_loader),
                 # loss.data / len(data))))
-                loss.item / len(data))))
+                loss.item() / len(data))))
     train_loss /=  len(train_loader.dataset)
     print(('====> Epoch: {} Average loss: {:.4f}'.format(
           epoch, train_loss)))
