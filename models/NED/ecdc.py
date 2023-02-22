@@ -97,8 +97,16 @@ class VAE(nn.Module):
         return z
 
 
-
+##### NASIR'S ToDo ##############
 # Reconstruction + KL divergence losses summed over all elements and batch
+# see Appendix B from VAE paper:
+    # Kingma and Welling. Auto-Encoding Variational Bayes. ICLR, 2014
+    # https://arxiv.org/abs/1312.6114
+    # 0.5 * sum(1 + log(sigma^2) - mu^2 - sigma^2)
+    # KLD = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp())
+    #return BCE #+ KLD #, BCE, KLD
+#################################
+
 def loss_function(recon_x1, x2):
     featDim = 228
     if loss=='l1':
@@ -107,11 +115,7 @@ def loss_function(recon_x1, x2):
         BCE = F.mse_loss(recon_x1, x2.view(-1, featDim), size_average=False)
     
 
-    # see Appendix B from VAE paper:
-    # Kingma and Welling. Auto-Encoding Variational Bayes. ICLR, 2014
-    # https://arxiv.org/abs/1312.6114
-    # 0.5 * sum(1 + log(sigma^2) - mu^2 - sigma^2)
-    # KLD = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp())
+    
 
     return BCE #+ KLD #, BCE, KLD
 
