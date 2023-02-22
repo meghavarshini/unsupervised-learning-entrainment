@@ -82,7 +82,7 @@ def train(epoch):
         # Use `tensor.item()` in Python to convert a 0-dim tensor to a number
         # todo: testing out changing .data for .item on loss calculations
         # train_loss += loss.data
-        train_loss += loss.item
+        train_loss += loss.item()
         optimizer.step()
         if batch_idx % args.log_interval == 0:
             print(('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
