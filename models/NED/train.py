@@ -1,5 +1,6 @@
 # from aeent import *
 from ecdc import *
+from test import test, load_h5
 
 #------------------------------------------------------------------
 #Uncomment for parsing inputs
@@ -125,6 +126,9 @@ def validate(epoch):
 
 Tloss =[]
 Vloss =[]
+dev2loss = []
+fake_dev2loss = []
+dev2result = []
 best_loss=np.inf
 print("This is Sparta!!")
 
@@ -134,6 +138,20 @@ for epoch in range(1, args.epochs + 1):
     vloss = validate(epoch)
     Tloss.append(tloss)
     Vloss.append(vloss)
+
+    # need test data
+    # todo: add second dev partition and add its path in here
+    dev2_path = "/home/tomcat/entrainment/NED_files/mini/test_Fisher_acoustic_nonorm.h5"
+    dev2_data = load_h5(dev2_path)
+
+    # test out this version of the model on testing task
+    # use a separate DEV partition
+    # todo: add flexibility to have p=2 if needed
+    dev2_loss, fake_dev2_loss, dev2_result = test(dev2_data, model, p=1)
+    # append these to the holders
+    dev2loss.append(dev2_loss)
+    fake_dev2loss.append(fake_dev2_loss)
+    dev2result.append(dev2_result)
 
     # patience for increases/plateau in loss
     # number of epochs to run without loss decreasing
