@@ -8,20 +8,20 @@ import os
 os.getcwd()
 
 def make_argument_parser():
-    parser = argparse.ArgumentParser(description='entrainment testing')
-    parser.add_argument('--no-cuda', action='store_true',
+	parser = argparse.ArgumentParser(description='entrainment testing')
+	parser.add_argument('--no-cuda', action='store_true',
                         default=False,
                         help='enables CUDA training')
-    parser.add_argument('--seed', type=int,
+	parser.add_argument('--seed', type=int,
                         default=1, metavar='S',
                         help='random seed (default: 1)')
-    parser.add_argument('--hff', default= "/home/tomcat/entrainment/NED_files/mini/test_Fisher_acoustic_nonorm.h5",
+	parser.add_argument('--hff', default= "/home/tomcat/entrainment/NED_files/mini/test_Fisher_acoustic_nonorm.h5",
                         help='location of h5 file with the test data')
-    parser.add_argument('--model_name',
+	parser.add_argument('--model_name',
                         default= "/home/tomcat/entrainment/NED_files/mini/models/trained_Fisher_acoustic_nonorm_l1_30dim.pt",
                         help='name associated with the trained model')
-    # args = parser.parse_args()
-    return parser
+	# args = parser.parse_args()
+	return parser
 
 #temp
 #model_name = '/home/tomcat/entrainment/NED_files/mini/models/trained_Fisher_acoustic_nonorm_l1_30dim.pt'
@@ -37,19 +37,19 @@ def make_argument_parser():
 #X_test = np.array(hff['dataset'])
 
 def load_h5(file):
-    print("loading h5 file: ", file)
-    file = h5py.File(file, 'r')
-    test = np.array(file['dataset'])
-    print("loading complete!")
-    return test
+	print("loading h5 file: ", file)
+	file = h5py.File(file, 'r')
+	test = np.array(file['dataset'])
+	print("loading complete!")
+	return test
 
 
 def model_testing(model_name, X_test,cuda):
-    model = VAE().double()
+	model = VAE().double()
 
-# todo: test out results on model without training
-#   and then uncomment this
-#model = torch.load(model_name)
+	# todo: test out results on model without training
+	#   and then uncomment this
+	#model = torch.load(model_name)
 	model.eval()
 	if args.cuda:
 		model.cuda()
@@ -131,17 +131,17 @@ def model_testing(model_name, X_test,cuda):
 
 
 if __name__ == "__main__":
-    os.getcwd()
-    SEED=448
-    parser = make_argument_parser()
-    args = parser.parse_args()
-    args.cuda = not args.no_cuda and torch.cuda.is_available()
+	os.getcwd()
+	SEED=448
+	parser = make_argument_parser()
+	args = parser.parse_args()
+	args.cuda = not args.no_cuda and torch.cuda.is_available()
 
-    torch.manual_seed(args.seed)
+	torch.manual_seed(args.seed)
 
-    if not args.no_cuda and torch.cuda.is_available():
-        torch.cuda.manual_seed(args.seed)
+	if not args.no_cuda and torch.cuda.is_available():
+		torch.cuda.manual_seed(args.seed)
 
-    X_test1 = load_h5(args.hff)
-    test_run = model_testing(args.model_name, X_test1, args.cuda)
+	X_test1 = load_h5(args.hff)
+	test_run = model_testing(args.model_name, X_test1, args.cuda)
 
