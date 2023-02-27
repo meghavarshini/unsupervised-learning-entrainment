@@ -52,7 +52,10 @@ print("data loaded")
 model = VAE().double()
 if args.cuda:
     model.cuda()
-optimizer = optim.Adam(model.parameters(), lr=1e-3)
+#Model LR hasn't converged to a best loss in 100 epochs- so we make the LR biggers to make observations about convergence
+#We run the risk of the step size being too big
+optimizer = optim.Adam(model.parameters(), lr=0.01)
+#optimizer = optim.Adam(model.parameters(), lr=1e-3)
 
 def train(epoch):
     print("training...")
