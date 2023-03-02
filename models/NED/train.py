@@ -147,7 +147,7 @@ for epoch in range(1, args.epochs + 1):
     # test out this version of the model on testing task
     # use a separate DEV partition
     # todo: add flexibility to have p=2 if needed
-    dev2_loss, fake_dev2_loss, dev2_result, args.cuda = test(dev2_data, model, cuda, p=1)
+    dev2_loss, fake_dev2_loss, dev2_result = test(dev2_data, model, cuda, p=1)
     # append these to the holders
     dev2loss.append(dev2_loss)
     fake_dev2loss.append(fake_dev2_loss)
