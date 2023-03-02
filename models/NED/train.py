@@ -128,9 +128,8 @@ def validate(model, val_loader, cuda):
     return val_loss
 
 if __name__ == "__main__":
-
-	parser = make_argument_parser()
-	args = parser.parse_args()
+    parser = make_argument_parser()
+    args = parser.parse_args()
     args.cuda = not args.no_cuda and torch.cuda.is_available()
 
     epoch_no = []
