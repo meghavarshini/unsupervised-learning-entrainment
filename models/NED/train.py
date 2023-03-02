@@ -169,10 +169,20 @@ for epoch in range(1, args.epochs + 1):
     else:
         patience -= 1
         if patience == 0:
-            print("plotting loss values...")
-            plt.scatter(epoch_no, Tloss)
-            plt.scatter(epoch_no, Vloss)
-            plt.savefig("/home/tomcat/entrainment/NED_files/mini/loss_plot.png")
-            plt.show()
-            exit()
+            break()
 
+print("plotting training loss values...")
+plt.scatter(epoch_no, Tloss)
+plt.scatter(epoch_no, Vloss)
+plt.savefig("/home/tomcat/entrainment/NED_files/mini/loss_train_plot.png")
+plt.clf()
+
+print("plotting training loss values...")
+plt.scatter(epoch_no, dev2loss)
+plt.savefig("/home/tomcat/entrainment/NED_files/mini/loss_dev2_plot.png")
+plt.clf()
+
+
+print("plotting dev3 results...")
+plt.scatter(epoch_no, dev2result)
+plt.savefig("/home/tomcat/entrainment/NED_files/mini/dev2_result_plot.png")
