@@ -169,7 +169,7 @@ for epoch in range(1, args.epochs + 1):
     else:
         patience -= 1
         if patience == 0:
-            break()
+            break
 
 print("plotting training loss values...")
 plt.scatter(epoch_no, Tloss)
