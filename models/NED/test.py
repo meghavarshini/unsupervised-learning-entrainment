@@ -31,7 +31,7 @@ def load_h5(file):
 	return test
 
 
-def test(X_test, model, p):
+def test(X_test, model, p, cuda):
 	test_loss = 0
 	fake_test_loss = 0
 	Loss=[]
@@ -53,7 +53,7 @@ def test(X_test, model, p):
 
 		y_fake_data = Variable(torch.from_numpy(y_fake_data))
 
-		if args.cuda:
+		if cuda:
 			x_data = x_data.cuda()
 			y_data = y_data.cuda()
 			y_fake_data = y_fake_data.cuda()
@@ -116,7 +116,7 @@ def model_testing(model_name, X_test, cuda):
 		p=2
 		pdb
 
-	test_loss, fake_loss, result = test(X_test, model, p)
+	test_loss, fake_loss, result = test(X_test, model, p, cuda)
 
 	print("Total Real Loss:" + str(test_loss) + "Total Fake Loss:" + str(fake_loss))
 	print(result)

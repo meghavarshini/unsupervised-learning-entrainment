@@ -169,4 +169,10 @@ for epoch in range(1, args.epochs + 1):
     else:
         patience -= 1
         if patience == 0:
+            print("plotting loss values...")
+            plt.scatter(epoch_no, Tloss)
+            plt.scatter(epoch_no, Vloss)
+            plt.savefig("/home/tomcat/entrainment/NED_files/mini/loss_plot.png")
+            plt.show()
             exit()
+
