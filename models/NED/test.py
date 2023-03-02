@@ -23,19 +23,6 @@ def make_argument_parser():
 	# args = parser.parse_args()
 	return parser
 
-#temp
-#model_name = '/home/tomcat/entrainment/NED_files/mini/models/trained_Fisher_acoustic_nonorm_l1_30dim.pt'
-#model_name = '/home/tomcat/entrainment/NED_files/models/trained_Fisher_acoustic_nonorm_l1_30dim.pt'
-# model_name = '/home/tomcat/entrainment/NED_files/models/trained_VAE_nonorm_nopre_l1.pt'
-
-#------------------------------------------------------------------
-#Uncomment for parsing inputs
-
-#temp
-#hff = h5py.File('/home/tomcat/entrainment/NED_files/mini/test_Fisher_acoustic_nonorm.h5', 'r')
-# hff = h5py.File('/home/tomcat/entrainment/NED_files/baseline_1_h5/test_Fisher_nonorm_nopre.h5', 'r')
-#X_test = np.array(hff['dataset'])
-
 def load_h5(file):
 	print("loading h5 file: ", file)
 	file = h5py.File(file, 'r')

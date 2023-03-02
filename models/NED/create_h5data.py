@@ -175,7 +175,7 @@ def create_val(sessVal,h5_dir):
 	return None
 
 ###### Create Test Data file ######
-def create_test(sessTest,h5_dir, data_type):
+def create_test(sessTest,h5_dir, data_type= "test"):
 	dataset_id = 'Fisher_acoustic'
 	norm_id = 'nonorm'
 	dim = 228
@@ -192,18 +192,18 @@ def create_test(sessTest,h5_dir, data_type):
 		So, we use math.floor to round down the number of rows to the nearest integer.'''
 		N = xx.shape[0]
 		if np.mod(N,2)==0:
-			print("array dimension is an even number")
+			print("array dimension of transcript is an even number")
 			print("N/2: ", math.floor(N / 2), N/2)
 			spk_label = np.tile([spk_base, spk_base+1], [1, math.floor(N/2)])
 		else:
-			print("array dimnsion is an odd number")
+			print("array dimennsion of transcript is an odd number")
 			print("N/2: ", math.floor(N / 2), N/2)
 			spk_label = np.tile([spk_base, spk_base+1], [1, math.floor(N/2)])
 			spk_label = np.append(spk_label, spk_base)
 		xx = np.hstack((xx, spk_label.T.reshape([N,1])))
 		spk_base += 1
 		np.savetxt(ftmp, xx, delimiter=',')
-		print('Test file: ' +  sess_file + 'rows: ' + str(xx.shape[1]))
+		# print('Test file: ' + sess_file + 'rows: ' + str(xx.shape[1]))
 
 		if xx.shape[1]!=913:
 			print("rows in file "+ sess_file + " are not 913!")
@@ -225,12 +225,12 @@ if __name__ == "__main__":
 	frac_train = 0.8
 	frac_val = 0.1
 
-	# tr, v, te = split_files(feats_dir = args.features_dir, sess_List = args.h5_directory+"/sessList.txt")
-	# create_train(sessTrain = tr, h5_dir= args.h5_directory)
-	# create_val(sessVal= v, h5_dir= args.h5_directory)
-	# create_test(sessTest= te, h5_dir= args.h5_directory)
+	tr, v, te = split_files(feats_dir = args.features_dir, sess_List = args.h5_directory+"/sessList.txt")
+	create_train(sessTrain = tr, h5_dir= args.h5_directory)
+	create_val(sessVal= v, h5_dir= args.h5_directory)
+	create_test(sessTest= te, h5_dir= args.h5_directory)
 
-	dev2list = "/home/tomcat/entrainment/feat_files/baseline_mini_h5/dev2list.txt"
-	with open(dev2list, 'r') as f:
-		dev2 = f.read().splitlines()
-	create_test(sessTest=dev2, h5_dir=args.h5_directory, data_type= "dev2")
+	# dev2list = "/home/tomcat/entrainment/feat_files/baseline_mini_h5/dev2list.txt"
+	# with open(dev2list, 'r') as f:
+	# 	dev2 = f.read().splitlines()
+	# create_test(sessTest=dev2, h5_dir=args.h5_directory, data_type= "dev2")
