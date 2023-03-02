@@ -141,7 +141,7 @@ for epoch in range(1, args.epochs + 1):
 
     # need test data
     # todo: add second dev partition and add its path in here
-    dev2_path = "/home/tomcat/entrainment/NED_files/mini/test_Fisher_acoustic_nonorm.h5"
+    dev2_path = "/home/tomcat/entrainment/NED_files/mini/dev2_Fisher_acoustic_nonorm.h5"
     dev2_data = load_h5(dev2_path)
 
     # test out this version of the model on testing task
