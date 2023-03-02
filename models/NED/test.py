@@ -109,7 +109,7 @@ def test(X_test, model, p):
 	return test_loss, fake_test_loss, final_result
 
 
-def model_testing(model_name, X_test):
+def model_testing(model_name, X_test, cuda):
 	model = VAE().double()
 
 	# todo: test out results on model without training
@@ -117,7 +117,7 @@ def model_testing(model_name, X_test):
 	model = torch.load(model_name)
 
 	model.eval()
-	if args.cuda:
+	if cuda:
 		model.cuda()
 
 	if 'l1' in model_name:
