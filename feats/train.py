@@ -26,7 +26,6 @@ def make_argument_parser():
     return parser
 
 def model_setup(model_name, seed, cuda, data_directory):
-    print(model_name)
 
     if os.path.exists(model_name):
         print("model file available for update: ", model_name)
@@ -145,6 +144,7 @@ if __name__ == "__main__":
             #model = torch.load(PATH)
             #model.eval()
             #parameters- check they are non-empty
+
     print("plotting loss values...")
     plt.scatter(epoch_no, Tloss)
     plt.scatter(epoch_no, Vloss)
