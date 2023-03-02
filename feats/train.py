@@ -1,5 +1,6 @@
 #To Run, use: CUDA_VISIBLE_DEVICES=1 python train.py --no-cuda
 from ecdc import *
+from matplotlib import pyplot as plt
 #------------------------------------------------------------------
 #Uncomment for parsing inputs
 def make_argument_parser():
@@ -114,7 +115,7 @@ if __name__ == "__main__":
 	args = parser.parse_args()
     args.cuda = not args.no_cuda and torch.cuda.is_available()
 
-
+    epoch_no = []
     Tloss =[]
     Vloss =[]
     best_loss=np.inf
@@ -133,6 +134,7 @@ if __name__ == "__main__":
         vloss = validate(model= baseline_model,
                          val_loader= baseline_val_loader,
                          cuda= args.cuda)
+        epoch_no.append(epoch)
         Tloss.append(tloss)
         Vloss.append(vloss)
         if vloss < best_loss:
@@ -143,3 +145,7 @@ if __name__ == "__main__":
             #model = torch.load(PATH)
             #model.eval()
             #parameters- check they are non-empty
+    print("plotting loss values...")
+    plt.scatter(epoch_no, Tloss)
+    plt.scatter(epoch_no, Vloss)
+    plt.show()
