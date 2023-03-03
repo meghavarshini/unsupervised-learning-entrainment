@@ -152,7 +152,7 @@ if __name__ == "__main__":
     ned_model, ned_optimizer, ned_train_loader, ned_val_loader, model_name = \
         model_setup(model_directory= args.model_dir, seed= args.seed,
                     cuda= args.cuda, data_directory = args.h5_directory)
-    prnt("model loaded")
+    print("model loaded")
     # Second Dev set for testing model at every epoch
     dev2_path = "/home/tomcat/entrainment/NED_files/mini/dev2_Fisher_acoustic_nonorm.h5"
     dev2_data = load_h5(dev2_path)
