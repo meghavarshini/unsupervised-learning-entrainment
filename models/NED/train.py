@@ -159,11 +159,11 @@ if __name__ == "__main__":
 
     for epoch in range(1, args.epochs + 1):
         #  print("test")
-        tloss = train(each_epoch = epoch, model = baseline_model,
-                      train_loader= baseline_train_loader,
-                      optimizer= baseline_optimizer, cuda = args.cuda)
-        vloss = validate(model= baseline_model,
-                         val_loader= baseline_val_loader,
+        tloss = train(each_epoch = epoch, model = ned_model,
+                      train_loader= ned_train_loader,
+                      optimizer= ned_optimizer, cuda = args.cuda)
+        vloss = validate(model= ned_model,
+                         val_loader= ned_val_loader,
                          cuda= args.cuda)
         Tloss.append(tloss)
         Vloss.append(vloss)
