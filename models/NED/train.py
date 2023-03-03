@@ -155,13 +155,18 @@ if __name__ == "__main__":
                     cuda= args.cuda, data_directory = args.h5_directory)
     print("model loaded")
     # Second Dev set for testing model at every epoch
-    dev2_path = "/home/tomcat/entrainment/NED_files/mini/dev2_Fisher_acoustic_nonorm.h5"
+    dev2_path = args.h5_directory + "/dev2_Fisher_acoustic_nonorm.h5"
     dev2_data = load_h5(dev2_path)
 
-    file_dev2loss = open("/home/tomcat/entrainment/NED_files/mini/devloss", 'a')
-    file_tloss = open("/home/tomcat/entrainment/NED_files/mini/tloss", 'a')
-    file_vloss = open("/home/tomcat/entrainment/NED_files/mini/tloss", 'a')
-    file_dev2result = open("/home/tomcat/entrainment/NED_files/mini/dev2result", 'a')
+    open(args.model_dir + "/devloss", 'w').close()
+    open(args.model_dir + "/tloss", 'w').close()
+    open(args.model_dir + "/tloss", 'w').close()
+    open(args.model_dir + "/dev2result", 'w').close()
+
+    file_dev2loss = open(args.model_dir + "/devloss", 'a')
+    file_tloss = open(args.model_dir + "/tloss", 'a')
+    file_vloss = open(args.model_dir + "/tloss", 'a')
+    file_dev2result = open(args.model_dir + "/dev2result", 'a')
 
     for epoch in range(1, args.epochs + 1):
         #  print("test")
