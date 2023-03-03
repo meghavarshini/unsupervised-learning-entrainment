@@ -180,7 +180,7 @@ if __name__ == "__main__":
 
         # todo: add flexibility to have p=2 if needed
         dev2_loss, fake_dev2_loss, dev2_result = \
-            test(X_test = dev2_data, model = model_name, cuda = args.cuda, p=1)
+            test(X_test = dev2_data, model = ned_model, cuda = args.cuda, p=1)
         # append these to the holders
 
         dev2loss.append(dev2_loss)
