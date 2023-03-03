@@ -158,7 +158,7 @@ if __name__ == "__main__":
     dev2_path = "/home/tomcat/entrainment/NED_files/mini/dev2_Fisher_acoustic_nonorm.h5"
     dev2_data = load_h5(dev2_path)
 
-    file_devloss = open("/home/tomcat/entrainment/NED_files/mini/devloss", 'a')
+    file_dev2loss = open("/home/tomcat/entrainment/NED_files/mini/devloss", 'a')
     file_tloss = open("/home/tomcat/entrainment/NED_files/mini/tloss", 'a')
     file_vloss = open("/home/tomcat/entrainment/NED_files/mini/tloss", 'a')
     file_dev2result = open("/home/tomcat/entrainment/NED_files/mini/dev2result", 'a')
