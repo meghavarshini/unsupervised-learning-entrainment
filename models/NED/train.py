@@ -157,6 +157,11 @@ if __name__ == "__main__":
     dev2_path = "/home/tomcat/entrainment/NED_files/mini/dev2_Fisher_acoustic_nonorm.h5"
     dev2_data = load_h5(dev2_path)
 
+    file_devloss = open("/home/tomcat/entrainment/NED_files/mini/devloss", 'a')
+    file_tloss = open("/home/tomcat/entrainment/NED_files/mini/tloss", 'a')
+    file_vloss = open("/home/tomcat/entrainment/NED_files/mini/tloss", 'a')
+    file_dev2result = open("/home/tomcat/entrainment/NED_files/mini/dev2result", 'a')
+
     for epoch in range(1, args.epochs + 1):
         #  print("test")
         tloss = train(each_epoch = epoch, model = ned_model,
@@ -165,16 +170,23 @@ if __name__ == "__main__":
         vloss = validate(model= ned_model,
                          val_loader= ned_val_loader,
                          cuda= args.cuda)
+
         Tloss.append(tloss)
+        file.write(str(tloss) + "\n")
         Vloss.append(vloss)
+        file.write(str(vloss) + "\n")
 
 
         # todo: add flexibility to have p=2 if needed
-        dev2_loss, fake_dev2_loss, dev2_result = test(X_test = dev2_data, model = model, cuda = args.cuda, p=1)
+        dev2_loss, fake_dev2_loss, dev2_result = \
+            test(X_test = dev2_data, model = model_name, cuda = args.cuda, p=1)
         # append these to the holders
+
         dev2loss.append(dev2_loss)
+        file.write(str(dev2loss)+"\n")
         fake_dev2loss.append(fake_dev2_loss)
         dev2result.append(dev2_result)
+        file.write(str(dev2result) + "\n")
 
         # patience for increases/plateau in loss
         # number of epochs to run without loss decreasing
@@ -193,6 +205,10 @@ if __name__ == "__main__":
             patience -= 1
             if patience == 0:
                 break
+
+
+
+        f.writelines("%s\n" % i for i in sessList)
 
     print("plotting training loss values...")
     plt.scatter(epoch_no, Tloss)
