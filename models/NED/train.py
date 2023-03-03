@@ -147,7 +147,7 @@ if __name__ == "__main__":
     dev2loss = []
     fake_dev2loss = []
     dev2result = []
-    best_loss=np.inf
+    best_loss = np.inf
     print("This is Sparta!!")
 
     ned_model, ned_optimizer, ned_train_loader, ned_val_loader, model_name = \
@@ -158,14 +158,14 @@ if __name__ == "__main__":
     dev2_path = args.h5_directory + "/dev2_Fisher_acoustic_nonorm.h5"
     dev2_data = load_h5(dev2_path)
 
-    open(args.model_dir + "/devloss", 'w').close()
+    open(args.model_dir + "/dev2loss", 'w').close()
     open(args.model_dir + "/tloss", 'w').close()
-    open(args.model_dir + "/tloss", 'w').close()
+    open(args.model_dir + "/vloss", 'w').close()
     open(args.model_dir + "/dev2result", 'w').close()
 
-    file_dev2loss = open(args.model_dir + "/devloss", 'a')
+    file_dev2loss = open(args.model_dir + "/dev2loss", 'a')
     file_tloss = open(args.model_dir + "/tloss", 'a')
-    file_vloss = open(args.model_dir + "/tloss", 'a')
+    file_vloss = open(args.model_dir + "/vloss", 'a')
     file_dev2result = open(args.model_dir + "/dev2result", 'a')
 
     for epoch in range(1, args.epochs + 1):
@@ -214,7 +214,7 @@ if __name__ == "__main__":
 
     file_tloss.close()
     file_vloss.close()
-    file_devloss.close()
+    file_dev2loss.close()
     file_dev2result.close()
 
     print("plotting training loss values...")
