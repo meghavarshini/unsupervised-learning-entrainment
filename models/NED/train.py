@@ -29,14 +29,9 @@ def make_argument_parser():
     return parser
 
 def model_setup(seed, cuda, data_directory, model_directory):
-    if os.path.exists(model_name):
-        print("model file available for update: ", model_name)
-    else:
-        print("model file not found")
     torch.manual_seed(seed)
     if cuda:
         torch.cuda.manual_seed(seed)
-
 
 # kwargs = {'num_workers': 1, 'pin_memory': True} if args.cuda else {}
 
@@ -52,6 +47,10 @@ def model_setup(seed, cuda, data_directory, model_directory):
 
     model_name = model_directory + '/trained_' \
                        + dataset_id + '_' + norm_id + '_'+ loss_id + '_'+ dim_id + '.pt'
+    if os.path.exists(model_name):
+        print("model file available for update: ", model_name)
+    else:
+        print("model file not found")
 
 
     fdset = EntDataset(data_directory + '/train_' + dataset_id + '_' + norm_id +'.h5')
