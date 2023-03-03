@@ -56,7 +56,7 @@ def model_setup(seed, cuda, data_directory, model_directory):
     fdset = EntDataset(data_directory + '/train_' + dataset_id + '_' + norm_id +'.h5')
     train_loader = torch.utils.data.DataLoader(fdset, batch_size=128, shuffle=True)
 
-    fdset_val = EntDataset(data_directory + 'val_' + dataset_id + '_' + norm_id + '.h5')
+    fdset_val = EntDataset(data_directory + '/val_' + dataset_id + '_' + norm_id + '.h5')
     val_loader = torch.utils.data.DataLoader(fdset_val, batch_size=128, shuffle=True)
 
     print("data loaded")
