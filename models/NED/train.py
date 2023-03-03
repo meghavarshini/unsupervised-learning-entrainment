@@ -7,6 +7,12 @@ from matplotlib import pyplot as plt
 #Uncomment for parsing inputs
 def make_argument_parser():
     parser = argparse.ArgumentParser(description='NED training')
+    parser.add_argument('--model_dir', type=str,
+                        default= "/home/tomcat/entrainment/NED_files/mini/models",
+                        help="name of directory where model is stored")
+    parser.add_argument('--h5_directory', type=str,
+                        default="/home/tomcat/entrainment/feat_files/baseline_1_h5",
+                        help='location of h5 files')
     parser.add_argument('--batch-size', type=int, default=128, metavar='N',
         help='input batch size for training (default: 128)')
     parser.add_argument('--epochs', type=int, default=100, metavar='N',
@@ -22,7 +28,7 @@ def make_argument_parser():
     print("argparse loaded")
     return parser
 
-def model_setup(model_name, seed, cuda, data_directory):
+def model_setup(seed, cuda, data_directory, model_directory):
     if os.path.exists(model_name):
         print("model file available for update: ", model_name)
     else:
@@ -44,6 +50,9 @@ def model_setup(model_name, seed, cuda, data_directory):
     loss_id = 'l1'
     method_id = ''
 
+    model_name = model_directory + '/trained_' \
+                       + dataset_id + '_' + norm_id + '_'+ loss_id + '_'+ dim_id + '.pt'
+
 
     fdset = EntDataset(data_directory + '/train_' + dataset_id + '_' + norm_id +'.h5')
     train_loader = torch.utils.data.DataLoader(fdset, batch_size=128, shuffle=True)
@@ -60,7 +69,7 @@ def model_setup(model_name, seed, cuda, data_directory):
 #We run the risk of the step size being too big
     optimizer = optim.Adam(model.parameters(), lr=0.01)
     #optimizer = optim.Adam(model.parameters(), lr=1e-3)
-    return model, optimizer, train_loader, val_loader
+    return model, optimizer, train_loader, val_loader, model_name
 
 def train(each_epoch, model, train_loader, optimizer, cuda):
     print("training...")
@@ -141,6 +150,14 @@ if __name__ == "__main__":
     best_loss=np.inf
     print("This is Sparta!!")
 
+    ned_model, ned_optimizer, ned_train_loader, ned_val_loader, model_name = \
+        model_setup(model_directory= args.model_dir, seed= args.seed,
+                    cuda= args.cuda, data_directory = args.h5_directory)
+    prnt("model loaded")
+    # Second Dev set for testing model at every epoch
+    dev2_path = "/home/tomcat/entrainment/NED_files/mini/dev2_Fisher_acoustic_nonorm.h5"
+    dev2_data = load_h5(dev2_path)
+
     for epoch in range(1, args.epochs + 1):
         #  print("test")
         tloss = train(each_epoch = epoch, model = baseline_model,
@@ -151,10 +168,6 @@ if __name__ == "__main__":
                          cuda= args.cuda)
         Tloss.append(tloss)
         Vloss.append(vloss)
-
-        # Second Dev set for testing model at every epoch
-        dev2_path = "/home/tomcat/entrainment/NED_files/mini/dev2_Fisher_acoustic_nonorm.h5"
-        dev2_data = load_h5(dev2_path)
 
 
         # todo: add flexibility to have p=2 if needed
@@ -176,8 +189,7 @@ if __name__ == "__main__":
             best_loss = vloss
             best_epoch = epoch
             # pdb.set_trace()
-            torch.save(model, '/home/tomcat/entrainment/NED_files/mini/models/trained_' \
-                       + dataset_id + '_' + norm_id + '_'+ loss_id + '_'+ dim_id + '.pt')
+            torch.save(model_name)
         else:
             patience -= 1
             if patience == 0:
