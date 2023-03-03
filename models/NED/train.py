@@ -201,7 +201,7 @@ if __name__ == "__main__":
             best_loss = vloss
             best_epoch = epoch
             # pdb.set_trace()
-            torch.save(model_name)
+            torch.save(ned_model, model_name)
         else:
             patience -= 1
             if patience == 0:
