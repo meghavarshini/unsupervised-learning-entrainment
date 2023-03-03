@@ -114,6 +114,7 @@ def train(each_epoch, model, train_loader, optimizer, cuda):
 
 
 def validate(model, val_loader, cuda):
+    print("processing validation set...")
     model.eval()
     val_loss = 0
     for i, (data, y_data) in enumerate(val_loader):
@@ -172,9 +173,9 @@ if __name__ == "__main__":
                          cuda= args.cuda)
 
         Tloss.append(tloss)
-        file.write(str(tloss) + "\n")
+        file_tloss.write(str(tloss) + "\n")
         Vloss.append(vloss)
-        file.write(str(vloss) + "\n")
+        file_vloss.write(str(vloss) + "\n")
 
 
         # todo: add flexibility to have p=2 if needed
@@ -183,10 +184,10 @@ if __name__ == "__main__":
         # append these to the holders
 
         dev2loss.append(dev2_loss)
-        file.write(str(dev2loss)+"\n")
+        file_dev2loss.write(str(dev2loss)+"\n")
         fake_dev2loss.append(fake_dev2_loss)
         dev2result.append(dev2_result)
-        file.write(str(dev2result) + "\n")
+        file_dev2result.write(str(dev2result) + "\n")
 
         # patience for increases/plateau in loss
         # number of epochs to run without loss decreasing
@@ -206,9 +207,10 @@ if __name__ == "__main__":
             if patience == 0:
                 break
 
-
-
-        f.writelines("%s\n" % i for i in sessList)
+    file_tloss.close()
+    file_vloss.close()
+    file_devloss.close()
+    file_dev2result.close()
 
     print("plotting training loss values...")
     plt.scatter(epoch_no, Tloss)
