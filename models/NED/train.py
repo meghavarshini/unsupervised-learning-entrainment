@@ -11,7 +11,7 @@ def make_argument_parser():
                         default= "/home/tomcat/entrainment/NED_files/mini/models",
                         help="name of directory where model is stored")
     parser.add_argument('--h5_directory', type=str,
-                        default="/home/tomcat/entrainment/feat_files/baseline_1_h5",
+                        default="/home/tomcat/entrainment/NED_files/mini",
                         help='location of h5 files')
     parser.add_argument('--batch-size', type=int, default=128, metavar='N',
         help='input batch size for training (default: 128)')
