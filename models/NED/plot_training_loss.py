@@ -17,7 +17,7 @@ def open_file(file_path):
     return lines
 
 def plot_data(y, plot_save_path):
-    x_points = [i for i in range(1:len(y))]
+    x_points = [i for i in range(1, len(y))]
     print(len(x_points))
     plot = plt.scatter(x, y)
     plt.savefig(plot_save_path)
