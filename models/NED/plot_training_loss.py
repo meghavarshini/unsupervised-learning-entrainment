@@ -1,3 +1,5 @@
+import argparse
+import matplotlib as plt
 
 def make_argument_parser():
     parser = argparse.ArgumentParser(description='NED training')

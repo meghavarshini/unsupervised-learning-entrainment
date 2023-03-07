@@ -177,6 +177,7 @@ if __name__ == "__main__":
                          val_loader= ned_val_loader,
                          cuda= args.cuda)
 
+        epoch_no.append(epoch)
         Tloss.append(tloss)
         file_tloss.write(str(tloss) + "\n")
         Vloss.append(vloss)
@@ -223,6 +224,8 @@ if __name__ == "__main__":
     plt.savefig("/home/tomcat/entrainment/NED_files/mini/loss_train_plot.png")
     plt.clf()
 
+#### This won't work because the function dumps model details, not the specific value###
+
     print("plotting training loss values...")
     plt.scatter(epoch_no, dev2loss)
     plt.savefig("/home/tomcat/entrainment/NED_files/mini/loss_dev2_plot.png")
@@ -230,5 +233,5 @@ if __name__ == "__main__":
 
 
     print("plotting dev3 results...")
-    plt.scatter(epoch_no, dev2result)
+    plt.scatter(epoch_no, dev2result[-1])
     plt.savefig("/home/tomcat/entrainment/NED_files/mini/dev2_result_plot.png")
