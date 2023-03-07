@@ -13,7 +13,7 @@ def make_argument_parser():
 
 def open_file(file_path):
     print(file_path)
-    with open(file_path, "r") as f: lines = [int(line.strip("\n,[,]")) for line in f]
+    with open(file_path, "r") as f: lines = [float(line.strip("\n,[,]")) for line in f]
     print("number of data points: ", len(lines))
     return lines
 
