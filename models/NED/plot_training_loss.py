@@ -33,6 +33,6 @@ if __name__ == "__main__":
 
     for i,n in enumerate(args.data_list):
         print("plotting data for: ", i)
-        y_data = open_file(args.filepath + "/" + i)
-        plot = plot_data(y_data, args.filepath + "/" + i + ".png")
+        y_data = open_file(args.data_dir + "/" + i)
+        plot = plot_data(y_data, args.data_dir + "/" + i + ".png")
         print("number of data points: ", len(y_data))
