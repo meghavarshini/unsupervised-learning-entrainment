@@ -7,7 +7,7 @@ def make_argument_parser():
                         default= "/home/tomcat/entrainment/NED_files/mini/models",
                         help="name of directory where loss data is stored")
     parser.add_argument('--data_list', type=str,
-                        default="[dev2loss, tloss, vloss, dev2result]",
+                        default="dev2loss, tloss, vloss, dev2result",
                         help='list of files in the data directory that need to be plotted')
     return parser
 
@@ -34,7 +34,7 @@ if __name__ == "__main__":
 
 
 
-    for n, i in enumerate(args.data_list):
+    for n, i in enumerate(args.data_list.strip().split(',')):
         print("plotting data for: ", i)
         y_data = open_file(args.data_dir + "/" + i)
         plot = plot_data(y_data, args.data_dir + "/" + i + ".png")
