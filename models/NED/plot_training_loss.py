@@ -13,7 +13,7 @@ def make_argument_parser():
 
 def open_file(file_path):
     print(file_path)
-    with open(file_path, "r") as f: lines = [int(line.strip()) for line in f]
+    with open(file_path, "r") as f: lines = [int(line.strip("\n,[,]")) for line in f]
     print("number of data points: ", len(lines))
     return lines
 
@@ -31,6 +31,8 @@ def plot_data(y, plot_save_path):
 if __name__ == "__main__":
     parser = make_argument_parser()
     args = parser.parse_args()
+
+
 
     for n, i in enumerate(args.data_list):
         print("plotting data for: ", i)
