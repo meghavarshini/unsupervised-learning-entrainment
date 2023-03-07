@@ -6,7 +6,7 @@ def make_argument_parser():
     parser.add_argument('--data_dir', type=str,
                         default= "/home/tomcat/entrainment/NED_files/mini/models",
                         help="name of directory where loss data is stored")
-    parser.add_argument('--file_list', type=str,
+    parser.add_argument('--data_list', type=str,
                         default="[dev2loss, tloss, vloss, dev2result]",
                         help='list of files in the data directory that need to be plotted')
     return parser
