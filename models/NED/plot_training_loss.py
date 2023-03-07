@@ -13,13 +13,13 @@ def make_argument_parser():
 
 def open_file(file_path):
     with open(file_path, "r") as f: lines = [int(line.strip()) for line in f]
-    print("number of data points: ", len(data))
+    print("number of data points: ", len(lines))
     return lines
 
 def plot_data(y, plot_save_path):
     x_points = [i for i in range(1, len(y))]
     print(len(x_points))
-    plot = plt.scatter(x, y)
+    plot = plt.scatter(x_points, y)
     plt.savefig(plot_save_path)
     plt.clf()
     print("plot saved to disk!")
@@ -32,7 +32,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     for i,n in enumerate(args.data_list):
-        print("plotting data for: "+i)
+        print("plotting data for: ", i)
         y_data = open_file(args.filepath + "/" + i)
-        plot = plot_data(y_data,args.filepath + "/" + i+ ".png" )
+        plot = plot_data(y_data, args.filepath + "/" + i + ".png")
         print("number of data points: ", len(y_data))
