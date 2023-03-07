@@ -34,8 +34,8 @@ if __name__ == "__main__":
 
 
 
-    for _, i in enumerate(args.data_list.strip(" ").split(',')):
+    for _, i in enumerate(args.data_list.strip().split(',')):
         print("plotting data for: ", i)
-        y_data = open_file(args.data_dir + "/" + i)
-        plot = plot_data(y_data, args.data_dir + "/" + i + ".png")
+        y_data = open_file(args.data_dir + "/" + i.strip())
+        plot = plot_data(y_data, args.data_dir + "/" + i.strip() + ".png")
         print("number of data points: ", len(y_data))
