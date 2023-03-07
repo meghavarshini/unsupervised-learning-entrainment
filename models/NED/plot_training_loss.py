@@ -31,7 +31,7 @@ if __name__ == "__main__":
     parser = make_argument_parser()
     args = parser.parse_args()
 
-    for i,n in enumerate(args.data_list):
+    for n, i in enumerate(args.data_list):
         print("plotting data for: ", i)
         y_data = open_file(args.data_dir + "/" + i)
         plot = plot_data(y_data, args.data_dir + "/" + i + ".png")
