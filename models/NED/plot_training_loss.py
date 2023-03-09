@@ -17,7 +17,7 @@ def open_file(file_path):
     print("number of data points: ", len(lines))
     return lines
 
-def plot_data(y_dataset_list:list= ["tloss", "vloss"], plot_save_path,\
+def plot_data(y_dataset_list:list, plot_save_path,\
               plot_title:str = "Loss Plot"):
 
     x_points = [n for n, _ in enumerate(y[0])]
