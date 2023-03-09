@@ -130,7 +130,7 @@ def validate(model, val_loader, cuda):
         recon_batch = model(data)
         # recon_batch = model.encode(data)
         # encoded_y = model.encode(y_data) # so that y is swapped with the encoded
-        val_loss += loss_function(recon_batch, y_data).data
+        val_loss += loss_function(recon_batch, y_data).item()
 
     val_loss /= len(val_loader.dataset)
     print(('====> Validation set loss: {:.4f}'.format(val_loss)))
