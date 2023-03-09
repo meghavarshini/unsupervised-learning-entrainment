@@ -23,14 +23,13 @@ def plot_data(y_dataset_list:list, plot_save_path,
     x_points = [n for n, _ in enumerate(y_dataset_list[0])]
     if len(x_points) is None:
         raise Exception("There was some problem in calculating the number of data points")
-    print(len(x_points))
+    print("no of epochs: ", len(x_points))
     for ls in y_dataset_list:
         if len(ls) == len(x_points):
             plot = plt.plot(x_points, ls)
         else:
             raise Exception("The lines to be plotted do not have the same number of values: ",
                             len(ls), len(x_points))
-    print(plot)
 
     plt.title(plot_title)
     plt.xlabel('Epochs')
