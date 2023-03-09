@@ -22,11 +22,11 @@ def plot_data(y_dataset_list:list, plot_save_path,
 
     x_points = [n for n, _ in enumerate(y_dataset_list[0])]
     print(len(x_points))
-    for ls in y_dataset_list:
-        if len(y_dataset_list) == len(x_points) and len(x_points) is not None:
+    if len(y_dataset_list) == len(x_points) and len(x_points) is not None:
+        for ls in y_dataset_list:
             plot = plt.plot(x_points, ls)
-        else:
-            raise Exception("your loss datasets do not have the same array size")
+    else:
+        raise Exception("your loss datasets do not have the same array size")
     print(plot)
 
     plt.title(plot_title)
