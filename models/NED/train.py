@@ -80,8 +80,8 @@ def train(each_epoch, model, train_loader, optimizer, cuda):
     # for every batch in the dataloader
     for batch_idx, (data, y_data) in enumerate(train_loader):
         # convert xs and ys to torch tensors
-        data = torch.tensor(data, requires_grad=True)
-        y_data = torch.tensor(y_data, requires_grad=True)
+        # data = torch.tensor(data, requires_grad=True)
+        # y_data = torch.tensor(y_data, requires_grad=True)
         # data = Variable(data)
         # y_data = Variable(y_data)
 
@@ -128,30 +128,41 @@ def train(each_epoch, model, train_loader, optimizer, cuda):
 
 def validate(model, val_loader, cuda):
     print("processing validation set...")
+    # set model to eval mode
     time_before_setting_eval = datetime.now()
     model.eval()
     time_after_setting_eval = datetime.now()
     print(f"Setting model to eval took: {time_after_setting_eval - time_before_setting_eval}")
 
+    # set val loss to 0
     val_loss = 0
+
+    # for each batch in data loader
     for i, (data, y_data) in enumerate(val_loader):
+
         # Used `with torch.no_grad():` instead of Volatile
         #Tells the (y) variable (torch tensor) that it won't be updated with
         with torch.no_grad():
-            data = torch.tensor(data, requires_grad=False)
-            y_data = torch.tensor(data, requires_grad=False)
+            data = torch.tensor.requires_grad_(False)
+            y_data = torch.tensor.requires_grad_(False)
+            # data = torch.tensor(data, requires_grad=False)
+            # y_data = torch.tensor(data, requires_grad=False)
 
         # move to cuda if needed
         if cuda:
             data = data.cuda()
             y_data = y_data.cuda()
 
+        # feed data through model to get reconstructed data
         recon_batch = model(data)
-        # encoded_y = model.encode(y_data) # so that y is swapped with the encoded
+
+        # update the loss
         val_loss += loss_function(recon_batch, y_data).item()
 
+    # divide loss by length of dataset
     val_loss /= len(val_loader.dataset)
     print(('====> Validation set loss: {:.4f}'.format(val_loss)))
+
     return val_loss
 
 
