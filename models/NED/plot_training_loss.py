@@ -26,7 +26,7 @@ def plot_data(y_dataset_list:list= ["tloss", "vloss"], plot_save_path,\
         if len(y_dataset_list) == len(x_points) and len(x_points) is not None:
             plot = plt.plot(x_points, ls)
         else:
-            Raise Exception("your loss datasets do not have the same array size")
+            raise Exception("your loss datasets do not have the same array size")
 
     plt.title(plot_title)
     plt.xlabel('Epochs')
