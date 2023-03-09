@@ -135,17 +135,18 @@ def validate(model, val_loader, cuda):
 
     val_loss = 0
     for i, (data, y_data) in enumerate(val_loader):
+        # Used `with torch.no_grad():` instead of Volatile
+        #Tells the (y) variable (torch tensor) that it won't be updated with
+        with torch.no_grad():
+            data = torch.tensor(data, requires_grad=False)
+            y_data = torch.tensor(data, requires_grad=False)
+
+        # move to cuda if needed
         if cuda:
             data = data.cuda()
             y_data = y_data.cuda()
-        # Used `with torch.no_grad():` instead of Volatile
-        #Tells the (y) variable (torch tensor) that it won't be updated with
-        # variable info
-        with torch.no_grad():
-            data = Variable(data)
-            y_data = Variable(y_data)
+
         recon_batch = model(data)
-        # recon_batch = model.encode(data)
         # encoded_y = model.encode(y_data) # so that y is swapped with the encoded
         val_loss += loss_function(recon_batch, y_data).item()
 
