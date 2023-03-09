@@ -209,10 +209,10 @@ if __name__ == "__main__":
         # append these to the holders
 
         dev2loss.append(dev2_loss)
-        file_dev2loss.write(str(dev2loss)+"\n")
+        file_dev2loss.write(str(dev2_loss)+"\n")
         fake_dev2loss.append(fake_dev2_loss)
         dev2result.append(dev2_result)
-        file_dev2result.write(str(dev2result) + "\n")
+        file_dev2result.write(str(dev2_result) + "\n")
 
         # patience for increases/plateau in loss
         # number of epochs to run without loss decreasing
