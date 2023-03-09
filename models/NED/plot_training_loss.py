@@ -48,13 +48,13 @@ if __name__ == "__main__":
     results_data_fname = [open_file(args.data_dir + "/" + i.strip()) for i in args.data_list.strip().split(',') if "result" in i]
 
     plot = plot_data(y_dataset_list= results_data_fname,
-                     plot_save_path= args.data_dir + "/" + "results_dev2" + ".png",
+                     plot_save_path= args.data_dir + "/" + "results" + ".png",
                      plot_title="Accuracy scores for Dev2 set per Epoch")
 
-    # for _, i in enumerate(loss_data_fname):
-    #     print("plotting data for: ", i)
-    #     y_data = open_file(args.data_dir + "/" + i.strip())
-    #     plot = plot_data(y_dataset_list= [y_data],
-    #                      plot_save_path = args.data_dir + "/" + i.strip() + ".png",
-    #                      plot_title= "Loss Data by Epoch: "+i.strip())
-    #     print("number of data points: ", len(y_data))
+    for _, i in enumerate(loss_data_fname):
+        print("plotting data for: ", i)
+        y_data = open_file(args.data_dir + "/" + i.strip())
+        plot = plot_data(y_dataset_list= [y_data],
+                         plot_save_path = args.data_dir + "/" + i.strip() + ".png",
+                         plot_title= "Loss Data by Epoch: "+i.strip())
+        print("number of data points: ", len(y_data))

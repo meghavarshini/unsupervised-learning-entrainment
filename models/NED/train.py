@@ -235,21 +235,3 @@ if __name__ == "__main__":
     file_vloss.close()
     file_dev2loss.close()
     file_dev2result.close()
-
-    print("plotting training loss values...")
-    plt.plot(epoch_no, Tloss)
-    plt.plot(epoch_no, Vloss)
-    plt.savefig("/home/tomcat/entrainment/NED_files/mini/loss_train_plot.png")
-    plt.clf()
-
-#### This won't work because the function dumps model details, not the specific value###
-
-    print("plotting training loss values...")
-    plt.plot(epoch_no, dev2loss)
-    plt.savefig("/home/tomcat/entrainment/NED_files/mini/loss_dev2_plot.png")
-    plt.clf()
-
-
-    print("plotting dev3 results...")
-    plt.plot(epoch_no, dev2result[-1])
-    plt.savefig("/home/tomcat/entrainment/NED_files/mini/dev2_result_plot.png")
