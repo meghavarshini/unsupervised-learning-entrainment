@@ -25,8 +25,10 @@ def plot_data(y_dataset_list:list, plot_save_path,
     if len(y_dataset_list) == len(x_points) and len(x_points) is not None:
         for ls in y_dataset_list:
             plot = plt.plot(x_points, ls)
-    else:
-        raise Exception("your loss datasets do not have the same array size")
+    elif len(x_points) is None:
+        raise Exception("There was some problem in calculating the number of data points")
+    elif len(y_dataset_list) != len(x_points):
+        raise Exception("The liens to be plotted do not have the same number of values")
     print(plot)
 
     plt.title(plot_title)
@@ -44,7 +46,7 @@ if __name__ == "__main__":
 
     loss_data_fname = [i for i in args.data_list.strip().split(',') if "loss" in i]
     loss_data = [open_file(args.data_dir + "/" + i.strip()) for i in loss_data_fname]
-    print(len(loss_data))
+    print("data files opened: ", len(loss_data))
     plot = plot_data(y_dataset_list= loss_data,
                      plot_save_path= args.data_dir + "/" + "loss_data" + ".png",
                      plot_title="Loss Data for Training, Validation and Sample Dev sets")
