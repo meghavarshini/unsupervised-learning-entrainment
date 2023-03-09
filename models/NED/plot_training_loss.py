@@ -43,14 +43,15 @@ if __name__ == "__main__":
     parser = make_argument_parser()
     args = parser.parse_args()
 
-    loss_data = [i for i in args.data_list.strip().split(',') if "loss" in i]
-    print(loss_data)
+    loss_data_fname = [i for i in args.data_list.strip().split(',') if "loss" in i]
+    loss_data = [ open_file(args.data_dir + "/" + i.strip()) for i in loss_data_fname.strip()]
+    print(len(loss_data))
 
     # for _, i in enumerate(args.data_list.strip().split(',')):
-    for _, i in enumerate(loss_data):
-        print("plotting data for: ", i)
-        y_data = open_file(args.data_dir + "/" + i.strip())
-        plot = plot_data(y_data, \
-                         plot_save_path = args.data_dir + "/" + i.strip() + ".png",\
-                         plot_title= "Loss Data by Epoch")
-        print("number of data points: ", len(y_data))
+    # for _, i in enumerate(loss_data):
+    #     print("plotting data for: ", i)
+    #     y_data = open_file(args.data_dir + "/" + i.strip())
+    #     plot = plot_data(y_data, \
+    #                      plot_save_path = args.data_dir + "/" + i.strip() + ".png",\
+    #                      plot_title= "Loss Data by Epoch")
+    #     print("number of data points: ", len(y_data))
