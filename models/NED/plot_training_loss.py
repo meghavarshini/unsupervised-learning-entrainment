@@ -47,7 +47,7 @@ if __name__ == "__main__":
     loss_data = [open_file(args.data_dir + "/" + i.strip()) for i in loss_data_fname]
     print(len(loss_data))
     plot = plot_data(y_dataset_list= loss_data,
-                     plot_save_path= args.data_dir + "/" + i.strip() + ".png",
+                     plot_save_path= args.data_dir + "/" + "loss_data" + ".png",
                      plot_title="Loss Data for Training, Validation and Sample Dev sets")
 
     # for _, i in enumerate(args.data_list.strip().split(',')):
