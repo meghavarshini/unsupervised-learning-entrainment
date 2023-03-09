@@ -78,13 +78,9 @@ def test(X_test, model, p, cuda):
 		test_loss += loss_real
 		fake_test_loss += loss_fake
 
-		# this is inefficient- find a way to do everything on CPU
-		Loss.append(loss_real.cpu())
-		Fake_loss.append(loss_fake.cpu())
+		Loss.append(loss_real)
+		Fake_loss.append(loss_fake)
 
-		# Loss.append(loss_real)
-		# Fake_loss.append(loss_fake)
-		# print loss_real, loss_fake
 
 	test_loss /= X_test.shape[0]
 
