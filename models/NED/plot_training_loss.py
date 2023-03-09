@@ -21,14 +21,15 @@ def plot_data(y_dataset_list:list, plot_save_path,
               plot_title:str = "Loss Plot"):
 
     x_points = [n for n, _ in enumerate(y_dataset_list[0])]
-    print(len(x_points))
-    if len(y_dataset_list) == len(x_points) and len(x_points) is not None:
-        for ls in y_dataset_list:
-            plot = plt.plot(x_points, ls)
-    elif len(x_points) is None:
+    if len(x_points) is None:
         raise Exception("There was some problem in calculating the number of data points")
-    elif len(y_dataset_list) != len(x_points):
-        raise Exception("The liens to be plotted do not have the same number of values")
+    print(len(x_points))
+    for ls in y_dataset_list:
+        if len(ls) == len(x_points):
+            plot = plt.plot(x_points, ls)
+        else:
+            raise Exception("The lines to be plotted do not have the same number of values: ",
+                            len(ls), len(x_points))
     print(plot)
 
     plt.title(plot_title)
