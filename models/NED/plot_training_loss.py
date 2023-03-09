@@ -44,8 +44,11 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     loss_data_fname = [i for i in args.data_list.strip().split(',') if "loss" in i]
-    loss_data = [ open_file(args.data_dir + "/" + i.strip()) for i in loss_data_fname]
+    loss_data = [open_file(args.data_dir + "/" + i.strip()) for i in loss_data_fname]
     print(len(loss_data))
+    plot = plot_data(y_dataset_list= loss_data,
+                     plot_save_path= args.data_dir + "/" + i.strip() + ".png",
+                     plot_title="Loss Data for Training, Validation and Sample Dev sets")
 
     # for _, i in enumerate(args.data_list.strip().split(',')):
     # for _, i in enumerate(loss_data):
