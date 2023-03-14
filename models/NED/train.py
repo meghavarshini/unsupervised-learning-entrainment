@@ -16,7 +16,7 @@ def make_argument_parser():
                         help='location of h5 files')
     parser.add_argument('--batch-size', type=int, default=128, metavar='N',
         help='input batch size for training (default: 128)')
-    parser.add_argument('--epochs', type=int, default=1, metavar='N',
+    parser.add_argument('--epochs', type=int, default=100, metavar='N',
         help='number of epochs to train (default: 10)')  # increased default from 10 to 100
     parser.add_argument('--no-cuda', action='store_true', default=False,
         help='enables CUDA training')
@@ -65,8 +65,8 @@ def model_setup(seed, cuda, data_directory, model_directory):
         model.cuda()
     #Model LR hasn't converged to a best loss in 100 epochs- so we make the LR biggers to make observations about convergence
     #We run the risk of the step size being too big
-    optimizer = optim.Adam(model.parameters(), lr=0.01)
-    #optimizer = optim.Adam(model.parameters(), lr=1e-3)
+    # optimizer = optim.Adam(model.parameters(), lr=0.01)
+    optimizer = optim.Adam(model.parameters(), lr=1e-3)
     return model, optimizer, train_loader, val_loader, model_name
 
 
