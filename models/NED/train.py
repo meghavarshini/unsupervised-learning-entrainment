@@ -174,9 +174,9 @@ if __name__ == "__main__":
     epoch_no = []
     Tloss =[]
     Vloss =[]
-    dev2loss = []
-    fake_dev2loss = []
-    dev2result = []
+    # dev2loss = []
+    # fake_dev2loss = []
+    # dev2result = []
     best_loss = np.inf
     print("This is Sparta!!")
 
@@ -185,18 +185,18 @@ if __name__ == "__main__":
                     cuda= args.cuda, data_directory = args.h5_directory)
     print("model loaded")
     # Second Dev set for testing model at every epoch
-    dev2_path = args.h5_directory + "/dev2_Fisher_acoustic_nonorm.h5"
-    dev2_data = load_h5(dev2_path)
+    # dev2_path = args.h5_directory + "/dev2_Fisher_acoustic_nonorm.h5"
+    # dev2_data = load_h5(dev2_path)
 
-    open(args.model_dir + "/dev2loss", 'w').close()
+    # open(args.model_dir + "/dev2loss", 'w').close()
     open(args.model_dir + "/tloss", 'w').close()
     open(args.model_dir + "/vloss", 'w').close()
-    open(args.model_dir + "/dev2result", 'w').close()
+    # open(args.model_dir + "/dev2result", 'w').close()
 
-    file_dev2loss = open(args.model_dir + "/dev2loss", 'a')
+    # file_dev2loss = open(args.model_dir + "/dev2loss", 'a')
     file_tloss = open(args.model_dir + "/tloss", 'a')
     file_vloss = open(args.model_dir + "/vloss", 'a')
-    file_dev2result = open(args.model_dir + "/dev2result", 'a')
+    # file_dev2result = open(args.model_dir + "/dev2result", 'a')
 
     for epoch in range(1, args.epochs + 1):
         #  print("test")
@@ -215,15 +215,15 @@ if __name__ == "__main__":
 
 
         # todo: add flexibility to have p=2 if needed
-        dev2_loss, fake_dev2_loss, dev2_result = \
-            test(X_test = dev2_data, model = ned_model, cuda = args.cuda, p=1)
+        # dev2_loss, fake_dev2_loss, dev2_result = \
+        #     test(X_test = dev2_data, model = ned_model, cuda = args.cuda, p=1)
         # append these to the holders
 
-        dev2loss.append(dev2_loss)
-        file_dev2loss.write(str(dev2_loss)+"\n")
-        fake_dev2loss.append(fake_dev2_loss)
-        dev2result.append(dev2_result)
-        file_dev2result.write(str(dev2_result) + "\n")
+        # dev2loss.append(dev2_loss)
+        # file_dev2loss.write(str(dev2_loss)+"\n")
+        # fake_dev2loss.append(fake_dev2_loss)
+        # dev2result.append(dev2_result)
+        # file_dev2result.write(str(dev2_result) + "\n")
 
         # patience for increases/plateau in loss
         # number of epochs to run without loss decreasing
@@ -245,5 +245,5 @@ if __name__ == "__main__":
 
     file_tloss.close()
     file_vloss.close()
-    file_dev2loss.close()
-    file_dev2result.close()
+    # file_dev2loss.close()
+    # file_dev2result.close()
