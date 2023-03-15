@@ -143,10 +143,10 @@ def validate(model, val_loader, cuda):
         # Used `with torch.no_grad():` instead of Volatile
         #Tells the (y) variable (torch tensor) that it won't be updated with
         with torch.no_grad():
-            data = torch.tensor.requires_grad_(False)
-            y_data = torch.tensor.requires_grad_(False)
-            # data = torch.tensor(data, requires_grad=False)
-            # y_data = torch.tensor(data, requires_grad=False)
+            # data = torch.tensor.requires_grad_(False)
+            # y_data = torch.tensor.requires_grad_(False)
+            data = torch.tensor(data, requires_grad=False)
+            y_data = torch.tensor(data, requires_grad=False)
 
         # move to cuda if needed
         if cuda:
