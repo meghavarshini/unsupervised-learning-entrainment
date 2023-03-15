@@ -126,7 +126,4 @@ def lp_distance(x1, x2, p):
 
 # Parameters
 
-
-zdim=30                     # CHANGE zdim here
-intDim = 64                                
 loss = 'l1'

@@ -85,7 +85,7 @@ class VAE(nn.Module):
 
 # Reconstruction + KL divergence losses summed over all elements and batch
 def loss_function(recon_x1, x2):
-    # BCE = F.mse_loss(recon_x1, x2.view(-1, 228), size_average=False)
+    # BCE = F.mse_loss(recon_x1, x2.view(-1, 228), size_average=False) #penalizes things that are more wrong
     BCE = F.smooth_l1_loss(recon_x1, x2.view(-1, 228), size_average=False)
 
     # see Appendix B from VAE paper:
