@@ -47,11 +47,12 @@ class VAE(nn.Module):
         zdim=30
         intDim = 128                                 # CHANGE zdim here
         self.featDim = 228
+        # Encoder
         self.fc1 = nn.Linear(self.featDim, intDim)
         self.bn1 = nn.BatchNorm1d(intDim)
         self.fc2 = nn.Linear(intDim, zdim)
         self.bn2 = nn.BatchNorm1d(zdim)
-
+        #Decoder
         self.fc3 = nn.Linear(zdim, intDim)
         self.bn3 = nn.BatchNorm1d(intDim)
         self.fc4 = nn.Linear(intDim, self.featDim)

@@ -66,7 +66,7 @@ def model_setup(seed, cuda, data_directory, model_directory):
     #Model LR hasn't converged to a best loss in 100 epochs- so we make the LR biggers to make observations about convergence
     #We run the risk of the step size being too big
     # optimizer = optim.Adam(model.parameters(), lr=0.01)
-    optimizer = optim.Adam(model.parameters(), lr=1e-3)
+    optimizer = optim.Adam(model.parameters(), lr=1e-5)
     return model, optimizer, train_loader, val_loader, model_name
 
 
