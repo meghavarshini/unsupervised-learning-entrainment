@@ -138,6 +138,6 @@ if __name__ == "__main__":
 	results = []
 	for i in range(1, 31):
 		print("run: ", i)
-		# test_run = model_testing(args.model_name, X_test1, args.cuda)
-		# results.append(test_run)
+		test_run = model_testing(args.model_name, X_test1, args.cuda)
+		results.append(test_run)
 
