@@ -22,6 +22,8 @@ def make_argument_parser():
         help='enables CUDA training')
     parser.add_argument('--seed', type=int, default=1, metavar='S',
         help='random seed (default: 1)')
+    parser.add_argument('--learning_rate', type=float, default=1e-3,
+        help='learning rate for optimizer (default: 1e-3)')
     parser.add_argument('--log-interval', type=int, default=10, metavar='N',
         help='how many batches to wait before logging training status')
     args = parser.parse_args()
@@ -29,7 +31,7 @@ def make_argument_parser():
     print("argparse loaded")
     return parser
 
-def model_setup(seed, cuda, data_directory, model_directory):
+def model_setup(seed, cuda, learning_rate, data_directory, model_directory):
     torch.manual_seed(seed)
     if cuda:
         torch.cuda.manual_seed(seed)
@@ -66,7 +68,7 @@ def model_setup(seed, cuda, data_directory, model_directory):
     #Model LR hasn't converged to a best loss in 100 epochs- so we make the LR biggers to make observations about convergence
     #We run the risk of the step size being too big
     # optimizer = optim.Adam(model.parameters(), lr=0.01)
-    optimizer = optim.Adam(model.parameters(), lr=1e-5)
+    optimizer = optim.Adam(model.parameters(), lr=learning_rate)
     return model, optimizer, train_loader, val_loader, model_name
 
 
@@ -182,7 +184,8 @@ if __name__ == "__main__":
 
     ned_model, ned_optimizer, ned_train_loader, ned_val_loader, model_name = \
         model_setup(model_directory= args.model_dir, seed= args.seed,
-                    cuda= args.cuda, data_directory = args.h5_directory)
+                    cuda= args.cuda, learning_rate = args.learning_rate,
+                    data_directory = args.h5_directory)
     print("model loaded")
     # Second Dev set for testing model at every epoch
     # dev2_path = args.h5_directory + "/dev2_Fisher_acoustic_nonorm.h5"
