@@ -119,7 +119,7 @@ def model_testing(model_name, X_test, cuda):
 	print("Total Real Loss:" + str(test_loss) + "Total Fake Loss:" + str(fake_loss))
 	print(result)
 
-	return None
+	return result
 
 
 if __name__ == "__main__":
@@ -135,5 +135,9 @@ if __name__ == "__main__":
 		torch.cuda.manual_seed(args.seed)
 
 	X_test1 = load_h5(args.hff)
-	test_run = model_testing(args.model_name, X_test1, args.cuda)
+	results = []
+	for i in range(1, 31):
+		print("run: ", i)
+		# test_run = model_testing(args.model_name, X_test1, args.cuda)
+		# results.append(test_run)
 
