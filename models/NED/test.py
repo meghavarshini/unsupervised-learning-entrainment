@@ -140,4 +140,5 @@ if __name__ == "__main__":
 		print("run: ", i)
 		test_run = model_testing(args.model_name, X_test1, args.cuda)
 		results.append(test_run)
+	print(mean(results))
 
