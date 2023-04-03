@@ -24,6 +24,8 @@ def make_argument_parser():
         help='random seed (default: 1)')
     parser.add_argument('--learning_rate', type=float, default=1e-3,
         help='learning rate for optimizer (default: 1e-3)')
+    parser.add_argument('--loss_id', type=float, default="l1",
+                        help='loss function (options: l1, l2)')
     parser.add_argument('--log-interval', type=int, default=10, metavar='N',
         help='how many batches to wait before logging training status')
     args = parser.parse_args()
@@ -31,7 +33,7 @@ def make_argument_parser():
     print("argparse loaded")
     return parser
 
-def model_setup(seed, cuda, learning_rate, data_directory, model_directory):
+def model_setup(seed, cuda, learning_rate, loss_id= "l1", data_directory, model_directory):
     torch.manual_seed(seed)
     if cuda:
         torch.cuda.manual_seed(seed)
@@ -44,7 +46,7 @@ def model_setup(seed, cuda, learning_rate, data_directory, model_directory):
     dataset_id = 'Fisher_acoustic'  # applies for ip and op
     norm_id = 'nonorm'  # applies for ip and op
     dim_id = '30dim'     # applies for op only   # CHECK ecdc.py zdim value
-    loss_id = 'l1'
+    # loss_id = 'l1'
     method_id = ''
 
     model_name = model_directory + '/trained_' \
@@ -185,7 +187,7 @@ if __name__ == "__main__":
     ned_model, ned_optimizer, ned_train_loader, ned_val_loader, model_name = \
         model_setup(model_directory= args.model_dir, seed= args.seed,
                     cuda= args.cuda, learning_rate = args.learning_rate,
-                    data_directory = args.h5_directory)
+                    loss_id = args.loss_id, data_directory = args.h5_directory)
     print("model loaded")
     # Second Dev set for testing model at every epoch
     # dev2_path = args.h5_directory + "/dev2_Fisher_acoustic_nonorm.h5"
