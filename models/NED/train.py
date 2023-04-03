@@ -24,7 +24,7 @@ def make_argument_parser():
         help='random seed (default: 1)')
     parser.add_argument('--learning_rate', type=float, default=1e-3,
         help='learning rate for optimizer (default: 1e-3)')
-    parser.add_argument('--loss_id', type=float, default="l1",
+    parser.add_argument('--loss_id', type=str, default="l1",
                         help='loss function (options: l1, l2)')
     parser.add_argument('--log-interval', type=int, default=10, metavar='N',
         help='how many batches to wait before logging training status')
