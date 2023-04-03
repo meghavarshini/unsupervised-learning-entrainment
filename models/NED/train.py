@@ -33,7 +33,7 @@ def make_argument_parser():
     print("argparse loaded")
     return parser
 
-def model_setup(seed, cuda, learning_rate, loss_id= "l1", data_directory, model_directory):
+def model_setup(seed, cuda, learning_rate, loss_id, data_directory, model_directory):
     torch.manual_seed(seed)
     if cuda:
         torch.cuda.manual_seed(seed)
