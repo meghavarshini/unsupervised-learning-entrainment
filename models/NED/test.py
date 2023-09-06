@@ -117,7 +117,7 @@ def model_testing(model_name, X_test, cuda):
 
     test_loss, fake_loss, result = test(X_test, model, p, cuda)
 
-    print("Total Real Loss:" + str(test_loss) + "Total Fake Loss:" + str(fake_loss))
+    print("Total Real Loss:" + str(test_loss) + " Total Fake Loss:" + str(fake_loss))
     print(result)
 
     return result
