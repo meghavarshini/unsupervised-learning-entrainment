@@ -6,8 +6,10 @@ smile.log
 
 .idea/
 .venv
+venv
 entrainment_config.pyc
 __pycache__
+.entrainment
 
 # Output data files:
 models/triplet/prep/data
