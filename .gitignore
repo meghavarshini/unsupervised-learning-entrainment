@@ -27,7 +27,6 @@ models/triplet/prep/ivector-xvector
 
 Miniconda3-latest-Linux-x86_64.sh
 
-webapp/
 
 *.DS_Store
 *.csv
