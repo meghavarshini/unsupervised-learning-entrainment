@@ -82,7 +82,8 @@ class VAE(nn.Module):
         return h4
 
     def forward(self, x):
-        z = self.encode(x.view(-1, 228))
+        z = self.encode(x.view(-1, 228)) # view reshapes the vector, with given dimensions
+        
         # z = self.reparameterize(mu, logvar)
         return self.decode(z)
 

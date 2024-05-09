@@ -24,6 +24,7 @@ models/triplet/prep/kaldi
 models/triplet/prep/0007_voxceleb_v1_1a
 models/triplet/prep/ivector_extract
 models/triplet/prep/ivector-xvector
+runs/
 
 Miniconda3-latest-Linux-x86_64.sh
 
