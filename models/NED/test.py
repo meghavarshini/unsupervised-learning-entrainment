@@ -115,6 +115,3 @@ print("Total Real Loss:"+str(test_loss) + "Total Fake Loss:" + str(fake_test_los
 
 print(float(np.sum(Loss < Fake_loss))/Loss.shape[0])
 
-
-
-
