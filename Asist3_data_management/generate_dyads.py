@@ -14,20 +14,28 @@ import re
 import subprocess as sp
 import numpy as np
 import sys
+import os
+import copy
+import opensmile
 
 ############ edit this line if you have trouble with home path #######
-sys.path.append("/Users/meghavarshinikrishnaswamy/github/unsupervised-learning-entrainment")
+# Get the absolute path of the parent directory
+parent_dir = os.path.abspath(os.path.join(os.getcwd(), '..'))
+
+# Add the parent directory to the system path
+sys.path.append(parent_dir)
+
 from feats.feat_extract_nopre import final_feat_calculate_multicat
-import copy
 
 
 
 def loop_through_data(combined_files_dict, save_dir):
     # go to an individual file in the data
     for fpath, combined_file in combined_files_dict.items():
-        print(combined_file)
+        # print("file contents: ", combined_file)
         # speakers and addressees in CSV MUST be named their unique ID
         all_speakers = combined_file.speaker.unique().tolist()
+        print("Speakers: ", all_speakers)
 
         combined_file = combined_file.sort_values(by=["start"], ascending=True)
 
@@ -61,8 +69,10 @@ def loop_through_data(combined_files_dict, save_dir):
 
                 if i < len(combined_file) - 1:
                     next_row = combined_file.iloc[i+1]
+                    #ToDo: add else condition
                     if row.speaker != next_row.speaker:
                         # print(f"row {i}: {row.speaker}; row {i + 1}: {row.speaker}")
+                        #ToDo: change this
                         extract_me = id_whether_to_extract(row, next_row, speaker_pair)
                         if extract_me:
                             # print(f"extract_me is True!")
@@ -156,14 +166,14 @@ def run_opensmile_over_utterance(row, base_file):
 
     # run opensmile over a particular utterance
     # feats to extract
-    OPENSMILE_CONFIG_BASELINE = "/Users/meghavarshinikrishnaswamy/github/unsupervised-learning-entrainment/feats/emobase2010_haoqi_revised.conf"
+    OPENSMILE_CONFIG_BASELINE = parent_dir + "/feats/emobase2010_haoqi_revised.conf"
 
     # $(OUTPUT_DIR)/%_features_raw_baseline.csv: $(OUTPUT_DIR)/%.wav
     # 	SMILExtract -C $(OPENSMILE_CONFIG_BASELINE) -I $< -O $@
     # extract the features with opensmile
 
     # todo Megh: change the SMILExtract location
-    sp.run(["/Users/meghavarshinikrishnaswamy/github/unsupervised-learning-entrainment/opensmile-3.0/bin/SMILExtract", "-C", OPENSMILE_CONFIG_BASELINE,
+    sp.run([parent_dir+"/opensmile-3.0/bin/SMILExtract", "-C", OPENSMILE_CONFIG_BASELINE,
            "-I", audio_out, "-O", feats_out])
 
     # read in acoustic features
@@ -296,18 +306,26 @@ def id_whether_to_extract(row, following_row, speaker_pair):
 if __name__ == "__main__":
     # todo: also change the path to SMILExtract in line 163
     # get location to savedir
-    savedir = "/Users/meghavarshinikrishnaswamy/transcripts/files_for_pipeline/output"
+    savedir = ""
 
     # get location to dir with files of interest
-    data_dir = Path("/Users/meghavarshinikrishnaswamy/transcripts/files_for_pipeline")  # todo: change to path with files
+
+    # Get the current working directory
+    current_directory = os.getcwd()
+    # Create the full path for the "output" folder
+    output_folder = os.path.join(current_directory, "multicat_feats")
+    
+    data_dir = Path(os.path.join(current_directory, "files_for_dyad_generation"))
+    print(f"input: {data_dir}\n output: {output_folder}")
 
     all_files_of_interest = {}
 
     for datafile in data_dir.iterdir():
         if datafile.suffix == ".csv":
-            # read in the file as a pd df
+    #         # read in the file as a pd df
             this_file = pd.read_csv(datafile, sep="\t")  # \t for tab delimited text files
+            print(datafile)
             all_files_of_interest[datafile] = this_file
 
-    # go through all files and generate output
+    # # go through all files and generate output
     loop_through_data(all_files_of_interest, savedir)
