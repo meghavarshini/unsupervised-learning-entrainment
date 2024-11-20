@@ -1,7 +1,7 @@
 output
 test_data
 
-opensmile-3.0
+/opensmile*
 smile.log
 
 .idea/
@@ -10,6 +10,11 @@ venv
 entrainment_config.pyc
 __pycache__
 .entrainment
+
+# Input data files
+Asist3_data_management/entrainment_annotations
+Asist3_data_management/files_for_dyad_generation
+Asist3_data_management/entrainment_annotations
 
 # Output data files:
 models/triplet/prep/data

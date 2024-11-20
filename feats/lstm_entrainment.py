@@ -13,28 +13,10 @@ from torch.nn import functional as F
 from torchvision import datasets, transforms
 from torchvision.utils import save_image
 import matplotlib.pyplot as plt
+
 #-------------------------------------------------
-# Define the dataset class
+# Define the model class
 #-------------------------------------------------
-class EntDataset(Dataset):
-    def __init__(self, file_name):
-        self.file_name = file_name
-        
-    def __getitem__(self, idx):
-        hf = h5py.File(self.file_name, 'r')
-        X = hf['dataset'][idx,0:228]
-        Y = hf['dataset'][idx,228:456]
-        hf.close()
-        return (X, Y)
-
-    def __len__(self):
-        hf = h5py.File(self.file_name, 'r')
-        length=hf['dataset'].shape[0]
-        hf.close()
-        return length
-
-
-
 
 class LSTM_Entrainment(nn.Module):
     def __init__(self, n_params):

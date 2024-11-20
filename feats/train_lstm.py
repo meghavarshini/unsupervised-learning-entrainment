@@ -1,5 +1,6 @@
 #To Run, use: CUDA_VISIBLE_DEVICES=1 python train.py --no-cuda
 from ecdc import *
+from train_lstm import *
 #------------------------------------------------------------------
 #Uncomment for parsing inputs
 def make_argument_parser():
