@@ -1,12 +1,15 @@
-# use this script to generate dyads from the MultiCAT data
-# for the purposes of this script, we assume the following:
-# 1. every trial contains a transcript with timestamps of each utterance
-# as well as the speaker and the addressee
-# 2. every trial has associated wav files for each speaker that
-# can be identified using the name of the transcript file + speaker info
-# NOTE: if speaker is described by role, there should be an associated speaker ID
-#   e.g. E000689 = 'transporter'
-# NOTE: RUN THIS FILE FROM THE BASE DIRECTORY
+'''
+Use this script to generate dyads from the MultiCAT data.
+NOTE: This file must be run from the Asist3_data_management folder
+for the purposes of this script, we assume the following:
+1. For every trial, there exists one transcript file with the following columns:
+"start	end	speaker	addressee	transcript", and 3 associated wav files. 
+The file name contains the IDs for trial, speaker, and team.
+2. The values column "speaker" should match the uniqueIDs of the participants, not roles
+e.g. E000689, not 'transporter'
+4. OpenSMILE and ffmpeg are installed, and the path to `SMILExtract` has been added to $PATH
+(see documentation: https://audeering.github.io/opensmile/get-started.html)
+'''
 
 import pandas as pd
 from pathlib import Path
@@ -16,39 +19,43 @@ import numpy as np
 import sys
 import os
 import copy
-import opensmile
+# ToDo: add python wrapper for opensmile
+# import opensmile
 
-############ edit this line if you have trouble with home path #######
+############ Fix for issues with paths #######
 # Get the absolute path of the parent directory
 parent_dir = os.path.abspath(os.path.join(os.getcwd(), '..'))
-
 # Add the parent directory to the system path
 sys.path.append(parent_dir)
 
+# feature extraction function
 from feats.feat_extract_nopre import final_feat_calculate_multicat
 
-
-
-def loop_through_data(combined_files_dict, save_dir):
+def loop_through_data(combined_transcript_dict, save_dir):
+    '''
+    This function loops over every file added to a dictionary of unique files
+    and saves the feature set to the user-defined location
+    '''
     # go to an individual file in the data
-    for fpath, combined_file in combined_files_dict.items():
+    for fpath, combined_transcript in combined_transcript_dict.items():
         # print("file contents: ", combined_file)
         # speakers and addressees in CSV MUST be named their unique ID
-        all_speakers = combined_file.speaker.unique().tolist()
+        all_speakers = combined_transcript.speaker.unique().tolist()
         print("Speakers: ", all_speakers)
+        
+        # arrange all turns in order
+        combined_transcript = combined_transcript.sort_values(by=["start"], ascending=True)
 
-        combined_file = combined_file.sort_values(by=["start"], ascending=True)
-
-        speakers = []
-        # get the list of speakers from this file
+        # get paired list of speakers from all_speakers, to create dyads
+        speaker_pairs = []
         for speaker in all_speakers:
             if len(all_speakers) > 1:
                 all_speakers.remove(speaker)
                 for other in all_speakers:
-                    speakers.append([speaker, other])
+                    speaker_pairs.append([speaker, other])
 
         # iterate through pairs of speakers
-        for speaker_pair in speakers:
+        for speaker_pair in speaker_pairs:
             print(f"SPEAKER PAIR IS: {speaker_pair}")
             # holder for all acoustic features
             all_features_for_this_list = []
@@ -65,17 +72,17 @@ def loop_through_data(combined_files_dict, save_dir):
             all_row_ends = []
 
             # go through the combined file
-            for i, row in combined_file.iterrows():
+            for i, row in combined_transcript.iterrows():
 
-                if i < len(combined_file) - 1:
-                    next_row = combined_file.iloc[i+1]
+                if i < len(combined_transcript) - 1:
+                    next_row = combined_transcript.iloc[i+1]
                     #ToDo: add else condition
                     if row.speaker != next_row.speaker:
-                        # print(f"row {i}: {row.speaker}; row {i + 1}: {row.speaker}")
+                        # print(f"row {i}: {row.speaker}; row {i + 1}: {next_row.speaker}")
                         #ToDo: change this
                         extract_me = id_whether_to_extract(row, next_row, speaker_pair)
                         if extract_me:
-                            # print(f"extract_me is True!")
+                            print(f"extract_me for row {i} is True!")
                             # extract the relevant components of this row and the following row
 
                             # extract for this row
@@ -105,7 +112,9 @@ def loop_through_data(combined_files_dict, save_dir):
 
             features_for_normalizing = np.asarray(features_for_normalizing)
 
-            if np.shape(features_for_normalizing)[0] > 0:
+            if np.shape(features_for_normalizing)[0] <= 0:
+                print("empty feature holder")
+            elif np.shape(features_for_normalizing)[0] > 0:
                 # run f0 and intensity normalization over the features for normalizing
                 all_raw_norm_feat, all_norm_feat_dim =  calc_opensmile_feats(features_for_normalizing)
 
@@ -130,6 +139,7 @@ def loop_through_data(combined_files_dict, save_dir):
                             all_features = np.vstack((all_features, whole_func_feat))
 
                 # save the features
+                print("savename:", savename)
                 with open(savename, 'w') as savefile:
                     for item in all_features:
                         savefile.write(",".join([str(part) for part in item]))
@@ -172,8 +182,7 @@ def run_opensmile_over_utterance(row, base_file):
     # 	SMILExtract -C $(OPENSMILE_CONFIG_BASELINE) -I $< -O $@
     # extract the features with opensmile
 
-    # todo Megh: change the SMILExtract location
-    sp.run([parent_dir+"/opensmile-3.0/bin/SMILExtract", "-C", OPENSMILE_CONFIG_BASELINE,
+    sp.run(["SMILExtract", "-C", OPENSMILE_CONFIG_BASELINE,
            "-I", audio_out, "-O", feats_out])
 
     # read in acoustic features
@@ -304,28 +313,26 @@ def id_whether_to_extract(row, following_row, speaker_pair):
 
 
 if __name__ == "__main__":
-    # todo: also change the path to SMILExtract in line 163
-    # get location to savedir
-    savedir = ""
 
     # get location to dir with files of interest
 
     # Get the current working directory
     current_directory = os.getcwd()
-    # Create the full path for the "output" folder
-    output_folder = os.path.join(current_directory, "multicat_feats")
     
-    data_dir = Path(os.path.join(current_directory, "files_for_dyad_generation"))
+    # Create the full path for the "output" folder
+    output_folder = os.path.join(current_directory, "multicat_feats/test")
+    
+    data_dir = Path(os.path.join(current_directory, "files_for_dyad_generation/test"))
     print(f"input: {data_dir}\n output: {output_folder}")
 
     all_files_of_interest = {}
 
     for datafile in data_dir.iterdir():
         if datafile.suffix == ".csv":
-    #         # read in the file as a pd df
+            ## read in the file as a pd df
             this_file = pd.read_csv(datafile, sep="\t")  # \t for tab delimited text files
-            print(datafile)
+            # print(datafile)
             all_files_of_interest[datafile] = this_file
 
-    # # go through all files and generate output
-    loop_through_data(all_files_of_interest, savedir)
+    # # # go through all files and generate output
+    loop_through_data(all_files_of_interest, output_folder)

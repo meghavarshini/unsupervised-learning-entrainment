@@ -1,8 +1,7 @@
 import os
 import csv
 import pandas as pd
-dir = "/Users/meghavarshinikrishnaswamy/transcripts"
-unique_trials = ["T000719", "T000720"]
+
 def open_files(dir):
     file_list = []
     for file in os.listdir(dir):
@@ -53,5 +52,8 @@ def extract_utterances(dir, unique_trials, file_ls):
         print("cols: ", i_df.axes[1])
     return None
 
-files = open_files(dir)
-x = extract_utterances(dir, unique_trials, files)
+if __name__ == "__main__":
+    dir = "/Users/meghavarshinikrishnaswamy/transcripts"
+    unique_trials = ["T000719", "T000720"]
+    files = open_files(dir)
+    x = extract_utterances(dir, unique_trials, files)
