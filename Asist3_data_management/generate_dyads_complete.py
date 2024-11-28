@@ -312,9 +312,9 @@ if __name__ == "__main__":
     current_directory = os.getcwd()
     
     # Create the full path for the "output" folder
-    output_folder = os.path.join(current_directory, "multicat_feats/test")
+    output_folder = os.path.join(current_directory, "multicat_feats")
     
-    data_dir = Path(os.path.join(current_directory, "files_for_dyad_generation/test"))
+    data_dir = Path(os.path.join(current_directory, "files_for_dyad_generation"))
     print(f"input: {data_dir}\n output: {output_folder}")
 
     all_files_of_interest = {}
