@@ -160,7 +160,7 @@ def run_opensmile_over_utterance(row, base_file):
     length = end - start
 
     # extract this short file to run feature extraction on
-    sp.run(["ffmpeg", "-ss", str(start), "-i", f"{str(filepath)}/{audio_in_name}",
+    sp.run(["ffmpeg", "-y", "-ss", str(start), "-i", f"{str(filepath)}/{audio_in_name}",
             "-t", str(length), "-c", "copy", audio_out])
 
     feats_out = filepath / f"{speaker}_{start}-{end}.csv"
