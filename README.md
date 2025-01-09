@@ -7,7 +7,7 @@ Modified for Python3 by Megh Krishnaswamy and Adarsh Pyrelal
 
 
 #### Updated on June 3, 2022 (Work in Progress)
-#### Scripts are written in Python 3.9
+#### Scripts are written in Python 3.11
 
 
 ------------
