@@ -1,5 +1,8 @@
-from entrainment.config import *
-# from aeent import *
+import sys
+import os
+sys.path.append(os.path.abspath('../../entrainment'))
+
+import config
 from ecdc import *
 import h5py
 
