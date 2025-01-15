@@ -1,5 +1,5 @@
 # incorporates elements from https://github.com/marcovzla/discobert/blob/master/config.py
-
+import os
 import argparse
 from argparse import Namespace
 import pandas as pd
@@ -15,8 +15,6 @@ from torch.utils.data import Dataset
 from torch import nn, optim
 from torch.autograd import Variable
 from torch.nn import functional as F
-from torchvision import datasets, transforms
-from torchvision.utils import save_image
 import math
 import pprint, pickle
 from sklearn import preprocessing

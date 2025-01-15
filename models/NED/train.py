@@ -39,7 +39,12 @@ dim_id = '30dim'  # applies for op only   # CHECK ecdc.py zdim value
 loss_id = 'l1'
 method_id = ''
 
-fdset = EntDataset('data/train_' + dataset_id + '_' + norm_id + '.h5')
+fdset = EntDataset('./data/train_' + dataset_id + '_' + norm_id + '.h5')
+fpath1 = './data/train_' + dataset_id + '_' + norm_id + '.h5'
+print(f'dataset path: {fpath1}')
+print(f"length of fdset: {len(fdset)}")
+
+print(fdset)
 
 train_loader = torch.utils.data.DataLoader(fdset, batch_size=128, shuffle=True)
 
@@ -69,7 +74,7 @@ def train(loader, ep):
         loss = loss_function(recon_batch, y_data)
         loss.backward()
 
-        train_loss += loss.data[0]
+        train_loss += loss.data.item()[0]
         optimizer.step()
         if batch_idx % args.log_interval == 0:
             print(('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
@@ -77,7 +82,7 @@ def train(loader, ep):
                        100. * batch_idx / len(loader),
                        loss.data[0] / len(data))))
     train_loss /= len(loader.dataset)
-    print(f'====> Epoch: {epoch} Average loss: {train_loss}')
+    #print(f"Epoch: {epoch} Average loss: {train_loss}")
 
     return train_loss
 
