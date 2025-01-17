@@ -5,10 +5,10 @@ from ecdc import *
 def make_argument_parser():
 	parser = argparse.ArgumentParser(description='VAE MNIST Example')
 	parser.add_argument('--model_name', type=str,
-						default= "/home/tomcat/entrainment/feat_files/baseline_1_models/trained_VAE_nonorm_nopre_l1.pt",
+						default= "./baseline_1_models/trained_NED_l1.pt",
 						help="name of model file")
 	parser.add_argument('--h5_directory', type=str,
-						default="/home/tomcat/entrainment/feat_files/baseline_1_h5",
+						default="./baseline_1_h5",
 						help='location of h5 files')
 	parser.add_argument('--batch-size', type=int, default=128, metavar='N',
 						help='input batch size for training (default: 128)')
@@ -20,8 +20,7 @@ def make_argument_parser():
 						help='random seed (default: 1)')
 	parser.add_argument('--log-interval', type=int, default=10, metavar='N',
 						help='how many batches to wait before logging training status')
-	# args = parser.parse_args()
-	# args.cuda = not args.no_cuda and torch.cuda.is_available()
+	
 	return parser
 
 def model_setup(model_name, seed, cuda, data_directory):
@@ -114,6 +113,30 @@ if __name__ == "__main__":
 	args.cuda = not args.no_cuda and torch.cuda.is_available()
 	print("cuda availability: ", args.cuda)
 	print("gpu details: ", torch.cuda.get_device_name(0))
+	print()
+
+	# Check if Model exists:
+	if os.path.isfile(args.model_name):
+    		print(f"The model '{args.model_name}' exists. Training will rewrite it.")
+	else:
+	    print(f"The model '{args.model_name}' does not exist. Creating file...")
+	
+	# Check if model directory exists:
+	model_directory_path = os.path.dirname(args.model_name)
+	# Check if H5 directory exists
+	if os.path.isdir(model_directory_path):
+	    print(f"The directory for storing the trained model '{model_directory_path}' exists. Continue...")
+	else:
+	    print(f"The directory for storing the trained model '{model_directory_path}' does not exist. Creating it...")
+	    model_directory_path.mkdir(parents=True, exist_ok=True)
+	    print("Rechecking for model: ", os.path.isdir(model_directory_path))
+	
+	# Check if H5 directory exists
+	if os.path.isdir(args.h5_directory):
+	    print(f"The directory with training files '{args.h5_directory}' exists. Continue...")
+	else:
+	    print(f"The directory with training files '{args.h5_directory}' does not exist.")
+	    sys.exit(1)
 
 
 	Tloss =[]
