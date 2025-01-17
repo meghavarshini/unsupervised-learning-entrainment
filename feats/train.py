@@ -128,7 +128,7 @@ if __name__ == "__main__":
 	    print(f"The directory for storing the trained model '{model_directory_path}' exists. Continue...")
 	else:
 	    print(f"The directory for storing the trained model '{model_directory_path}' does not exist. Creating it...")
-	    model_directory_path.mkdir(parents=True, exist_ok=True)
+	    os.makedirs(model_directory_path, exist_ok=True)
 	    print("Rechecking for model: ", os.path.isdir(model_directory_path))
 	
 	# Check if H5 directory exists
