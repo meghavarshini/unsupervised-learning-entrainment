@@ -73,14 +73,10 @@ def train(loader, ep):
         recon_batch = model(data)
         loss = loss_function(recon_batch, y_data)
         loss.backward()
-
-        train_loss += loss.data.item()[0]
+	
+        print("loss data: ",loss.data)
+        train_loss += loss.data
         optimizer.step()
-        if batch_idx % args.log_interval == 0:
-            print(('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
-                ep, batch_idx * len(data), len(loader.dataset),
-                       100. * batch_idx / len(loader),
-                       loss.data[0] / len(data))))
     train_loss /= len(loader.dataset)
     #print(f"Epoch: {epoch} Average loss: {train_loss}")
 
