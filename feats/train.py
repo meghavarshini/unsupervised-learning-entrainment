@@ -1,9 +1,7 @@
 #To Run, use: CUDA_VISIBLE_DEVICES=1 python train.py --no-cuda
 from ecdc import *
-#------------------------------------------------------------------
-#Uncomment for parsing inputs
 def make_argument_parser():
-	parser = argparse.ArgumentParser(description='VAE MNIST Example')
+	parser = argparse.ArgumentParser(description='Optional arguments for running train.py')
 	parser.add_argument('--model_name', type=str,
 						default= "./baseline_1_models/trained_NED_l1.pt",
 						help="name of model file")
@@ -34,11 +32,6 @@ def model_setup(model_name, seed, cuda, data_directory):
 	torch.manual_seed(seed)
 	if cuda:
 		torch.cuda.manual_seed(seed)
-
-# kwargs = {'num_workers': 1, 'pin_memory': True} if args.cuda else {}
-
-# f = h5py.File('interaction_Fisherfeats.h5','r')
-# dataset=f['dataset']
 
 
 	fdset = EntDataset(data_directory + "/" + "train_Fisher_nonorm.h5")
@@ -72,13 +65,7 @@ def train(each_epoch, model, train_loader, optimizer, cuda):
 		loss.backward()
 		print("loss data: ",loss.data)
 		train_loss += loss.data
-		# train_loss += loss.data[0]
 		optimizer.step()
-		# if batch_idx % args.log_interval == 0:
-			# print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
-				# epoch, batch_idx * len(data), len(train_loader.dataset),
-				# 100. * batch_idx / len(train_loader),
-				# loss.data[0] / len(data)))
 	train_loss /=  len(train_loader.dataset)
 	print(('====> Epoch: {} Average loss: {:.4f}'.format(
 		  each_epoch, train_loss)))
@@ -94,13 +81,10 @@ def validate(model, val_loader, cuda):
 		if cuda:
 			data = data.cuda()
 			y_data = y_data.cuda()
-		# data = Variable(data, volatile=True)
-		# y_data = Variable(y_data, volatile=True)
 		data = Variable(data)
 		y_data = Variable(y_data)
 		recon_batch = model(data)
 		val_loss += loss_function(recon_batch, y_data).data
-		# val_loss += loss_function(recon_batch, y_data).data[0]
 
 	val_loss /= len(val_loader.dataset)
 	print(('====> Validation set loss: {:.4f}'.format(val_loss)))
@@ -127,7 +111,7 @@ if __name__ == "__main__":
 	if os.path.isdir(model_directory_path):
 	    print(f"The directory for storing the trained model '{model_directory_path}' exists. Continue...")
 	else:
-	    print(f"The directory for storing the trained model '{model_directory_path}' does not exist. Creating it...")
+	    print(f"The directory for storing the trained model '{model_directory_path}' does not exist. Creating directory...")
 	    os.makedirs(model_directory_path, exist_ok=True)
 	    print("Rechecking for model: ", os.path.isdir(model_directory_path))
 	
@@ -135,7 +119,7 @@ if __name__ == "__main__":
 	if os.path.isdir(args.h5_directory):
 	    print(f"The directory with training files '{args.h5_directory}' exists. Continue...")
 	else:
-	    print(f"The directory with training files '{args.h5_directory}' does not exist.")
+	    print(f"The directory with training files '{args.h5_directory}' does not exist. Recheck dir path.")
 	    sys.exit(1)
 
 
@@ -164,6 +148,6 @@ if __name__ == "__main__":
 			best_epoch = epoch
 			print("epoch: ", vloss, "epoch: ", epoch)
 			torch.save(baseline_model, args.model_name)
-			#model = torch.load(PATH)
-			#model.eval()
-			#parameters- check they are non-empty
+    print("process complete")
+ 
+	
