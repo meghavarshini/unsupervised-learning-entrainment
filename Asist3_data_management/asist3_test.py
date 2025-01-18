@@ -1,30 +1,16 @@
-from ecdc import *
 import argparse
-import pdb
-import numpy as np
-import random
-import os
+from feats.test import load_h5
 
-os.getcwd()
 
-SEED=448
+# from feats.test import model_testing
 
 def make_argument_parser():
-    parser = argparse.ArgumentParser(description='entrainment testing')
-    parser.add_argument('--no-cuda', action='store_true',
-                        default=False,
-                        help='enables CUDA training')
-    parser.add_argument('--seed', type=int,
-                        default=1, metavar='S',
-                        help='random seed (default: 1)')
-    parser.add_argument('--hff', default= '/home/tomcat/entrainment/feat_files/baseline_2_h5/test_Fisher_nonorm.h5',
-                        help='location of h5 file with the test data')
-    parser.add_argument('--model_name',
-                        default= "/home/tomcat/entrainment/feat_files/baseline_2_models/trained_VAE_nonorm_nopre_l1.pt",
-                        help='name associated with the trained model')
-    # args = parser.parse_args()
+    parser = argparse.ArgumentParser(
+        description="Processing filepaths and values required for setup")
+    parser.add_argument("--h5_directory",
+                        default="/home/tomcat/entrainment/asist3",
+                        help="directory for storing h5 files")
     return parser
-
 
 
 def load_h5(file):
@@ -33,10 +19,8 @@ def load_h5(file):
     test = np.array(file['dataset'])
     print("loading complete!")
     return test
+def model_testing(model_name, X_test, cuda):
 
-def model_testing(model_name, X_test,cuda):
-    #instantiate a VAE model, set it to evaluation,
-    # and make sure weights are not updated during the process
     model = VAE().double()
     model = torch.load(model_name)
     model.eval()
@@ -56,19 +40,10 @@ def model_testing(model_name, X_test,cuda):
     Loss=[]
     Fake_loss = []
     # load h5 test file- iterating over conversations:
-    #ToDo- check if iterated item is the same size both here and in train.py
     for idx, data in enumerate(X_test):
-        print("working on instance: ", idx)
-
-        # list split in half, saved as 2 variables, in opposite order
-        # Check: is this splitting the conversation in half? Or is this per utterance?
-        # When extracting embedding- typical way is to take the representation from the last layer of the network
-            # seems unlikely
-
+        print("working on file: ", idx)
 
         print("length of test set list: ", len(data))
-        # Check the data type of the following, dimensions, size
-        # What is 228?- One possibility is that it's the number of hidden layers (output representation)
 
         x_data = data[:228]
         y_data = data[228:-1]
@@ -139,17 +114,10 @@ def model_testing(model_name, X_test,cuda):
     print(float(np.sum(Loss < Fake_loss))/Loss.shape[0])
     return None
 
-
 if __name__ == "__main__":
-    os.getcwd()
     parser = make_argument_parser()
     args = parser.parse_args()
-    args.cuda = not args.no_cuda and torch.cuda.is_available()
 
-    torch.manual_seed(args.seed)
+    test_h5 = args.h5_directory + '/test_Fisher_nonorm.h5'
 
-    if not args.no_cuda and torch.cuda.is_available():
-        torch.cuda.manual_seed(args.seed)
-
-    X_test1 = load_h5(args.hff)
-    test_run = model_testing(args.model_name, X_test1, args.cuda)
+    test_input = load_h5(test_h5)

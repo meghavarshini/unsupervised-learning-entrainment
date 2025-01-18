@@ -1,9 +1,29 @@
-from entrainment.config import *
+from os import path
+from glob import glob
 import h5py
+import argparse
+import random
+import numpy as np
+import time
+import os
+import math
+from entrainment.config import *
 SEED=448
 frac_train = 0.8
 frac_val = 0.1
 
+def make_argument_parser():
+    parser = argparse.ArgumentParser(
+            description  = "Processing filepaths and values required for setup")
+    # input dir
+    parser.add_argument("--features_dir",
+            default = "/home/tomcat/entrainment/feat_files/baseline_1_feats",
+            help  = "features directory")
+    # output dir (should be changed depending on your needs)
+    parser.add_argument("--h5_directory",
+            default="/home/tomcat/entrainment/NED_files/baseline_1_h5",
+            help  = "directory for storing h5 files")
+    return parser
 
 
 ## Create h5 files
@@ -168,3 +188,14 @@ hf.close()
 # hf.create_dataset('specset', data=X_test[:,24:150])
 # hf.create_dataset('vqset', data=X_test[:,150:])
 # hf.close()
+if __name__ == "__main__":
+	parser = make_argument_parser()
+	args = parser.parse_args()
+	SEED = 448
+	frac_train = 0.8
+	frac_val = 0.1
+
+	# tr, v, te = split_files(feats_dir = args.features_dir, sess_List = args.h5_directory+"/sessList.txt")
+	# create_train(sessTrain = tr, h5_dir= args.h5_directory)
+	# create_val(sessVal= v, h5_dir= args.h5_directory)
+	# create_test(sessTest= te, h5_dir= args.h5_directory)

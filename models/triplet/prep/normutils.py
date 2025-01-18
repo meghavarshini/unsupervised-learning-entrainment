@@ -9,9 +9,9 @@ def normalizefeats(feat_data, norm):
 	##-----------------------------------------------------------------------
 	## feature selection and normalization 
 	##-----------------------------------------------------------------------
-	# remove the mean for mfcc
-	# normalize for pitch = log(f_0/u_0)
-	# normalize for loudness 
+		# remove the mean for mfcc
+		# normalize for pitch = log(f_0/u_0)
+		# normalize for loudness
 	if norm:
 		# do normalization
 		# print("Do session level feature normalization... ", file=sys.stderr)

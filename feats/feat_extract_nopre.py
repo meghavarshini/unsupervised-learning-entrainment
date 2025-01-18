@@ -16,7 +16,6 @@ def make_argument_parser():
     parser = argparse.ArgumentParser(
         description="Processing filepaths and values required for setup"
     )
-
     parser.add_argument("raw_features_csv", help="Input raw features CSV")
     parser.add_argument("transcript", help="Input transcript")
     parser.add_argument("output_csv", help="output_normed_features_csv")
@@ -53,6 +52,23 @@ def final_feat_calculate(sample_index, all_raw_norm_feat, all_raw_feat_dim):
         whole_output_feat = np.concatenate(
             (whole_output_feat, funcs_per_frame), axis=0
         )
+    return whole_output_feat
+
+
+def final_feat_calculate_multicat(row_ends, all_raw_norm_feat, all_raw_feat_dim):
+    whole_output_feat = np.array([], dtype=np.float32).reshape(
+        0, all_raw_feat_dim * 6
+    )
+    # if we are trying to get func_calculate to run over an entire utterance
+    # and only one utterance, utt_feats is this array
+    tmp_all_raw_norm_feat = np.copy(all_raw_norm_feat[row_ends[0]:row_ends[1], :])
+    # tmp_all_raw_norm_feat = np.copy(utt_feats)
+    print(f"Shape of all_raw_norm_feat: {np.shape(tmp_all_raw_norm_feat)}")
+    funcs_per_frame = func_calculate(tmp_all_raw_norm_feat)
+    print(f"Shape of funcs_per_frame: {np.shape(funcs_per_frame)}")
+    whole_output_feat = np.concatenate(
+        (whole_output_feat, funcs_per_frame), axis=0
+    )
     return whole_output_feat
 
 
@@ -138,14 +154,11 @@ def create_normed_features_csv(
     )
     csv_feat = csv_feat.values.copy()
     print("feature array has the following shape: ", np.shape(csv_feat))
-    print(
-        "this is a temporary fix, need to figure out why these weird feature extraction lines are getting printed in the first place"
-    )
     feat_data = np.copy(csv_feat)
     # convert the first column index to int index
     sample_index = list(map(int, list((feat_data[:, 0]))))
 
-    ##TODO Looks like this wasn't done by the author.
+    ## Orginal code line 178
     # def turn_level_index(spk_list, sample_index):
     # '''generate indices for different turns'''
 
@@ -196,17 +209,17 @@ def create_normed_features_csv(
         else:
             s2_list.append(itm)
 
-    ##-----------------------------------------------------------------------
-    ## feature selection and normalization
-    ##-----------------------------------------------------------------------
-    # remove the mean for mfcc
-    # normalize for pitch = log(f_0/u_0)
-    # normalize for loudness
+    """
+    ## feature selection and normalization (original comments)
 
+    - remove the mean for mfcc
+    - normalize for pitch = log(f_0/u_0)
+    - normalize for loudness
+    """
     # f0 normalization
     f0 = np.copy(feat_data[:, 70])
 
-    # replace 0 in f0 with nan
+    # replace 0 in f0 with nan, get mean
     f0[f0 == 0.0] = np.nan
     f0_mean = np.nanmean(f0)
 

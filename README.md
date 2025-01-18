@@ -3,10 +3,11 @@ Software supporting "Modeling Vocal Entrainment in Conversational Speech using D
 ------------------------------------------------------------------------------------------
 
 original code by Md Nasir 
-Modified for Python3 by Megh Krishnaswamy and Adarsh Pyrelal
+Modified for Python3 by Megh Krishnaswamy, Adarsh Pyrelal, and John Culnan.
 
 
-#### Updated on June 3, 2022 (Work in Progress)
+#### Updated on January 17, 2024 (Work in Progress)
+
 #### Scripts are written in Python 3.11
 
 
@@ -60,5 +61,3 @@ Make sure the following directories/files have permissions:
 2. chmod 777 model/NED
 3. chmod 777 feats/emobase2010_haoqi_revised.conf
 4. chmod 777 models/NED/emobase2010_revised.conf
-~~3. chmod 755 feats/run_all_nopre.sh
-~4. chmod 755 models/NED/run_all_nopre.sh

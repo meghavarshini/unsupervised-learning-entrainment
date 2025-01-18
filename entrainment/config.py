@@ -1,12 +1,7 @@
 # incorporates elements from https://github.com/marcovzla/discobert/blob/master/config.py
-
+import os
 import argparse
 from argparse import Namespace
-import os
-from os.path import basename
-from os.path import exists
-import sys
-import csv
 import pandas as pd
 import numpy as np
 import time
@@ -16,16 +11,10 @@ import pdb
 import glob
 import random
 import h5py
-import kaldi_io
-# from aeent import *
-import torch
-import torch.utils.data
 from torch.utils.data import Dataset
 from torch import nn, optim
 from torch.autograd import Variable
 from torch.nn import functional as F
-from torchvision import datasets, transforms
-from torchvision.utils import save_image
 import math
 import pprint, pickle
 from sklearn import preprocessing

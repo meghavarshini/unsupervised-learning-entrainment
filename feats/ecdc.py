@@ -1,5 +1,19 @@
-from entrainment.config import *
-
+import os
+import sys
+import h5py
+import pdb
+import numpy as np
+import csv
+import argparse
+import torch
+import torch.utils.data
+from torch.utils.data import Dataset
+from torch import nn, optim
+from torch.autograd import Variable
+from torch.nn import functional as F
+from torchvision import datasets, transforms
+from torchvision.utils import save_image
+import matplotlib.pyplot as plt
 #-------------------------------------------------
 # Define the dataset class
 #-------------------------------------------------
@@ -26,6 +40,7 @@ class EntDataset(Dataset):
 class VAE(nn.Module):
     def __init__(self):
         super(VAE, self).__init__()
+        # the model is run over
         zdim=30
 
         self.fc1 = nn.Linear(228, 128)
@@ -68,7 +83,8 @@ class VAE(nn.Module):
         return h4
 
     def forward(self, x):
-        z = self.encode(x.view(-1, 228))
+        z = self.encode(x.view(-1, 228)) # view reshapes the vector, with given dimensions
+        
         # z = self.reparameterize(mu, logvar)
         return self.decode(z)
 

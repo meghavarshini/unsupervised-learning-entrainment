@@ -1,20 +1,38 @@
 output
 test_data
 
+/opensmile*
+smile.log
+.vscode/
 .idea/
+.venv
+venv
 entrainment_config.pyc
 __pycache__
+.entrainment
+
+# Input data files
+Asist3_data_management/entrainment_annotations
+Asist3_data_management/files_for_dyad_generation
+Asist3_data_management/entrainment_annotations
 
 # Output data files:
 models/triplet/prep/data
-models/triplet/prep/data/
 models/NED/data
 feats/data
 
-feats/model
+feats/models
 models/NED/models
 models/triplet/train/models
-.venv
+models/triplet/prep/pykaldi
+models/triplet/prep/kaldi
+models/triplet/prep/0007_voxceleb_v1_1a
+models/triplet/prep/ivector_extract
+models/triplet/prep/ivector-xvector
+runs/
+
+Miniconda3-latest-Linux-x86_64.sh
+
 
 *.DS_Store
 *.csv
@@ -25,5 +43,3 @@ models/triplet/train/models
 *.h5
 *.egg-info
 *.scp
-*.h5
-*.pt

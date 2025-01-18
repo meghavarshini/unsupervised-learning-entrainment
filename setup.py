@@ -11,9 +11,9 @@ setup(
     keywords="vocalic feature modelling",
     # zip_safe=False,
     install_requires=[
-        "wheel",
-        "torch==1.11.0",
-        "torchvision==0.12.0",
+	"wheel",
+        "torch",
+        "torchvision",
         "pandas",
         "numpy",
         "sklearn",
@@ -22,7 +22,6 @@ setup(
         "webvtt-py",
         "transformers",
         "h5py",
-        "kaldi-io==0.9.4",
         "scipy"
     ],
 

@@ -15,10 +15,10 @@ cuda = torch.cuda.is_available()
 
 # you can move these hard-coded paths to a config file
 # Set up data loaders
-datadir = '/home/nasir/workspace/acoustic/triplet/fisher/data'
-model_path = '/home/nasir/workspace/acoustic/triplet/fisher/trained_models/'
+datadir = '/home/tomcat/entrainment/feat_files/triplet_h5'
+model_path = '/home/tomcat/entrainment/feat_files/triplet_models'
 
-fdset = EntTripDataset(datadir + '/'+  'train_Fisher_triplet_norm.h5')
+fdset = EntTripDataset(datadir + '/'+ 'train_Fisher_triplet_norm.h5')
 fdset_val = EntTripDataset(datadir + '/' + 'val_Fisher_triplet_norm.h5')
 
 # also add hyperparameters like this to a config file
@@ -45,7 +45,7 @@ scheduler = lr_scheduler.StepLR(optimizer, 8, gamma=0.1, last_epoch=-1)
 n_epochs = 50
 log_interval = 500
 
-torch.save(model, 	model_path + 'triplet_64d_50ep_fisher.pkl')
+torch.save(model, model_path + 'triplet_64d_50ep_fisher.pkl')
 
 
 f= plt.figure()
