@@ -1,0 +1,21 @@
+# Where to find what for running this code on Kraken
+
+- Fisher corpus data: `/media/mule/projects/ldc/fisher-corpus`
+- Fisher files for DNN: `/home/tomcat/entrainment/fisher_processed_files/`
+  - h5 files:  `/home/tomcat/entrainment/fisher_processed_files/fisher_h5_files`
+  - Pickle file: `/home/tomcat/entrainment/fisher_processed_files/fisher_pickle_file`
+  - Fisher OpenSMILE features: `/home/tomcat/entrainment/fisher_processed_files/fisher_openSMILE_feats`
+  - Trained model from Nasir et al.: `/home/tomcat/entrainment/fisher_processed_files/fisher_NED_baseline/`
+  - Mini fisher set for unit testing (contains h5 files, transcripts and sound files, model): `/home/tomcat/entrainment/fisher_processed_files/fisher_mini`
+- MultiCAT entrainment set (8 trials):
+  - Folder: `/home/tomcat/entrainment/multicat_entrainment/`
+  - Transcripts with addressee labels: `/home/tomcat/entrainment/multicat_entrainment/addressee_labels_transcripts`
+  - H5 files for addressee model: `/home/tomcat/entrainment/multicat_entrainment/files_for_deep_learning/addressee_model_h5_files`
+  - Extracted dyad: `/home/tomcat/entrainment/multicat_entrainment/files_for_deep_learning/dyads`
+  - Separate sound files for speakers, combiner transcript: `/home/tomcat/entrainment/multicat_entrainment/files_for_deep_learning/sound_and_combined_transcripts`
+- Study 3 data: `/media/mule/projects/tomcat/protected/study-3_2022`
+- Features and models: `/home/tomcat/entrainment/feat_files`
+- To check for software:
+- `ls /usr/local/bin
+- `ls /opt/bin`
+- `ls /usr/local`
