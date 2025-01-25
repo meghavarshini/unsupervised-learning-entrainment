@@ -15,9 +15,11 @@ Modified for Python3 by Megh Krishnaswamy, Adarsh Pyrelal, and John Culnan.
 Dependencies and Requirements
 ------------
 1. Bash
-2. [OpenSMILE](https://github.com/audeering/opensmile)
-3. [sph2pipe](https://github.com/burrmill/sph2pipe)
-5. [Kaldi](https://kaldi-asr.org)
+2. Python >=3.9 and <=3.11
+3. All the Python libraries listed in `setup.py` and env.yaml`. These will be installed 
+4. [OpenSMILE](https://github.com/audeering/opensmile)
+5. [sph2pipe](https://github.com/burrmill/sph2pipe)
+6. [Kaldi](https://kaldi-asr.org)
 4. LDC corpus and metadata files <br>(for ToMCAT users, a small sample of the corpus is available at `kraken.sista.arizona.edu:/media/mule/projects/ldc`)
 <br> note: move all files in the
 
@@ -43,13 +45,15 @@ Files that need to be edited by user to add filepaths:
 ------------------------
 Start Point:
 ------------------------
+## Installing Dependencies
 1. Setup and activate virtual environment/ conda environment:
     1. Ensure you have access to pip or conda. Installation guide for conda can be found [here](https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html)
-    1. Vitual environment: Run `pip install -e .`
-    2. Conda environment: Run `conda env create -f env.yaml`
-If you wish to extract data, follow the steps in the section below. If you already have the h5 files, skip to the next section.
+    2. Vitual environment: Run `pip install -e .`
+    3. Conda environment: Run `conda env create -f env.yaml`
 
-If you have a trained model,skip to the last step    
+If you wish to extract data, follow the steps in the section [Feature Extraction](#feature-extraction)' below. If you already have the h5 files, skip to the next section.
+
+If you have a trained model, skip to section 'Model training'   
 
 ## Feature Extraction
 2. To run the code on your system, download and set-up the LDC data from the kraken server, and access/create `Fisher_meta.csv`.
