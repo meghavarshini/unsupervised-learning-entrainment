@@ -25,32 +25,51 @@ Dependencies and Requirements
 Summary of directories and files
 --------------------------------
 
-- feat/ :- Directory containing scripts for acoustic feature extraction and functional computation
-- models/ :- Directory containing scripts for different deep unsupervised learning models for entrainment
-- utils/ :- Directory containing utility files used by other scripts
+- `feats/` :- Directory containing scripts for acoustic feature extraction and functional computation, basic code for running training and testing
+- Asist3_data_management` :- Directory for working with and testing on all files for multi-party data
+- `models/` :- Directory containing scripts for different deep unsupervised learning models for entrainment
+    - `models/NED` :- Directory containing code for the NED model
+    -  `models/triplet` :- Directory containing code for the triplet model. DEPRECIATED.
+- `scripts/`, `praat_scripts` :- Directory containing scripts for setup purposes
+- `entrainment`: location for storing python scripts run commonly across models
 
 ------------------------
 Files that need to be edited by user to add filepaths:
 ------------------------
 
-- `./Makefile`
+- `./Makefile` :- for running tensorboard/
+- `./MakefileOld` :- quick run code
 
 ------------------------
 Start Point:
 ------------------------
-1. Setup and activate virtual environment/ conda environment
-2. Run `pip install -e .`
-3. To run the code on your system, download and set-up the LDC data, and access/create `Fisher_meta.csv`
+1. Setup and activate virtual environment/ conda environment:
+    1. Ensure you have access to pip or conda. Installation guide for conda can be found [here](https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html)
+    1. Vitual environment: Run `pip install -e .`
+    2. Conda environment: Run `conda env create -f env.yaml`
+If you wish to extract data, follow the steps in the section below. If you already have the h5 files, skip to the next section.
+
+If you have a trained model,skip to the last step    
+
+## Feature Extraction
+2. To run the code on your system, download and set-up the LDC data from the kraken server, and access/create `Fisher_meta.csv`.
     -   `scp -r [username]@kraken.sista.arizona.edu:/media/mule/projects/ldc [local directory]`
+    -   Note: You need access.
 3. Edit ./Makefile with relevant filepaths. These are listed in the 'Parameters' section.
 4. Run `bash ./Makefile` to extract OpenSMILE features for all sound files.
-5. Run ` python feats/feat_extract_nopre.py [all optional arguments]` to extract the feature set.
+5. Run ` python feats/feat_extract_nopre.py [all optional arguments]` to extract the feature set. This will require feature files created in the previous step.
     1. Each line contains time- and speaker- and utterance- aligned features for every pair of turns spoken by different speakers.
-    2. Do not edit the script, instead, change the input parameters while running the script.
-    3. This will require feature files created in the previous step.
+    2. Note: Do not edit the script, instead, change the optional input parameters while running the script.
 6. Run `python feats/create_h5data.py --features_dir [extracted feature directory]`. This will create h5 files with the training, dev and test sets.
-7. Run `python train.py`. This will create a `.pt` file using the h5 files.
-8. Run `python test.py` 30 times, and write the std output to a file. This will need the trained model created in the previous step, as well as `test.h5`. This creates the real and fake datasets, and outputs a score for each run.
+
+## Model training
+7. Run `python train.py`, and provide the right parameters for file and directory paths, and model hyperparameters. You will need the h5 data files for training and validation.
+8. The actual model is created using `ecdc.py`: you can make changes to the architecture there.
+9. The model will be file with a `.pt` file extension
+
+## Model Testing
+10. Run `python test.py` 30 times, and write the std output to a file. This will need the trained model created in the previous step, as well as `test.h5`. This creates the real and fake datasets, and outputs a score for each run.
+    11. TODO: Create a bash script to do this 
 
 ------------------------
 Permissions:
