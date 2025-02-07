@@ -1,7 +1,8 @@
-output
-test_data
-
-/opensmile*
+# software files to ignore
+kaldi/
+pykaldi/
+opensmile/
+Miniconda3-latest-Linux-x86_64.sh
 smile.log
 .vscode/
 .idea/
@@ -17,23 +18,14 @@ Asist3_data_management/files_for_dyad_generation
 Asist3_data_management/entrainment_annotations
 
 # Output data files:
-models/triplet/prep/data
-models/NED/data
-feats/data
-
-feats/models
-models/NED/models
-models/triplet/train/models
-models/triplet/prep/pykaldi
-models/triplet/prep/kaldi
-models/triplet/prep/0007_voxceleb_v1_1a
-models/triplet/prep/ivector_extract
-models/triplet/prep/ivector-xvector
+data/
+output_models/
 runs/
+output/
+test_data/
 
-Miniconda3-latest-Linux-x86_64.sh
-
-
+# extensions to ignore
+*.zip
 *.DS_Store
 *.csv
 *.wav
