@@ -106,7 +106,7 @@ def extract_utterances(input_dir, output_dir, file_ls, unique_trials=None):
 
 		## save csv file
 		print(f"turns found in {filesavename} is {i_df.shape[0]}")
-		i_df.to_csv(filesavename, index = False, sep = "\t")
+		i_df.to_csv(filesavename, index = False, sep = ",")
 		count += 1
 		print(f"file {filesavename} saved to output folder!")
 		# print("trial dataframe:")
