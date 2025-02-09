@@ -2,13 +2,14 @@
 Use this script to generate dyads from the MultiCAT data.
 NOTE: This file must be run from the Asist3_data_management folder
 for the purposes of this script, we assume the following:
-1. For every trial, there exists one transcript file with the following columns:
-"start	end	speaker	addressee	transcript", and 3 associated wav files. 
+1. For every trial, there exists one transcript file with the following 
+columns: "start	end	speaker	addressee	transcript", and 3 associated wav files. 
 The file name contains the IDs for trial, speaker, and team.
-2. The values column "speaker" should match the uniqueIDs of the participants, not roles
-e.g. E000689, not 'transporter'
-4. OpenSMILE and ffmpeg are installed, and the path to `SMILExtract` has been added to $PATH
-(see documentation: https://audeering.github.io/opensmile/get-started.html)
+2. The values column "speaker" should match the uniqueIDs of the participants,
+not roles e.g. E000689, not 'transporter'
+4. OpenSMILE and ffmpeg are installed, and the path to `SMILExtract`
+has been added to $PATH (see documentation:
+https://audeering.github.io/opensmile/get-started.html)
 '''
 
 import pandas as pd
@@ -19,8 +20,20 @@ import numpy as np
 import sys
 import os
 import copy
+import argparse
 ## ToDo: add python wrapper for opensmile
 ## import opensmile
+
+def make_argument_parser():
+	parser = argparse.ArgumentParser(
+		description="Processing filepaths and values required for setup")
+	parser.add_argument("--input_directory",
+							default="./entrainment_annotations",
+							help="directory where the input files are stored")
+	parser.add_argument("--output_directory",
+							default="./output_dyads",
+							help="directory for storing output files")
+	return parser
 
 ############ Fix for issues with paths #######
 ## Get the absolute path of the parent directory
@@ -283,7 +296,6 @@ def calc_opensmile_feats(feat_data):
 			mfcc_etc_norm,
 		)
 	)
-
 	## feature dimension
 	all_raw_feat_dim = all_raw_norm_feat.shape[1]
 
@@ -310,21 +322,28 @@ def id_whether_to_extract(row, following_row, speaker_pair):
 
 
 if __name__ == "__main__":
+	parser = make_argument_parser()
+	args = parser.parse_args()
 
 	## get location to dir with files of interest
-
 	## Get the current working directory
 	current_directory = os.getcwd()
+	input_dir = Path(args.input_directory)
 	
 	## Create the full path for the "output" folder
-	output_folder = os.path.join(current_directory, "multicat_feats/test")
-	
-	data_dir = Path(os.path.join(current_directory, "files_for_dyad_generation/test"))
-	print(f"input: {data_dir}\n output: {output_folder}")
+	output_dir = Path(args.output_directory)
 
+	print(f"input: {input_dir}\n output: {output_dir}")
+	    #Check if output directory exists, if not, create it:   
+	if not output_dir.exists():
+		output_dir.mkdir(parents=True, exist_ok=True)
+		print(f"Could not find specified output directory {output_dir}. Creating directory...")
+	else:
+		print(f"Specified output directory {output_dir} already exists. Continuing...")
+	exit()
 	all_files_of_interest = {}
 
-	for datafile in data_dir.iterdir():
+	for datafile in input_dir.iterdir():
 		if datafile.suffix == ".csv":
 			## read in the file as a pd df
 			this_file = pd.read_csv(datafile, sep="\t")  # \t for tab delimited text files
@@ -332,4 +351,4 @@ if __name__ == "__main__":
 			all_files_of_interest[datafile] = this_file
 
 	## go through all files and generate output
-	loop_through_data(all_files_of_interest, output_folder)
+	loop_through_data(all_files_of_interest, output_dir)
