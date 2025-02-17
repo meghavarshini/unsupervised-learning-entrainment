@@ -1,21 +1,23 @@
 # software files to ignore
-kaldi/
-pykaldi/
-opensmile/
-Miniconda3-latest-Linux-x86_64.sh
-smile.log
 .vscode/
 .idea/
 .venv
 venv
 entrainment_config.pyc
 __pycache__
-.entrainment
+kaldi/
+pykaldi/
+opensmile/
+Miniconda3-latest-Linux-x86_64.sh
+smile.log
+.entrainment/
 
 # Input data files
 Asist3_data_management/entrainment_annotations
 Asist3_data_management/files_for_dyad_generation
-Asist3_data_management/entrainment_annotations
+Asist3_data_management/h5_output
+Asist3_data_management/multicat_complete_feats
+Asist3_data_management/multicat_addressee_feats
 
 # Output data files:
 data/
@@ -25,13 +27,15 @@ output/
 test_data/
 
 # extensions to ignore
-*.zip
 *.DS_Store
+*.egg-info
 *.csv
+*.tsv
 *.wav
 *.mp3
 *.txt
 *.pt
 *.h5
-*.egg-info
+*.zip
 *.scp
+

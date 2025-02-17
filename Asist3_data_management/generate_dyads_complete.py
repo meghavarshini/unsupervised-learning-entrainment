@@ -1,5 +1,7 @@
 '''
-Use this script to generate dyads from the MultiCAT data.
+Use this script to generate dyads from the MultiCAT data, 
+irrespective of addresseee. It assumes that two adjacent turns 
+by different speakers form a dyad, and collects 3 dyads from each conversation.
 NOTE: This file must be run from the Asist3_data_management folder
 for the purposes of this script, we assume the following:
 1. For every trial, there exists one transcript file with the following columns:
@@ -23,9 +25,13 @@ import copy
 
 ############ Fix for issues with paths #######
 # Get the absolute path of the parent directory
+current_directory = os.getcwd()
 parent_dir = os.path.abspath(os.path.join(os.getcwd(), '..'))
 # Add the parent directory to the system path
 sys.path.append(parent_dir)
+
+#set path for opensmile config file
+OPENSMILE_CONFIG_BASELINE = parent_dir + "/scripts_and_config/emobase2010_haoqi_revised.conf"
 
 # feature extraction function
 from feats.feat_extract_nopre import final_feat_calculate_multicat
@@ -168,14 +174,12 @@ def run_opensmile_over_utterance(row, base_file):
 
 	# extract this short file to run feature extraction on
 	sp.run(["ffmpeg", "-y", "-ss", str(start), "-i", f"{str(filepath)}/{audio_in_name}",
-			"-t", str(length), "-c", "copy", audio_out])
+			"-t", str(length), "-c", "copy", "-y", audio_out])
 
 	feats_out = filepath / f"{speaker}_{start}-{end}.csv"
 	feats_out = str(feats_out)
 
 	# run opensmile over a particular utterance
-	# feats to extract
-	OPENSMILE_CONFIG_BASELINE = parent_dir + "/feats/emobase2010_haoqi_revised.conf"
 
 	# $(OUTPUT_DIR)/%_features_raw_baseline.csv: $(OUTPUT_DIR)/%.wav
 	# 	SMILExtract -C $(OPENSMILE_CONFIG_BASELINE) -I $< -O $@
@@ -312,26 +316,34 @@ def id_whether_to_extract(row, following_row, speaker_pair):
 
 
 if __name__ == "__main__":
-
-	# get location to dir with files of interest
-
-	# Get the current working directory
-	current_directory = os.getcwd()
+	parser = make_argument_parser()
+	args = parser.parse_args()
 	
+	# get location to dir with files of interest
+	
+	# get input directory
+	input_dir = Path(args.input_directory).resolve()
+
 	# Create the full path for the "output" folder
-	output_dir = os.path.join(current_directory, "multicat_feats")
-	input_dir = Path(args.input_dir)
+	output_dir = Path.cwd().resolve() / "multicat_complete_feats"
+	
 	print(f"input: {input_dir}\n output: {output_dir}")
+
+	#Check if output directory exists, if not, create it:   
+	if not output_dir.exists():
+		output_dir.mkdir(parents=True, exist_ok=True)
+		print(f"Could not find specified output directory {output_dir}. Creating directory...")
+	else:
+		print(f"Specified output directory {output_dir} already exists. Continuing...")
 
 	all_files_of_interest = {}
 
 	for datafile in input_dir.iterdir():
 		if datafile.suffix == ".csv":
 			## read in the file as a pd df
-			this_file = pd.read_csv(datafile, sep="\t")  # \t for tab delimited text files
+			this_file = pd.read_csv(datafile, sep=",")  # \t for tab delimited text files
 			# print(datafile)
 			all_files_of_interest[datafile] = this_file
 
 	## go through all files and generate output
 	loop_through_data(all_files_of_interest, output_dir)
-

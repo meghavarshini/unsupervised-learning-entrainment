@@ -1,5 +1,7 @@
 '''
 Use this script to generate dyads from the MultiCAT data.
+It subsets dyads if the addressee is not 'all', and splits them up
+by speaker and addressee.
 NOTE: This file must be run from the Asist3_data_management folder
 for the purposes of this script, we assume the following:
 1. For every trial, there exists one transcript file with the following 
@@ -21,25 +23,25 @@ import sys
 import os
 import copy
 import argparse
-## ToDo: add python wrapper for opensmile
-## import opensmile
 
 def make_argument_parser():
 	parser = argparse.ArgumentParser(
 		description="Processing filepaths and values required for setup")
-	parser.add_argument("--input_directory",
-							default="./entrainment_annotations",
-							help="directory where the input files are stored")
-	parser.add_argument("--output_directory",
-							default="./output_dyads",
-							help="directory for storing output files")
+	parser.add_argument("input_directory",
+						default="./files_for_dyad_generation",
+						help="directory where the input files are stored")
 	return parser
 
 ############ Fix for issues with paths #######
 ## Get the absolute path of the parent directory
+current_directory = os.getcwd()
 parent_dir = os.path.abspath(os.path.join(os.getcwd(), '..'))
 ## Add the parent directory to the system path
 sys.path.append(parent_dir)
+
+#set path for opensmile config file
+OPENSMILE_CONFIG_BASELINE = parent_dir + "/scripts_and_config/emobase2010_haoqi_revised.conf"
+
 
 ## feature extraction function
 from feats.feat_extract_nopre import final_feat_calculate_multicat
@@ -51,6 +53,7 @@ def loop_through_data(combined_transcript_dict, save_dir):
 	'''
 	## go to an individual file in the data
 	for fpath, combined_transcript in combined_transcript_dict.items():
+		print("filepath in loop: ", fpath)
 		## print("file contents: ", combined_file)
 		## speakers and addressees in CSV MUST be named their unique ID
 		all_speakers = combined_transcript.speaker.unique().tolist()
@@ -169,6 +172,7 @@ def run_opensmile_over_utterance(row, base_file):
 	## combined files are of format: Trial-T000604_Team-TM000202_combined.txt
 	filepath = base_file.parent
 	fname = base_file.stem
+
 	## re.sub(pattern, repl, string, count=0, flags=0)¶
 	if "NA" in fname:
 		audio_in_name = re.sub(r"NA", speaker, fname) + ".wav"
@@ -182,14 +186,12 @@ def run_opensmile_over_utterance(row, base_file):
 
 	## extract this short file to run feature extraction on
 	sp.run(["ffmpeg", "-ss", str(start), "-i", f"{str(filepath)}/{audio_in_name}",
-			"-t", str(length), "-c", "copy", audio_out])
+			"-t", str(length), "-c", "copy","-y", audio_out])
 
 	feats_out = filepath / f"{speaker}_{start}-{end}.csv"
 	feats_out = str(feats_out)
 
 	## run opensmile over a particular utterance
-	## feats to extract
-	OPENSMILE_CONFIG_BASELINE = parent_dir + "/feats/emobase2010_haoqi_revised.conf"
 
 	## extract the features with opensmile
 	sp.run(["SMILExtract", "-C", OPENSMILE_CONFIG_BASELINE,
@@ -326,29 +328,28 @@ if __name__ == "__main__":
 	args = parser.parse_args()
 
 	## get location to dir with files of interest
-	## Get the current working directory
-	current_directory = os.getcwd()
-	input_dir = Path(args.input_directory)
+
+	input_dir = Path(args.input_directory).resolve()
 	
 	## Create the full path for the "output" folder
-	output_dir = Path(args.output_directory)
+	output_dir = Path.cwd().resolve() / "multicat_addressee_feats"
 
 	print(f"input: {input_dir}\n output: {output_dir}")
-	    #Check if output directory exists, if not, create it:   
+	#Check if output directory exists, if not, create it:   
 	if not output_dir.exists():
 		output_dir.mkdir(parents=True, exist_ok=True)
 		print(f"Could not find specified output directory {output_dir}. Creating directory...")
 	else:
 		print(f"Specified output directory {output_dir} already exists. Continuing...")
-	exit()
+	
+	#Create a dictionary of file names and acoustic features dataframes
 	all_files_of_interest = {}
 
 	for datafile in input_dir.iterdir():
 		if datafile.suffix == ".csv":
 			## read in the file as a pd df
-			this_file = pd.read_csv(datafile, sep="\t")  # \t for tab delimited text files
-			# print(datafile)
+			this_file = pd.read_csv(datafile, sep=",")  # \t for tab delimited text files
 			all_files_of_interest[datafile] = this_file
-
+	
 	## go through all files and generate output
 	loop_through_data(all_files_of_interest, output_dir)

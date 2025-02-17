@@ -21,26 +21,23 @@ Dependencies and Requirements
 5. [sph2pipe](https://github.com/burrmill/sph2pipe)
 6. [Kaldi](https://kaldi-asr.org)
 4. LDC corpus and metadata files <br>(for ToMCAT users, a small sample of the corpus is available at `kraken.sista.arizona.edu:/media/mule/projects/ldc`)
-<br> note: move all files in the
 
+Note: while working with OpenSMILE, remember to add the path to $PATH: `export PATH=$PATH:<path to opensmile dir>/opensmile/build/progsrc/smilextract`
 ------------------------
 Summary of directories and files
 --------------------------------
 
 - `feats/` :- Directory containing scripts for acoustic feature extraction and functional computation, basic code for running training and testing
-- Asist3_data_management` :- Directory for working with and testing on all files for multi-party data
-- `models/` :- Directory containing scripts for different deep unsupervised learning models for entrainment
-    - `models/NED` :- Directory containing code for the NED model
-    -  `models/triplet` :- Directory containing code for the triplet model. DEPRECIATED.
-- `scripts/`, `praat_scripts` :- Directory containing scripts for setup purposes
-- `entrainment`: location for storing python scripts run commonly across models
+- `Asist3_data_management` :- Directory for working with and testing on all files for multi-party data
+- `NED` :- Directory containing code for the NED model
+- `scripts_and_config/`, `praat_scripts` :- Directory containing scripts for setup purposes
+- `entrainment-config`: location for storing python scripts run commonly across models
 
 ------------------------
 Files that need to be edited by user to add filepaths:
 ------------------------
 
-- `./Makefile` :- for running tensorboard/
-- `./MakefileOld` :- quick run code
+- `./Makefile` :- quick run code
 
 ------------------------
 Start Point:
@@ -81,6 +78,6 @@ Permissions:
 ToDo- edit this to reflect the new files
 Make sure the following directories/files have permissions:
 1. chmod 777 feats
-2. chmod 777 model/NED
-3. chmod 777 feats/emobase2010_haoqi_revised.conf
+2. chmod 777 NED
+3. chmod 777 scripts_and_config/emobase2010_haoqi_revised.conf
 4. chmod 777 models/NED/emobase2010_revised.conf

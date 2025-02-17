@@ -12,7 +12,7 @@ def make_argument_parser():
 						default="./entrainment_annotations",
 						help="directory for providing input files")
 	parser.add_argument("--output_directory",
-						default="./output_modified-transcripts",
+						default="./files_for_dyad_generation",
 						help="directory for storing output dyad files")
 	return parser
 

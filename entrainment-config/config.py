@@ -49,9 +49,6 @@ feats_dir = fisher_corpus+"/feats"
 data_dir = fisher_corpus+"/feats_nonorm"
 raw_feat_dir = fisher_corpus+"/raw_feats"
 feats_nonorm_nopre = fisher_corpus+"/feats_nonorm_nopre"
-data_dir_triplets_all = fisher_corpus+"/feats_triplets_all"
-data_dir_triplets = fisher_corpus+"/feats_triplets"
-
 
 ###############################
 # MODELLING

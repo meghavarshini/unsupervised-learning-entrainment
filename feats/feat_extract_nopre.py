@@ -15,29 +15,18 @@ from subprocess import run, check_output
 def make_argument_parser():
 	parser = argparse.ArgumentParser(
 		description="Processing filepaths and values required for setup"
-	)
+									)
 	parser.add_argument("raw_features_csv", help="Input raw features CSV")
 	parser.add_argument("transcript", help="Input transcript")
 	parser.add_argument("output_csv", help="output_normed_features_csv")
-	parser.add_argument(
-		"--norm",
-		type=bool,
-		required=False,
-		default=True,
-		help="do session level normalization or not",
-	)
-	parser.add_argument(
-		"--window_size", required=False, type=float, default=10
-	)
+	parser.add_argument("--norm", type=bool, required=False, default=True,
+						help="do session level normalization or not",
+						)
+	parser.add_argument("--window_size", required=False, type=float, default=10)
 	parser.add_argument("--shift_size", required=False, type=float, default=1)
-	parser.add_argument("--extract", required=False, type=str, default=True)
-	parser.add_argument(
-		"--writing",
-		required=False,
-		type=str,
-		default=True,
-		help="whether raw features need to be stored on the system or not.",
-	)
+	parser.add_argument("--writing", required=False, type=str, default=True,
+						help="whether raw features need to be saved or not.",
+						)
 	parser.add_argument("--IPU_gap", required=False, type=float, default=50)
 	return parser
 
@@ -120,7 +109,6 @@ def create_normed_features_csv(
 	window_size,
 	shift_size,
 	norm,
-	extract,
 	IPU_gap,
 	writing,
 ):
@@ -132,7 +120,7 @@ def create_normed_features_csv(
 
 	spk_list = []
 
-	with open(args.transcript) as f:
+	with open(transcript) as f:
 		trans = f.readlines()
 
 	for line in trans:
@@ -150,7 +138,7 @@ def create_normed_features_csv(
 
 	# read csv feature file
 	csv_feat = pd.read_csv(
-		args.raw_features_csv, dtype=np.float32, on_bad_lines="warn"
+		raw_features_csv, dtype=np.float32, on_bad_lines="warn"
 	)
 	csv_feat = csv_feat.values.copy()
 	print("feature array has the following shape: ", np.shape(csv_feat))
@@ -308,10 +296,10 @@ def create_normed_features_csv(
 	# write to csv file
 
 	if writing == True:
-		print(f"Writing IPU-level features to file {args.output_csv}")
-		feat_csv_file_name = args.output_csv
+		print(f"Writing IPU-level features to file {output_csv}")
+		feat_csv_file_name = output_csv
 		with open(
-			args.output_csv, "w"
+			output_csv, "w"
 		) as fcsv:  # changed 'wb' to 'w' to avoid TypeError
 			writer = csv.writer(fcsv)
 			writer.writerows(whole_func_feat)
@@ -329,7 +317,6 @@ if __name__ == "__main__":
 		args.window_size,
 		args.shift_size,
 		args.norm,
-		args.extract,
 		args.IPU_gap,
 		args.writing,
 	)

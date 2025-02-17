@@ -1,4 +1,5 @@
 import argparse
+from pathlib import Path
 import numpy as np
 import pandas as pd
 import math
@@ -9,8 +10,11 @@ import random
 def make_argument_parser():
 	parser = argparse.ArgumentParser(
 		description="Processing filepaths and values required for setup")
+	parser.add_argument("--input_directory",
+						default="./multicat_addressee_feats",
+						help="directory for opensmile feat files (csv)")
 	parser.add_argument("--h5_directory",
-						default="./transcripts/files_for_pipeline/output",
+						default="./h5_output",
 						help="directory for storing h5 files")
 	return parser
 
@@ -74,8 +78,19 @@ if __name__ == "__main__":
 	parser = make_argument_parser()
 	args = parser.parse_args()
 
+	input_directory = Path(args.input_directory).resolve()
+	h5_output_directory = Path(args.h5_directory).resolve()
+	print(f"input: {input_directory}\n output: {h5_output_directory}")
+	
+	#Check if output directory exists, if not, create it:   
+	if not h5_output_directory.exists():
+		h5_output_directory.mkdir(parents=True, exist_ok=True)
+		print(f"Could not find specified output directory {h5_output_directory}. Creating directory...")
+	else:
+		print(f"Specified output directory {h5_output_directory} already exists. Continuing...")
+
 	# Create h5 file
-	sessTest = shuffle_files(args.h5_directory)
+	sessTest = shuffle_files(args.input_directory)
 	create_test(sessTest=sessTest, h5_dir=args.h5_directory)
 	test_h5 = args.h5_directory + '/test_ASIST.h5'
 

@@ -1,15 +1,16 @@
-import argparse
 import os
-from feats.test import load_h5
-import numpy as np
-import random
-
-
 ############ Fix for issues with paths #######
+## Get the current working directory
+current_directory = os.getcwd()
 # Get the absolute path of the parent directory
 parent_dir = os.path.abspath(os.path.join(os.getcwd(), '..'))
 # Add the parent directory to the system path
 sys.path.append(parent_dir)
+############ 
+
+import argparse
+import numpy as np
+import random
 from feats.ecdc import *
 
 def make_argument_parser():
@@ -83,8 +84,6 @@ def model_testing(model_name, X_test, cuda):
 
 		recon_batch = model(x_data)
 
-		# Looks like x, y means different speakers?
-		#ToDo: check if this is the case
 		z_x = model.embedding(x_data)
 		z_y = model.embedding(y_data)
 		# z_x = x_data
@@ -125,6 +124,6 @@ if __name__ == "__main__":
 	parser = make_argument_parser()
 	args = parser.parse_args()
 
-	test_h5 = args.h5_directory + '/test_Fisher_nonorm.h5'
+	# test_h5 = args.h5_directory + '/test_Fisher_nonorm.h5'
 	test_h5 = args.h5_directory + '/test_ASIST.h5'
 	test_input = load_h5(test_h5)
