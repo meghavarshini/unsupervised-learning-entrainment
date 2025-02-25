@@ -6,7 +6,7 @@ original code by Md Nasir
 Modified for Python3 by Megh Krishnaswamy, Adarsh Pyrelal, and John Culnan.
 
 
-#### Updated on January 17, 2024 (Work in Progress)
+#### Updated on February 25, 2025 (Work in Progress)
 
 #### Scripts are written in Python 3.11
 
@@ -53,6 +53,9 @@ If you wish to extract data, follow the steps in the section [Feature Extraction
 If you have a trained model, skip to section 'Model training'   
 
 ## Feature Extraction
+
+#### Fisher Data
+
 2. To run the code on your system, download and set-up the LDC data from the kraken server, and access/create `Fisher_meta.csv`.
     -   `scp -r [username]@kraken.sista.arizona.edu:/media/mule/projects/ldc [local directory]`
     -   Note: You need access.
@@ -63,21 +66,28 @@ If you have a trained model, skip to section 'Model training'
     2. Note: Do not edit the script, instead, change the optional input parameters while running the script.
 6. Run `python feats/create_h5data.py --features_dir [extracted feature directory]`. This will create h5 files with the training, dev and test sets.
 
+#### MultiCAT Data
+
+The transcripts are in `.tsv` format. We will need to remove a colon from the addressee label, sort them in ascending order, and extract and consolidate turns from individual speaker transcripts to create a joint transcript.
+
+1. From the `Asist3_data_management` directory, run `/asist3_transcript_manage.py`. This script assumes there is a directory   `entrainment_annotations` containing the individual speaker transcripts in `.tsv` format. The output is one `csv` file per trial, saved in `Asist3_data_management/files_for_dyad_generation`.
+2. Next, we run openSMILE to extract acoustic features. This step assumes the individual speaker audio files are saved in `Asist3_data_management/files_for_dyad_generation`, along with the output from the previous step. It will save one `.csv` file per existing dyad per trial to `Asist3_data_management/multicat_addressee_feats`
+    1. Run `Asist3_data_management/generate_dyads_for_addressees.py` to extract acoustic features for turns with addressee labels, split into 3 dyads per trial. 
+    2. Run `Asist3_data_management/generate_dyads_complete.py` to extract acoustic features for all turns irrespective of addressee labels.
+3. Finally generate tensors as an HDF5 file with `Asist3_data_management/create_h5_asist3.py`. Now you can test the data.
+
 ## Model training
 7. Run `python train.py`, and provide the right parameters for file and directory paths, and model hyperparameters. You will need the h5 data files for training and validation.
 8. The actual model is created using `ecdc.py`: you can make changes to the architecture there.
 9. The model will be file with a `.pt` file extension
 
 ## Model Testing
-10. Run `python test.py` 30 times, and write the std output to a file. This will need the trained model created in the previous step, as well as `test.h5`. This creates the real and fake datasets, and outputs a score for each run.
-    11. TODO: Create a bash script to do this 
+10. Run `scripts_and_config/test_session.sh` to run `Asist3_data_management/asist3_test.py` 30 times, and write the std output to a file. This will need the trained model created in the previous step, as well as the h5 file.
 
 ------------------------
 Permissions:
 ------------------------
-ToDo- edit this to reflect the new files
 Make sure the following directories/files have permissions:
-1. chmod 777 feats
-2. chmod 777 NED
-3. chmod 777 scripts_and_config/emobase2010_haoqi_revised.conf
-4. chmod 777 models/NED/emobase2010_revised.conf
+1. `chmod 777 fisher_scripts`
+2. `chmod 777 NED`
+3. `chmod 777 scripts_and_config/emobase2010_haoqi_revised.conf`
