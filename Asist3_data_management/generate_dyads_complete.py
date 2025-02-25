@@ -34,7 +34,7 @@ sys.path.append(parent_dir)
 OPENSMILE_CONFIG_BASELINE = parent_dir + "/scripts_and_config/emobase2010_haoqi_revised.conf"
 
 # feature extraction function
-from feats.feat_extract_nopre import final_feat_calculate_multicat
+from fisher_scripts.feat_extract_nopre import final_feat_calculate_multicat
 
 def make_argument_parser():
 	parser = argparse.ArgumentParser(

@@ -27,7 +27,7 @@ import argparse
 def make_argument_parser():
 	parser = argparse.ArgumentParser(
 		description="Processing filepaths and values required for setup")
-	parser.add_argument("input_directory",
+	parser.add_argument("--input_directory",
 						default="./files_for_dyad_generation",
 						help="directory where the input files are stored")
 	return parser
@@ -44,7 +44,7 @@ OPENSMILE_CONFIG_BASELINE = parent_dir + "/scripts_and_config/emobase2010_haoqi_
 
 
 ## feature extraction function
-from feats.feat_extract_nopre import final_feat_calculate_multicat
+from fisher_scripts.feat_extract_nopre import final_feat_calculate_multicat
 
 def loop_through_data(combined_transcript_dict, save_dir):
 	'''

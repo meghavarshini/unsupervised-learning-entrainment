@@ -1,34 +1,30 @@
-import os
-import sys
-from pathlib import Path
+from ecdc import *
+import argparse
+import pdb
 import numpy as np
 import random
-import argparse
-import h5py
-import torch
-import pdb
+import os
+
+os.getcwd()
+
+SEED=448
 
 def make_argument_parser():
-	parser = argparse.ArgumentParser(
-		description="Processing filepaths and values required for setup")
-	parser.add_argument("--h5_file",
-						default="./multicat_h5_output/test_ASIST.h5",
-						help="directory for storing h5 files")
-	parser.add_argument("--model",
-						default="../fisher_scripts/models/trained_VAE_nonorm_nopre_l1.pt",
-						help="directory where the Fisher model is")
+	parser = argparse.ArgumentParser(description='entrainment testing')
+	parser.add_argument('--no-cuda', action='store_true',
+						default=False,
+						help='enables CUDA training')
+	parser.add_argument('--seed', type=int,
+						default=1, metavar='S',
+						help='random seed (default: 1)')
+	parser.add_argument('--h5_directory', default= './test_Fisher_nonorm.h5',
+						help='location of h5 file with the test data')
+	parser.add_argument('--model_name',
+						default= "./trained_models/trained_VAE_nonorm_nopre_l1.pt",
+						help='name associated with the trained model')
+	# args = parser.parse_args()
 	return parser
 
-############ Fix for issues with paths #######
-## Get the current working directory
-current_directory = os.getcwd()
-# Get the absolute path of the parent directory
-parent_dir = os.path.abspath(os.path.join(os.getcwd(), '..'))
-# Add the parent directory to the system path
-sys.path.append(parent_dir)
-############ 
-print(sys.path)
-from ecdc import *
 
 
 def load_h5(file):
@@ -38,7 +34,9 @@ def load_h5(file):
 	print("loading complete!")
 	return test
 
-def model_testing(model_name, X_test, cuda):
+def model_testing(model_name, X_test,cuda):
+	#instantiate a VAE model, set it to evaluation,
+	# and make sure weights are not updated during the process
 	model = VAE().double()
 	model = torch.load(model_name)
 	model.eval()
@@ -57,10 +55,21 @@ def model_testing(model_name, X_test, cuda):
 	fake_test_loss = 0
 	Loss=[]
 	Fake_loss = []
+	
 	# load h5 test file- iterating over conversations:
+	#ToDo- check if iterated item is the same size both here and in train.py
 	for idx, data in enumerate(X_test):
-		print("working on file: ", idx)
+		print("working on instance: ", idx)
+
+		# list split in half, saved as 2 variables, in opposite order
+		# Check: is this splitting the conversation in half? Or is this per utterance?
+		# When extracting embedding- typical way is to take the representation from the last layer of the network
+			# seems unlikely
+
+
 		print("length of test set list: ", len(data))
+		# Check the data type of the following, dimensions, size
+		# What is 228?- One possibility is that it's the number of hidden layers (output representation)
 
 		x_data = data[:228]
 		y_data = data[228:-1]
@@ -68,7 +77,6 @@ def model_testing(model_name, X_test, cuda):
 		# speaker- last item in list. Create a variable where the utterances
 		# with the same speaker as the first utterance
 		idx_same_spk =list(np.where(X_test[:,-1]==data[-1]))[0]
-		print(f"idx_same_spk: {idx_same_spk}, idx: {idx}")
 
 		# choose an item from the index same speaker which is not the same speaker
 		ll = random.choice(list(set(idx_same_spk) - set([idx])))
@@ -101,9 +109,7 @@ def model_testing(model_name, X_test, cuda):
 		loss_real = lp_distance(z_x, z_y, p).data
 		# loss_real = loss_function(z_x, z_y, mu, logvar)
 
-		#randomly selected fake item ? FIND OUT how the data is split
-		# Is an item an utterance? A whole conversation?-
-		# Take half the conversation, compare it to a real second half, and a fake second half?
+		# Take half the conversation, compare it to a real second half, and a fake second half.
 		z_y_fake = model.embedding(y_fake_data)
 		# z_y_fake = y_fake_data
 
@@ -130,24 +136,18 @@ def model_testing(model_name, X_test, cuda):
 	print(float(np.sum(Loss < Fake_loss))/Loss.shape[0])
 	return None
 
+
 if __name__ == "__main__":
+	os.getcwd()
 	parser = make_argument_parser()
 	args = parser.parse_args()
+	args.cuda = not args.no_cuda and torch.cuda.is_available()
 
-	# get input directories:
-	h5_file = args.h5_file
-	model = args.model
+	torch.manual_seed(args.seed)
 
-	#Check if input h5 and model directories exists, if not, stop:   
-	if not Path(args.h5_file).resolve().exists() or not Path(args.model).resolve().exists():
-		print(f"Could not find specified h5 directory {h5_file} or model {model}. Stop")
-		sys.exit(1)
-	elif Path(args.h5_file).resolve().exists() and Path(args.model).resolve().exists():
-		print("All input files found. Processing...")
+	if not args.no_cuda and torch.cuda.is_available():
+		torch.cuda.manual_seed(args.seed)
 
-	#optional: for testing Fisher test set
-	# test_h5 = args.h5_directory + '/test_Fisher_nonorm.h5'
-		
-	test_h5 = args.h5_file
-	test_input = load_h5(test_h5)
-	model_testing(model_name = model, X_test = test_input, cuda = 1)
+	X_test1 = load_h5(args.h5_directory)
+	test_run = model_testing(args.model_name, X_test1, args.cuda)
+
