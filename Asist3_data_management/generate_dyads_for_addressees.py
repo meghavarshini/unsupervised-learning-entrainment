@@ -95,7 +95,6 @@ def loop_through_data(combined_transcript_dict, save_dir):
 					#ToDo: add else condition
 					if row.speaker != next_row.speaker:
 						## print(f"row {i}: {row.speaker}; row {i + 1}: {next_row.speaker}")
-						## ToDo: change this
 						extract_me = id_whether_to_extract(row, next_row, speaker_pair)
 						if extract_me:
 							print(f"extract_me for row {i} is True!")
@@ -315,8 +314,10 @@ def id_whether_to_extract(row, following_row, speaker_pair):
 		else:
 			spk2_idx = 1
 		listener = speaker_pair[spk2_idx]
+		print(f"speaker: {speaker}, intended listener: {listener}, addressee: {row.addressee}")
 
-		## check if conditions are met
+		## check if conditions are met: a given utterance and the successive turn 
+		## have the same interlocutors: 
 		if row.addressee == listener and following_row.speaker == listener and following_row.addressee == speaker:
 			return True
 
