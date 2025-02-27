@@ -85,10 +85,10 @@ def loop_through_data(combined_transcript_dict, save_dir):
 					print("pair of utterances have the same speaker, skipping")
 				elif row.speaker != next_row.speaker:
 					print(f"row {i}: {row.speaker}; row {i + 1}: {next_row.speaker}")
-					## ToDo: change this
 					print(f"pair of utterances have different speakers, processing...")
 					counter+=1
-					## extract the relevant components of this row and the following row:
+					## extract the relevant components and a deep copy of this row and the following row:
+					
 					## extract features for this row
 					this_row_feats, this_row_copy = run_opensmile_over_utterance(row, fpath)
 					## extract features for following row
