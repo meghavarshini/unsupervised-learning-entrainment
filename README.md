@@ -27,10 +27,10 @@ Note: while working with OpenSMILE, remember to add the path to $PATH: `export P
 Summary of directories and files
 --------------------------------
 
-- `feats/` :- Directory containing scripts for acoustic feature extraction and functional computation, basic code for running training and testing
-- `Asist3_data_management` :- Directory for working with and testing on all files for multi-party data
+- `Fisher_Model-Training` :- Directory containing scripts for acoustic feature extraction and functional computation, basic code for running training and testing
+- `multicat_data_management` :- Directory for working with and testing on all files for multi-party data
 - `NED` :- Directory containing code for the NED model
-- `scripts_and_config/`, `praat_scripts` :- Directory containing scripts for setup purposes
+- `scripts_and_config`, `praat_scripts` :- Directory containing scripts for setup purposes
 - `entrainment-config`: location for storing python scripts run commonly across models
 
 ------------------------
@@ -70,11 +70,11 @@ If you have a trained model, skip to section 'Model training'
 
 The transcripts are in `.tsv` format. We will need to remove a colon from the addressee label, sort them in ascending order, and extract and consolidate turns from individual speaker transcripts to create a joint transcript.
 
-1. From the `Asist3_data_management` directory, run `/asist3_transcript_manage.py`. This script assumes there is a directory   `entrainment_annotations` containing the individual speaker transcripts in `.tsv` format. The output is one `csv` file per trial, saved in `Asist3_data_management/files_for_dyad_generation`.
-2. Next, we run openSMILE to extract acoustic features. This step assumes the individual speaker audio files are saved in `Asist3_data_management/files_for_dyad_generation`, along with the output from the previous step. It will save one `.csv` file per existing dyad per trial to `Asist3_data_management/multicat_addressee_feats`
-    1. Run `Asist3_data_management/generate_dyads_for_addressees.py` to extract acoustic features for turns with addressee labels, split into 3 dyads per trial. 
-    2. Run `Asist3_data_management/generate_dyads_complete.py` to extract acoustic features for all turns irrespective of addressee labels.
-3. Finally generate tensors as an HDF5 file with `Asist3_data_management/create_h5_asist3.py`. Now you can test the data.
+1. From the `multicat_data_management` directory, run `/multicat_transcript_manage.py`. This script assumes there is a directory   `entrainment_annotations` containing the individual speaker transcripts in `.tsv` format. The output is one `csv` file per trial, saved in `multicat_data_management/files_for_dyad_generation`.
+2. Next, we run openSMILE to extract acoustic features. This step assumes the individual speaker audio files are saved in `multicat_data_management/files_for_dyad_generation`, along with the output from the previous step. It will save one `.csv` file per existing dyad per trial to `multicat_data_management/multicat_addressee_feats`
+    1. Run `multicat_data_management/generate_dyads_for_addressees.py` to extract acoustic features for turns with addressee labels, split into 3 dyads per trial. 
+    2. Run `multicat_data_management/generate_dyads_complete.py` to extract acoustic features for all turns irrespective of addressee labels.
+3. Finally generate tensors as an HDF5 file with `multicat_data_management/create_h5_multicat.py`. Now you can test the data.
 
 ## Model training
 7. Run `python train.py`, and provide the right parameters for file and directory paths, and model hyperparameters. You will need the h5 data files for training and validation.
@@ -82,7 +82,7 @@ The transcripts are in `.tsv` format. We will need to remove a colon from the ad
 9. The model will be file with a `.pt` file extension
 
 ## Model Testing
-10. Run `scripts_and_config/test_session.sh` to run `Asist3_data_management/asist3_test.py` 30 times, and write the std output to a file. This will need the trained model created in the previous step, as well as the h5 file.
+10. Run `scripts_and_config/test_session.sh` to run `multicat_data_management/multicat_test.py` 30 times, and write the std output to a file. This will need the trained model created in the previous step, as well as the h5 file `test.h5`.
 
 ------------------------
 Permissions:
