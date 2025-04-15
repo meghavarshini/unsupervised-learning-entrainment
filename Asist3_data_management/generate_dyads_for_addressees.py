@@ -44,7 +44,7 @@ OPENSMILE_CONFIG_BASELINE = parent_dir + "/scripts_and_config/emobase2010_haoqi_
 
 
 ## feature extraction function
-from fisher_scripts.feat_extract_nopre import final_feat_calculate_multicat
+from fisher_model_training.feat_extract_nopre import final_feat_calculate_multicat
 
 def loop_through_data(combined_transcript_dict, save_dir):
 	'''

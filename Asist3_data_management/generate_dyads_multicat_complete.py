@@ -44,6 +44,10 @@ def make_argument_parser():
 						help="directory for calling transcripts")
 	return parser
 
+def time_to_seconds(time_str):
+    minutes, seconds = time_str.split(':')
+    return int(minutes) * 60 + float(seconds)
+
 def loop_through_data(combined_transcript_dict, save_dir):
 	'''
 	This function loops over every file added to a dictionary of unique files
@@ -53,11 +57,15 @@ def loop_through_data(combined_transcript_dict, save_dir):
 	for fpath, combined_transcript in combined_transcript_dict.items():
 		# print("file contents: ", combined_file)
 		# speakers and addressees in CSV MUST be named their unique ID
-		all_speakers = combined_transcript.speaker.unique().tolist()
+		all_speakers = combined_transcript.participant.unique().tolist()
 		print("Speakers: ", all_speakers)
 		
+		# convert timestamps to seconds:
+		combined_transcript["start_timestamp"] = combined_transcript["start_timestamp"].apply(time_to_seconds)
+		combined_transcript["end_timestamp"] = combined_transcript["end_timestamp"].apply(time_to_seconds)
+
 		# arrange all turns in order
-		combined_transcript = combined_transcript.sort_values(by=["start"], ascending=True)
+		combined_transcript = combined_transcript.sort_values(by=["start_timestamp"], ascending=True)
 		print("no. of rows: ",len(combined_transcript))
 
 		## holder for all acoustic features
@@ -80,12 +88,12 @@ def loop_through_data(combined_transcript_dict, save_dir):
 			if i < len(combined_transcript) - 1:
 				next_row = combined_transcript.iloc[i+1]
 				## ToDo: add else condition?
-				if row.speaker == next_row.speaker:
-					print(f"row {i}: {row.speaker}; row {i + 1}: {next_row.speaker}")
+				if row.participant == next_row.participant:
+					print(f"row {i}: {row.participant}; row {i + 1}: {next_row.participant}")
 					print("pair of utterances have the same speaker, skipping")
-				elif row.speaker != next_row.speaker:
-					print(f"row {i}: {row.speaker}; row {i + 1}: {next_row.speaker}")
-					print(f"pair of utterances have different speakers, processing...")
+				elif row.participant != next_row.participant:
+					print(f"row {i}: {row.participant}; row {i + 1}: {next_row.participant}")
+					print(f"pair of utterances have different participant, processing...")
 					counter+=1
 					## extract the relevant components and a deep copy of this row and the following row:
 					
@@ -161,9 +169,9 @@ def run_opensmile_over_utterance(row, base_file):
 	'''
 
 	## get start and end times
-	start = row.start
-	end = row.end
-	speaker = row.speaker
+	start = row.start_timestamp
+	end = row.end_timestamp
+	speaker = row.participant
 
 	## get the name of the audio
 	## combined files are of format: Trial-T000604_Team-TM000202_combined.txt
