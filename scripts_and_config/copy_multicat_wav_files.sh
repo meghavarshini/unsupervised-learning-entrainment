@@ -21,13 +21,13 @@ target_dir="../Asist3_data_management/multicat_complete_trials_data/"
 
 # Check if the target directory exists
 if [ ! -d "$target_dir" ]; then
-  mkdir '$target_dir'
+  mkdir $target_dir
 fi
 echo "directories exist..."
 
 # Loop through patterns and copy matching files
 for p in "${multicat_files[@]}"; do
-#    find "$source_dir" -type f -name "*$p*-E*.wav" -exec echo "Found file: {}" \;
+  # find "$source_dir" -type f -name "*$p*-E*.wav" -exec echo "Found file: {}" \;
   find "$source_dir" -type f -name "*$p*-E*.wav" -exec bash -c '
     file="$0"
     cp "$file" '"$target_dir"' && echo "File \"$file\" for pattern copied."
