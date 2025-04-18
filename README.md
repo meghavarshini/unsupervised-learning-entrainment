@@ -68,6 +68,7 @@ If you have a trained model, skip to section 'Model training'
 
 #### MultiCAT Data
 
+##### Addressee Test (8 trials)
 The transcripts are in `.tsv` format. We will need to remove a colon from the addressee label, sort them in ascending order, and extract and consolidate turns from individual speaker transcripts to create a joint transcript.
 
 1. From the `multicat_data_management` directory, run `/multicat_transcript_manage.py`. This script assumes there is a directory   `entrainment_annotations` containing the individual speaker transcripts in `.tsv` format. The output is one `csv` file per trial, saved in `multicat_data_management/files_for_dyad_generation`.
@@ -75,6 +76,16 @@ The transcripts are in `.tsv` format. We will need to remove a colon from the ad
     1. Run `multicat_data_management/generate_dyads_for_addressees.py` to extract acoustic features for turns with addressee labels, split into 3 dyads per trial. 
     2. Run `multicat_data_management/generate_dyads_complete.py` to extract acoustic features for all turns irrespective of addressee labels.
 3. Finally generate tensors as an HDF5 file with `multicat_data_management/create_h5_multicat.py`. Now you can test the data.
+
+##### MultiCAT Complete
+For this, we use the [Multicat Annotation dataset](https://multicat.lab.pyarelal.xyz). 
+
+1. Download the CSV file with the conslidated transcripts.
+2. Use `Asist3_data_management/multicat_read_data.ipynb` to extract CSV files for each trial and save them separately. This is needed for feature extraction.
+3. Edit the individual CSV file names so they have the same suffixes as the sound files, with `Members-NA`. (I do not have a good solution to do this automatically atm)
+4. Save the individual transcripts and sounds files to one folder.
+5. Run `Asist3_data_management/generate_dyads_multicat_complete.py` with a directory containing the `.wav` and `.csv` files to extract acoustic features for all turns.
+6. Finally generate tensors as an HDF5 file with `multicat_data_management/create_h5_multicat.py`. Now you can test the data.
 
 ## Model training
 7. Run `python train.py`, and provide the right parameters for file and directory paths, and model hyperparameters. You will need the h5 data files for training and validation.
