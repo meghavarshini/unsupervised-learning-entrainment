@@ -1,0 +1,55 @@
+import sys
+import os
+import pandas as pd
+import argparse
+
+def make_argument_parser():
+	parser = argparse.ArgumentParser(
+		        description="Processing filepaths and values required for setup"
+									)
+	parser.add_argument("--input_dir", help="input directory")
+	parser.add_argument("--output_csv", help="output directory")
+	return parser
+
+def get_combined_text(file_path: str, max_lines: int):
+    lines = []
+    with open(file_path, 'r', encoding='utf-8') as f:        
+        for line in f:            
+            line = line.strip()
+            if len(line.split(":")) > 1:
+                lines.append(line.split(":")[1])
+            if len(lines) == max_lines:
+                break
+    return " ".join(lines)
+
+def scan_txt_files(root_dir, max_lines=20):
+    data = []
+
+    for dirpath, _, filenames in os.walk(root_dir):
+        for filename in filenames:
+            if filename.lower().endswith('.txt'):
+                full_path = os.path.join(dirpath, filename)
+                text_block = get_combined_text(full_path, max_lines).strip("\n")
+                data.append({'file_path': filename, 'text': text_block})
+
+    df = pd.DataFrame(data)
+    return df
+
+# === Example usage ===
+if __name__ == '__main__':
+    parser = make_argument_parser()
+    args = parser.parse_args()
+
+    input = args.input_dir
+    summary_csv = args.output_csv
+
+    if not os.path.isdir(input):
+        print(f"Error: Directory '{input}' does not exist.")
+        sys.exit(1)  # or just `exit(1)`
+
+    else:
+        print(f"input directory: {input}\n output directory: {summary_csv}")
+
+        df = scan_txt_files(input)
+        df.to_csv(summary_csv, index=False)
+        print(f"Saved transcript summary to {summary_csv}")
