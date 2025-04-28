@@ -15,7 +15,8 @@ def make_argument_parser():
 	parser.add_argument('--epochs', type=int, default=10, metavar='N',
 						help='number of epochs to train (default: 10)')
 	parser.add_argument('--no-cuda', action='store_true', default=False,
-						help='enables CUDA training')
+						help='enables CUDA training'),
+	parser.add_argument("--cuda_device", default=1, help="set device"),
 	parser.add_argument('--seed', type=int, default=1, metavar='S',
 						help='random seed (default: 1)')
 	parser.add_argument('--log-interval', type=int, default=10, metavar='N',
@@ -23,7 +24,7 @@ def make_argument_parser():
 	
 	return parser
 
-def model_setup(model_name, seed, cuda, data_directory):
+def model_setup(model_name, seed: int, cuda: bool, cuda_device: int, data_directory):
 	print(model_name)
 
 	if os.path.exists(model_name):
@@ -33,6 +34,7 @@ def model_setup(model_name, seed, cuda, data_directory):
 
 	torch.manual_seed(seed)
 	if cuda:
+		torch.cuda.set_device(cuda_device)
 		torch.cuda.manual_seed(seed)
 
 # kwargs = {'num_workers': 1, 'pin_memory': True} if args.cuda else {}
@@ -50,11 +52,12 @@ def model_setup(model_name, seed, cuda, data_directory):
 
 	model = VAE().double()
 	if cuda:
-		model.cuda()
+		model.cuda(cuda_device)
 	optimizer = optim.Adam(model.parameters(), lr=1e-3)
 	return model, optimizer, train_loader, val_loader
 
-def train(each_epoch, model, train_loader, optimizer, cuda):
+def train(each_epoch, model, train_loader, optimizer, cuda, cuda_device: int):
+
 	model.train()
 	train_loss = 0
 	for batch_idx, (data, y_data) in enumerate(train_loader):
@@ -62,8 +65,8 @@ def train(each_epoch, model, train_loader, optimizer, cuda):
 		y_data = Variable(y_data)
 
 		if cuda:
-			data = data.cuda()
-			y_data = y_data.cuda()
+			data = data.cuda(cuda_device)
+			y_data = y_data.cuda(cuda_device)
 
 		optimizer.zero_grad()
 
@@ -87,13 +90,13 @@ def train(each_epoch, model, train_loader, optimizer, cuda):
 
 #Lines 88,89 depreciated
 # https://stackoverflow.com/questions/61720460/volatile-was-removed-and-now-had-no-effect-use-with-torch-no-grad-instread
-def validate(model, val_loader, cuda):
+def validate(model, val_loader, cuda, cuda_device: int):
 	model.eval()
 	val_loss = 0
 	for i, (data, y_data) in enumerate(val_loader):
 		if cuda:
-			data = data.cuda()
-			y_data = y_data.cuda()
+			data = data.cuda(cuda_device)
+			y_data = y_data.cuda(cuda_device)
 		# data = Variable(data, volatile=True)
 		# y_data = Variable(y_data, volatile=True)
 		data = Variable(data)
@@ -110,33 +113,35 @@ def validate(model, val_loader, cuda):
 if __name__ == "__main__":
 	parser = make_argument_parser()
 	args = parser.parse_args()
-	args.cuda = not args.no_cuda and torch.cuda.is_available()
-	print("cuda availability: ", args.cuda)
-	print("gpu details: ", torch.cuda.get_device_name(0))
+	cuda_availability = not args.no_cuda and torch.cuda.is_available()
+	torch.cuda.set_device(args.cuda_device)
+	print("cuda availability: ", cuda_availability)
+	print("gpu details: ", torch.cuda.get_device_name(args.cuda_device))
 	print()
 
 	# Check if Model exists:
 	if os.path.isfile(args.model_name):
-    		print(f"The model '{args.model_name}' exists. Training will rewrite it.")
+			print(f"The model '{args.model_name}' exists. Training will rewrite it.")
 	else:
-	    print(f"The model '{args.model_name}' does not exist. Creating file...")
-	
+		print(f"The model '{args.model_name}' does not exist. Creating file...")
+
 	# Check if model directory exists:
 	model_directory_path = os.path.dirname(args.model_name)
+	
 	# Check if H5 directory exists
 	if os.path.isdir(model_directory_path):
-	    print(f"The directory for storing the trained model '{model_directory_path}' exists. Continue...")
+		print(f"The directory for storing the trained model '{model_directory_path}' exists. Continue...")
 	else:
-	    print(f"The directory for storing the trained model '{model_directory_path}' does not exist. Creating it...")
-	    os.makedirs(model_directory_path, exist_ok=True)
-	    print("Rechecking for model: ", os.path.isdir(model_directory_path))
+		print(f"The directory for storing the trained model '{model_directory_path}' does not exist. Creating it...")
+		os.makedirs(model_directory_path, exist_ok=True)
+		print("Rechecking for model: ", os.path.isdir(model_directory_path))
 	
 	# Check if H5 directory exists
 	if os.path.isdir(args.h5_directory):
-	    print(f"The directory with training files '{args.h5_directory}' exists. Continue...")
+		print(f"The directory with training files '{args.h5_directory}' exists. Continue...")
 	else:
-	    print(f"The directory with training files '{args.h5_directory}' does not exist.")
-	    sys.exit(1)
+		print(f"The directory with training files '{args.h5_directory}' does not exist.")
+		sys.exit(1)
 
 
 	Tloss =[]
@@ -144,7 +149,8 @@ if __name__ == "__main__":
 	best_loss=np.inf
 	print("This is Sparta!!")
 	baseline_model, baseline_optimizer, baseline_train_loader, baseline_val_loader = \
-		model_setup(args.model_name, args.seed, args.cuda, args.h5_directory)
+		model_setup(model_name = args.model_name, seed=args.seed, cuda=cuda_availability, 
+					cuda_device = args.cuda_device, data_directory=args.h5_directory)
 
 # for epoch in range(1, 3):
 #Notes- torch.save saves both the state dict as well as the optimizer-
@@ -152,11 +158,11 @@ if __name__ == "__main__":
 # further train, fine-tune, then we need both he optimizer as well as the state dict.
 	for epoch in range(1, args.epochs + 1):
 		tloss = train(each_epoch = epoch, model = baseline_model,
-					  train_loader= baseline_train_loader,
-					  optimizer= baseline_optimizer, cuda = args.cuda)
+						train_loader= baseline_train_loader,
+						optimizer= baseline_optimizer, cuda = cuda_availability, cuda_device = args.cuda_device)
 		vloss = validate(model= baseline_model,
 						 val_loader= baseline_val_loader,
-						 cuda= args.cuda)
+						 cuda= cuda_availability, cuda_device = args.cuda_device)
 		Tloss.append(tloss)
 		Vloss.append(vloss)
 		if vloss < best_loss:
