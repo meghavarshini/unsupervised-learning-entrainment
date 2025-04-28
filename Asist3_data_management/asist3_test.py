@@ -17,6 +17,9 @@ def make_argument_parser():
 	parser.add_argument("--model",
 						default="../fisher_scripts/models/trained_VAE_nonorm_nopre_l1.pt",
 						help="directory where the Fisher model is")
+	parser.add_argument("--cuda_device",
+						default=1,
+						help="set device")
 	return parser
 
 ############ Fix for issues with paths #######
@@ -38,12 +41,16 @@ def load_h5(file):
 	print("loading complete!")
 	return test
 
-def model_testing(model_name, X_test, cuda):
-	model = VAE().double()
-	model = torch.load(model_name)
+def model_testing(model_name, X_test, cuda = True, cuda_device = 1):
+	device = torch.device('cuda:'+str(cuda_device))
+	print(f'current device: {torch.cuda.current_device()}')
+	model = VAE().double().to(device)
+	model = torch.load(model_name, map_location=device)
+
 	model.eval()
 	if cuda:
-		model.cuda()
+		model.cuda(cuda_device)
+
 	if 'l1' in model_name:
 		p=1
 	elif 'l2' in model_name:
@@ -53,6 +60,8 @@ def model_testing(model_name, X_test, cuda):
 		p=2
 
 		pdb
+	print(f'Device: {torch.cuda.current_device()}')
+
 	test_loss = 0
 	fake_test_loss = 0
 	Loss=[]
@@ -68,7 +77,7 @@ def model_testing(model_name, X_test, cuda):
 		# speaker- last item in list. Create a variable where the utterances
 		# with the same speaker as the first utterance
 		idx_same_spk =list(np.where(X_test[:,-1]==data[-1]))[0]
-		print(f"idx_same_spk: {idx_same_spk}, idx: {idx}")
+		# print(f"idx_same_spk: {idx_same_spk}, idx: {idx}")
 
 		# choose an item from the index same speaker which is not the same speaker
 		ll = random.choice(list(set(idx_same_spk) - set([idx])))
@@ -88,9 +97,9 @@ def model_testing(model_name, X_test, cuda):
 		print("data loaded!")
 
 		if cuda:
-			x_data = x_data.cuda()
-			y_data = y_data.cuda()
-			y_fake_data = y_fake_data.cuda()
+			x_data = x_data.cuda(cuda_device)
+			y_data = y_data.cuda(cuda_device)
+			y_fake_data = y_fake_data.cuda(cuda_device)
 
 		recon_batch = model(x_data)
 
@@ -147,7 +156,11 @@ if __name__ == "__main__":
 
 	#optional: for testing Fisher test set
 	# test_h5 = args.h5_directory + '/test_Fisher_nonorm.h5'
-		
+	# 
+	# print(f"Device: {torch.cuda.current_device()}")
+	# print(torch.cuda.get_device_name(0))	
+	
 	test_h5 = args.h5_file
 	test_input = load_h5(test_h5)
-	model_testing(model_name = model, X_test = test_input, cuda = 1)
+	torch.cuda.set_device(args.cuda_device)
+	model_testing(model_name = model, X_test = test_input, cuda = True, cuda_device = args.cuda_device)

@@ -81,7 +81,6 @@ def loop_through_data(combined_transcript_dict, save_dir):
 				next_row = combined_transcript.iloc[i+1]
 				## ToDo: add else condition?
 				if row.speaker == next_row.speaker:
-					print(f"row {i}: {row.speaker}; row {i + 1}: {next_row.speaker}")
 					print("pair of utterances have the same speaker, skipping")
 				elif row.speaker != next_row.speaker:
 					print(f"row {i}: {row.speaker}; row {i + 1}: {next_row.speaker}")
@@ -332,7 +331,7 @@ if __name__ == "__main__":
 	input_dir = Path(args.input_directory).resolve()
 
 	# Create the full path for the "output" folder
-	output_dir = Path.cwd().resolve() / "multicat_complete_feats"
+	output_dir = Path.cwd().resolve() / "multicat_complete_feats/no_addressee_feats/test"
 	
 	print(f"input: {input_dir}\n output: {output_dir}")
 

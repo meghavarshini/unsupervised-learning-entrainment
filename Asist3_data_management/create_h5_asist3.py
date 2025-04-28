@@ -96,4 +96,3 @@ if __name__ == "__main__":
 
 	test_input = load_h5(test_h5)
 	print(np.shape(test_input))
-	print(test_input[:, 2])
