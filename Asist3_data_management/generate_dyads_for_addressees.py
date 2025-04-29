@@ -28,7 +28,7 @@ def make_argument_parser():
 	parser = argparse.ArgumentParser(
 		description="Processing filepaths and values required for setup")
 	parser.add_argument("--input_directory",
-						default="./files_for_dyad_generation",
+						default="./multicat_addressee_files_for_dyad_generation",
 						help="directory where the input files are stored")
 	return parser
 
@@ -333,7 +333,7 @@ if __name__ == "__main__":
 	input_dir = Path(args.input_directory).resolve()
 	
 	## Create the full path for the "output" folder
-	output_dir = Path.cwd().resolve() / "multicat_addressee_feats"
+	output_dir = Path.cwd().resolve() / "multicat_addressee_feats/test"
 
 	print(f"input: {input_dir}\n output: {output_dir}")
 	#Check if output directory exists, if not, create it:   

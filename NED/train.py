@@ -1,5 +1,7 @@
 #To Run, use: CUDA_VISIBLE_DEVICES=1 python train.py --no-cuda
 from ecdc import *
+import csv
+
 #------------------------------------------------------------------
 #Uncomment for parsing inputs
 def make_argument_parser():
@@ -12,7 +14,7 @@ def make_argument_parser():
 						help='location of h5 files')
 	parser.add_argument('--batch-size', type=int, default=128, metavar='N',
 						help='input batch size for training (default: 128)')
-	parser.add_argument('--epochs', type=int, default=10, metavar='N',
+	parser.add_argument('--epochs', type=int, default=100, metavar='N',
 						help='number of epochs to train (default: 10)')
 	parser.add_argument('--no-cuda', action='store_true', default=False,
 						help='enables CUDA training'),
@@ -60,6 +62,7 @@ def train(each_epoch, model, train_loader, optimizer, cuda, cuda_device: int):
 
 	model.train()
 	train_loss = 0
+	count = 0
 	for batch_idx, (data, y_data) in enumerate(train_loader):
 		data = Variable(data)
 		y_data = Variable(y_data)
@@ -73,8 +76,9 @@ def train(each_epoch, model, train_loader, optimizer, cuda, cuda_device: int):
 		recon_batch = model(data)
 		loss = loss_function(recon_batch, y_data)
 		loss.backward()
-		print("loss data: ",loss.data)
+		
 		train_loss += loss.data
+		print(f"Run: {count} loss: {loss.data}")
 		# train_loss += loss.data[0]
 		optimizer.step()
 		# if batch_idx % args.log_interval == 0:
@@ -83,8 +87,7 @@ def train(each_epoch, model, train_loader, optimizer, cuda, cuda_device: int):
 				# 100. * batch_idx / len(train_loader),
 				# loss.data[0] / len(data)))
 	train_loss /=  len(train_loader.dataset)
-	print(('====> Epoch: {} Average loss: {:.4f}'.format(
-		  each_epoch, train_loss)))
+	print(f"====> Epoch: {each_epoch} Average loss: {train_loss:.4f}")
 
 	return train_loss
 
@@ -92,7 +95,10 @@ def train(each_epoch, model, train_loader, optimizer, cuda, cuda_device: int):
 # https://stackoverflow.com/questions/61720460/volatile-was-removed-and-now-had-no-effect-use-with-torch-no-grad-instread
 def validate(model, val_loader, cuda, cuda_device: int):
 	model.eval()
+	
 	val_loss = 0
+	count = 0
+
 	for i, (data, y_data) in enumerate(val_loader):
 		if cuda:
 			data = data.cuda(cuda_device)
@@ -103,10 +109,12 @@ def validate(model, val_loader, cuda, cuda_device: int):
 		y_data = Variable(y_data)
 		recon_batch = model(data)
 		val_loss += loss_function(recon_batch, y_data).data
+		print(f"====> Validation Loss for Run {count}: {val_loss:.4f}")
+		count+=1
 		# val_loss += loss_function(recon_batch, y_data).data[0]
 
 	val_loss /= len(val_loader.dataset)
-	print(('====> Validation set loss: {:.4f}'.format(val_loss)))
+	print(f"====> Average Validation Set Loss: {val_loss:.4f}")
 	return val_loss
 
 
@@ -117,7 +125,6 @@ if __name__ == "__main__":
 	torch.cuda.set_device(args.cuda_device)
 	print("cuda availability: ", cuda_availability)
 	print("gpu details: ", torch.cuda.get_device_name(args.cuda_device))
-	print()
 
 	# Check if Model exists:
 	if os.path.isfile(args.model_name):
@@ -143,9 +150,9 @@ if __name__ == "__main__":
 		print(f"The directory with training files '{args.h5_directory}' does not exist.")
 		sys.exit(1)
 
-
 	Tloss =[]
 	Vloss =[]
+	save_loss_data =[]
 	best_loss=np.inf
 	print("This is Sparta!!")
 	baseline_model, baseline_optimizer, baseline_train_loader, baseline_val_loader = \
@@ -156,6 +163,12 @@ if __name__ == "__main__":
 #Notes- torch.save saves both the state dict as well as the optimizer-
 # if we have a model and all we want to do is use it, then we save the state dict. But if we want
 # further train, fine-tune, then we need both he optimizer as well as the state dict.
+	# Save loss
+	with open(model_directory_path+'/output.csv', mode='w', newline='') as file:
+		writer = csv.writer(file)		
+		# Write header
+		writer.writerow(('Epoch', 'Train Loss', 'Val Loss'))
+
 	for epoch in range(1, args.epochs + 1):
 		tloss = train(each_epoch = epoch, model = baseline_model,
 						train_loader= baseline_train_loader,
@@ -165,11 +178,14 @@ if __name__ == "__main__":
 						 cuda= cuda_availability, cuda_device = args.cuda_device)
 		Tloss.append(tloss)
 		Vloss.append(vloss)
+		writer.writerow((epoch, tloss.item(), vloss.item()))
+		save_loss_data.append((epoch, tloss.item(), vloss.item()))
+		
 		if vloss < best_loss:
 			best_loss = vloss
 			best_epoch = epoch
-			print("epoch: ", vloss, "epoch: ", epoch)
+			print("Epoch: ", epoch, "Validation Loss: ", vloss.item())
 			torch.save(baseline_model, args.model_name)
-			#model = torch.load(PATH)
-			#model.eval()
-			#parameters- check they are non-empty
+
+print(save_loss_data)
+	

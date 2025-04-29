@@ -41,16 +41,22 @@ def load_h5(file):
 	print("loading complete!")
 	return test
 
-def model_testing(model_name, X_test, cuda = True, cuda_device = 1):
-	device = torch.device('cuda:'+str(cuda_device))
-	print(f'current device: {torch.cuda.current_device()}')
+def model_testing(model_name, X_test, cuda: bool, cuda_device: int):
+	
 	model = VAE().double().to(device)
 	model = torch.load(model_name, map_location=device)
 
 	model.eval()
 	if cuda:
+		model = VAE().double().to(device)
+		model = torch.load(model_name, map_location=device)
+		device = torch.device('cuda:'+str(cuda_device))
+		print(f'current device: {torch.cuda.current_device()}')
 		model.cuda(cuda_device)
-
+	else:
+		model = VAE().double()
+		model = torch.load(model_name)
+	
 	if 'l1' in model_name:
 		p=1
 	elif 'l2' in model_name:
@@ -60,7 +66,6 @@ def model_testing(model_name, X_test, cuda = True, cuda_device = 1):
 		p=2
 
 		pdb
-	print(f'Device: {torch.cuda.current_device()}')
 
 	test_loss = 0
 	fake_test_loss = 0
