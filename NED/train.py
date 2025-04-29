@@ -1,6 +1,7 @@
 #To Run, use: CUDA_VISIBLE_DEVICES=1 python train.py --no-cuda
 from ecdc import *
 import csv
+from datetime import datetime
 
 #------------------------------------------------------------------
 #Uncomment for parsing inputs
@@ -164,28 +165,30 @@ if __name__ == "__main__":
 # if we have a model and all we want to do is use it, then we save the state dict. But if we want
 # further train, fine-tune, then we need both he optimizer as well as the state dict.
 	# Save loss
-	with open(model_directory_path+'/output.csv', mode='w', newline='') as file:
+	loss_file_name = model_directory_path+"/" + datetime.now().strftime("%Y%m%d-%H%M")+"_model-loss.csv"
+	with open(loss_file_name, mode='w', newline='') as file:
 		writer = csv.writer(file)		
 		# Write header
 		writer.writerow(('Epoch', 'Train Loss', 'Val Loss'))
 
-	for epoch in range(1, args.epochs + 1):
-		tloss = train(each_epoch = epoch, model = baseline_model,
-						train_loader= baseline_train_loader,
-						optimizer= baseline_optimizer, cuda = cuda_availability, cuda_device = args.cuda_device)
-		vloss = validate(model= baseline_model,
-						 val_loader= baseline_val_loader,
-						 cuda= cuda_availability, cuda_device = args.cuda_device)
-		Tloss.append(tloss)
-		Vloss.append(vloss)
-		writer.writerow((epoch, tloss.item(), vloss.item()))
-		save_loss_data.append((epoch, tloss.item(), vloss.item()))
-		
-		if vloss < best_loss:
-			best_loss = vloss
-			best_epoch = epoch
-			print("Epoch: ", epoch, "Validation Loss: ", vloss.item())
-			torch.save(baseline_model, args.model_name)
+		# Loop for training through epochs and saving data
+		for epoch in range(1, args.epochs + 1):
+			tloss = train(each_epoch = epoch, model = baseline_model,
+							train_loader= baseline_train_loader,
+							optimizer= baseline_optimizer, cuda = cuda_availability, cuda_device = args.cuda_device)
+			vloss = validate(model= baseline_model,
+							val_loader= baseline_val_loader,
+							cuda= cuda_availability, cuda_device = args.cuda_device)
+			Tloss.append(tloss)
+			Vloss.append(vloss)
+			writer.writerow((epoch, tloss.item(), vloss.item()))
+			save_loss_data.append((epoch, tloss.item(), vloss.item()))
+			
+			if vloss < best_loss:
+				best_loss = vloss
+				best_epoch = epoch
+				print("Epoch: ", epoch, "Validation Loss: ", vloss.item())
+				torch.save(baseline_model, args.model_name)
 
 print(save_loss_data)
 	
