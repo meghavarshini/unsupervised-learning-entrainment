@@ -19,24 +19,44 @@ import matplotlib.pyplot as plt
 # Define the dataset class
 #-------------------------------------------------
 class EntDataset(Dataset):
-    def __init__(self, file_name):
+    def __init__(self, file_name, y_mean, y_std):
         self.file_name = file_name
-        
+        self.y_mean = y_mean  # y_mean calculated from training data
+        self.y_std = y_std    # y_std calculated from training data
+
+        # Open HDF5 file to compute Y mean and std
+        with h5py.File(self.file_name, 'r') as hf:
+            data = hf['dataset'][:, featDim:2*featDim]  # all Y samples
+            self.y_mean = np.mean(data, axis=0)
+            self.y_std = np.std(data, axis=0)
     def __getitem__(self, idx):
-        hf = h5py.File(self.file_name, 'r')
-        X = hf['dataset'][idx,0:featDim]
-        Y = hf['dataset'][idx,featDim:2*featDim]
-        hf.close()
-        return (X, Y)
-
+        with h5py.File(self.file_name, 'r') as hf:
+            X = hf['dataset'][idx, 0:featDim]
+            Y = hf['dataset'][idx, featDim:2*featDim]
+        
+        # Normalize Y
+        Y_norm = (Y - self.y_mean) / (self.y_std + 1e-8)  # avoid divide-by-zero
+        return (X, Y_norm)
     def __len__(self):
-        hf = h5py.File(self.file_name, 'r')
-        length=hf['dataset'].shape[0]
-        hf.close()
-        return length
+        with h5py.File(self.file_name, 'r') as hf:
+            return hf['dataset'].shape[0]
 
+# class EntDataset(Dataset):
+#     def __init__(self, file_name):
+#         self.file_name = file_name
+        
+#     def __getitem__(self, idx):
+#         hf = h5py.File(self.file_name, 'r')
+#         X = hf['dataset'][idx,0:featDim]
+#         Y = hf['dataset'][idx,featDim:2*featDim]
+#         hf.close()
+#         return (X, Y)
 
-
+#     def __len__(self):
+#         hf = h5py.File(self.file_name, 'r')
+#         length=hf['dataset'].shape[0]
+#         hf.close()
+#         return length
 
 
 class VAE(nn.Module):
@@ -95,11 +115,10 @@ class VAE(nn.Module):
         return z
 
 
-
 # Reconstruction + KL divergence losses summed over all elements and batch
 def loss_function(recon_x1, x2):
     if loss=='l1':
-        BCE = F.smooth_l1_loss(recon_x1, x2.view(-1, featDim), size_average=False)
+        BCE = F.smooth_l1_loss(recon_x1, x2.view(-1, featDim), reduction='sum') #option: reduction='mean'
     elif loss=='l2':
         BCE = F.mse_loss(recon_x1, x2.view(-1, featDim), size_average=False)
     
