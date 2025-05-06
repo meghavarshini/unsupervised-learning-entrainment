@@ -1,8 +1,8 @@
 Feature_label	Explanation	Suffix_explanation
-F0final_sma	pitch distribution	sma- smoothed by a moving average filter with window length 3
-F0final_sma_de	pitch distribution	sma- see row 1, _de- 1st order delta coefficient
-pcm_loudness_sma	loudness as the normalised intensity raised to a power of 0.3	pcm- Pulse-code modulation, sma- see row 1, _de- see row 2
-pcm_loudness_sma_de	loudness as the normalised intensity raised to a power of 0.3	pcm- see row 3, sma- see row 1, _de- see row 2
+F0final_sma	The smoothed fundamental frequency contour	sma- smoothed by a moving average filter with window length 3
+F0final_sma_de	Delta Coefficient for the smoothed fundamental frequency contour	sma- see row 1, de- 1st order delta coefficient
+pcm_loudness_sma	Loudness as the normalised intensity raised to a power of 0.3	pcm- Pulse-code modulation, sma- see row 1, de- see row 2
+pcm_loudness_sma_de	Delta Coefficient for the loudness as the normalised intensity raised to a power of 0.3	pcm- see row 3, sma- see row 1, de- see row 2
 pcm_fftMag_mfcc_sma[0]	Mel-Frequency cepstral coefficient 0	pcm- see row 3, mfcc- Mel-Frequency cepstral coefficient,sma- see row 1
 pcm_fftMag_mfcc_sma[1]	Mel-Frequency cepstral coefficients 1	pcm- see row 3, mfcc- see row 6, sma- see row 1
 pcm_fftMag_mfcc_sma[2]	Mel-Frequency cepstral see coefficient 2	pcm- see row 3, mfcc- see row 6, sma- see row 1
@@ -18,22 +18,22 @@ pcm_fftMag_mfcc_sma[11]	Mel-Frequency cepstral see coefficient 11	pcm- see row 3
 pcm_fftMag_mfcc_sma[12]	Mel-Frequency cepstral see coefficient 12	pcm- see row 3, mfcc- see row 6, sma- see row 1
 pcm_fftMag_mfcc_sma[13]	Mel-Frequency cepstral see coefficient 13	pcm- see row 3, mfcc- see row 6, sma- see row 1
 pcm_fftMag_mfcc_sma[14]	Mel-Frequency cepstral see coefficient 14	pcm- see row 3, mfcc- see row 6, sma- see row 1
-logMelFreqBand_sma[0]	log power of Mel-frequency band (logMelFreqBand) 0 (8 values distributed over 0 to 8kHz)	sma- see row 1
-logMelFreqBand_sma[1]	log power of Mel-frequency band 1	sma- see row 1
-logMelFreqBand_sma[2]	log power of Mel-frequency band 2	sma- see row 1
-logMelFreqBand_sma[3]	log power of Mel-frequency band 3	sma- see row 1
-logMelFreqBand_sma[4]	log power of Mel-frequency band 4	sma- see row 1
-logMelFreqBand_sma[5]	log power of Mel-frequency band 5	sma- see row 1
-logMelFreqBand_sma[6]	log power of Mel-frequency band 6	sma- see row 1
-logMelFreqBand_sma[7]	log power of Mel-frequency band 7	sma- see row 1
+logMelFreqBand_sma[0]	Log power of Mel-frequency band (logMelFreqBand) 0 (8 values distributed over 0 to 8kHz)	sma- see row 1
+logMelFreqBand_sma[1]	Log power of Mel-frequency band 1	sma- see row 1
+logMelFreqBand_sma[2]	Log power of Mel-frequency band 2	sma- see row 1
+logMelFreqBand_sma[3]	Log power of Mel-frequency band 3	sma- see row 1
+logMelFreqBand_sma[4]	Log power of Mel-frequency band 4	sma- see row 1
+logMelFreqBand_sma[5]	Log power of Mel-frequency band 5	sma- see row 1
+logMelFreqBand_sma[6]	Log power of Mel-frequency band 6	sma- see row 1
+logMelFreqBand_sma[7]	Log power of Mel-frequency band 7	sma- see row 1
 lspFreq_sma[0]	line spectral pair (LSP) frequencies 1 (lspFreq) computed from LPC coefficients	lspFreq - line spectral pair, sma- see row 1
-lspFreq_sma[1]	LSP 2	lspFreq - see row 28, sma- see row 1
-lspFreq_sma[2]	LSP 3	lspFreq - see row 28, sma- see row 1
-lspFreq_sma[3]	LSP 4	lspFreq - see row 28, sma- see row 1
-lspFreq_sma[4]	LSP 5	lspFreq - see row 28, sma- see row 1
-lspFreq_sma[5]	LSP 6	lspFreq - see row 28, sma- see row 1
-lspFreq_sma[6]	LSP 7	lspFreq - see row 28, sma- see row 1
-lspFreq_sma[7]	LSP 8	lspFreq - lsee row 28, sma- see row 1
-jitterLocal_sma	local (frame-to-frame) Jitter (pitch period length deviations)	sma- see row 1
-jitterDDP_sma	differential frame-to-frame Jitter (the ‘Jitter of the Jitter’)	sma- see row 1
-shimmerLocal_sma	local (frame-to-frame) Shimmer (amplitude deviations between pitch periods)	sma- see row 1
+lspFreq_sma[1]	LSP 2	lspFreq- see row 28, sma- see row 1
+lspFreq_sma[2]	LSP 3	lspFreq- see row 28, sma- see row 1
+lspFreq_sma[3]	LSP 4	lspFreq- see row 28, sma- see row 1
+lspFreq_sma[4]	LSP 5	lspFreq- see row 28, sma- see row 1
+lspFreq_sma[5]	LSP 6	lspFreq- see row 28, sma- see row 1
+lspFreq_sma[6]	LSP 7	lspFreq- see row 28, sma- see row 1
+lspFreq_sma[7]	LSP 8	lspFreq- lsee row 28, sma- see row 1
+jitterLocal_sma	Local (frame-to-frame) Jitter (pitch period length deviations)	sma- see row 1
+jitterDDP_sma	Differential frame-to-frame Jitter (the ‘Jitter of the Jitter’)	sma- see row 1
+shimmerLocal_sma	Local (frame-to-frame) Shimmer (amplitude deviations between pitch periods)	sma- see row 1
