@@ -22,6 +22,7 @@ import subprocess as sp
 import numpy as np
 import pandas as pd
 import copy
+from datetime import datetime
 
 ############ Fix for issues with paths #######
 # Get the absolute path of the parent directory
@@ -34,13 +35,16 @@ sys.path.append(parent_dir)
 OPENSMILE_CONFIG_BASELINE = parent_dir + "/scripts_and_config/emobase2010_haoqi_revised.conf"
 
 # feature extraction function
-from fisher_model_training.feat_extract_nopre import final_feat_calculate_multicat
+from NED.feat_extract_nopre import final_feat_calculate_multicat
 
 def make_argument_parser():
 	parser = argparse.ArgumentParser(
 		description="Processing filepaths and values required for setup")
 	parser.add_argument("--input_directory",
-						default="./files_for_dyad_generation",
+						default="./multicat_transcripts_audio",
+						help="directory for calling transcripts")
+	parser.add_argument("--output_directory",
+						default="./multicat_complete_test_feats",
 						help="directory for calling transcripts")
 	return parser
 
@@ -53,7 +57,7 @@ def loop_through_data(combined_transcript_dict, save_dir):
 	This function loops over every file added to a dictionary of unique files
 	and saves the feature set to the user-defined location
 	'''
-	# go to an individual file in the data
+	# go to an individual transcript file in the folder
 	for fpath, combined_transcript in combined_transcript_dict.items():
 		# print("file contents: ", combined_file)
 		# speakers and addressees in CSV MUST be named their unique ID
@@ -68,7 +72,8 @@ def loop_through_data(combined_transcript_dict, save_dir):
 		combined_transcript = combined_transcript.sort_values(by=["start_timestamp"], ascending=True)
 		print("no. of rows: ",len(combined_transcript))
 
-		## holder for all acoustic features
+		speaker_pairs = []
+		## holder for all acoustic features for one trial
 		all_features_for_this_list = []
 		## holder for concatenated feature lists
 		features_for_normalizing = []
@@ -78,7 +83,7 @@ def loop_through_data(combined_transcript_dict, save_dir):
 
 		# current row num
 		row_num = 0
-		# holder for all utt rows in overall feats file
+		# holder for start and end row numbers for the opensmile dump for trial
 		all_row_ends = []
 
 		# go through the combined file
@@ -87,48 +92,67 @@ def loop_through_data(combined_transcript_dict, save_dir):
 			## only proceed till the penultimate utterance
 			if i < len(combined_transcript) - 1:
 				next_row = combined_transcript.iloc[i+1]
+
 				## ToDo: add else condition?
-				if row.participant == next_row.participant:
-					print(f"row {i}: {row.participant}; row {i + 1}: {next_row.participant}")
+				print(f"Current speaker for turn {i}: {row.participant}; Next turn speaker for turn {i + 1}: {next_row.participant}")
+				if row.participant == next_row.participant:					
 					print("pair of utterances have the same speaker, skipping")
 				elif row.participant != next_row.participant:
-					print(f"row {i}: {row.participant}; row {i + 1}: {next_row.participant}")
-					print(f"pair of utterances have different participant, processing...")
+					print(f"pair of utterances have different participants, processing...")
 					counter+=1
-					## extract the relevant components and a deep copy of this row and the following row:
 					
 					## extract features for this row
 					this_row_feats, this_row_copy = run_opensmile_over_utterance(row, fpath)
+					
 					## extract features for following row
 					next_row_feats, next_row_copy = run_opensmile_over_utterance(next_row, fpath)
-					## add to row num for this utt
+					# print(f"no of feats in this row: {len(this_row_feats)}")
+					# print(f"no of feats in next row: {len(next_row_feats)}")
+					
+					## create list with row index for first and last item in opensmile feature dump
+					## this will help divide opensmie dump by utterance
 					this_utt_ends = [row_num, row_num + len(this_row_copy)]
-					print(f"this_utt_ends: {this_utt_ends}")
+					# print(f"this_utt_ends: {this_utt_ends}")
 					row_num += len(this_row_copy)
+					
 
 					## add to row num for next utt
 					next_utt_ends = [row_num, row_num + len(next_row_copy)]
+					# print(f"next_utt_ends: {next_utt_ends}")
 					row_num += len(next_row_copy)
+					
 
 					## add to counter for all rows
 					all_row_ends.append(this_utt_ends)
 					all_row_ends.append(next_utt_ends)
+					# print(f"all_row_ends: {all_row_ends}")
+					
+					# Create pair of current and next speaker:
+					speaker_pairs.append([row.participant, next_row.participant])
 
 					## add feature copies to features_for_normalizing
+					# print(f"testing speaker info {row.participant}, {next_row.participant}")
+
 					features_for_normalizing.extend(this_row_copy)
 					features_for_normalizing.extend(next_row_copy)
+					# print(f"print(features_for_normalizing: {len(features_for_normalizing)}")
 
 					## save these features to holders for later change
 					all_features_for_this_list.append(this_row_feats)
 					all_features_for_this_list.append(next_row_feats)
-			# break
+			# if counter == 2:
+			# 	break
+
 		features_for_normalizing = np.asarray(features_for_normalizing)
+		# print("features_for_normalizing", len(features_for_normalizing))
+		# exit()
 
 
 		if np.shape(features_for_normalizing)[0] <= 0:
 			print("empty feature holder")
 		elif np.shape(features_for_normalizing)[0] > 0:
 			print("normalizing features for file")
+			# print(f"features_for_normalizing, {len(features_for_normalizing)}")
 			# run f0 and intensity normalization over the features for normalizing
 			all_raw_norm_feat, all_norm_feat_dim =  calc_opensmile_feats(features_for_normalizing)
 
@@ -151,12 +175,20 @@ def loop_through_data(combined_transcript_dict, save_dir):
 						all_features = whole_func_feat
 					else:
 						all_features = np.vstack((all_features, whole_func_feat))
-
+			print(f"all_features, {len(all_features)}")
+			print(f"speaker_pairs: {len(speaker_pairs)}")
 			# save the features
+			
+
 			print("savename:", savename)
 			with open(savename, 'w') as savefile:
-				for item in all_features:
-					savefile.write(",".join([str(part) for part in item]))
+				for n, item in enumerate(all_features):
+					# collate speaker pair IDs and current turn features:
+					output_row = []
+					output_row.extend(speaker_pairs[n])
+					output_row.extend([str(part) for part in item])
+
+					savefile.write(",".join(output_row))
 					savefile.write("\n")
 
 
@@ -172,6 +204,7 @@ def run_opensmile_over_utterance(row, base_file):
 	start = row.start_timestamp
 	end = row.end_timestamp
 	speaker = row.participant
+	print(start, end, speaker)
 
 	## get the name of the audio
 	## combined files are of format: Trial-T000604_Team-TM000202_combined.txt
@@ -188,23 +221,38 @@ def run_opensmile_over_utterance(row, base_file):
 
 	length = end - start
 
-	## extract this short file to run feature extraction on
-	sp.run(["ffmpeg", "-y", "-ss", str(start), "-i", f"{str(filepath)}/{audio_in_name}",
-			"-t", str(length), "-c", "copy", "-y", audio_out])
+	# Format date as DDMMYY
+	date_str = datetime.now().strftime("%d%m%y")
+	filename = f"./{date_str}_output.txt"
+
+# Run the command and append to the dated file
+	with open(filename, "a") as f:
+		f.write(f"=== Running ffmpeg at {datetime.now().isoformat()}  on {audio_out_name}===\n")
+		f.flush()
+		## extract this short file to run feature extraction on
+		sp.run(["ffmpeg", "-y", "-ss", str(start), "-i", f"{str(filepath)}/{audio_in_name}",
+				"-t", str(length), "-c", "copy", "-y", audio_out],
+				stdout=f, stderr=f
+				)
 
 	feats_out = filepath / f"{speaker}_{start}-{end}.csv"
 	feats_out = str(feats_out)
 
 	# run opensmile over a particular utterance, ex:
-	# $(OUTPUT_DIR)/%_features_raw_baseline.csv: $(OUTPUT_DIR)/%.wav
-	# 	SMILExtract -C $(OPENSMILE_CONFIG_BASELINE) -I $< -O $@
+		# $(OUTPUT_DIR)/%_features_raw_baseline.csv: $(OUTPUT_DIR)/%.wav
+		# 	SMILExtract -C $(OPENSMILE_CONFIG_BASELINE) -I $< -O $@
 	# extract the features with opensmile
-
-	sp.run(["SMILExtract", "-C", OPENSMILE_CONFIG_BASELINE,
-		   "-I", audio_out, "-O", feats_out])
+	with open(filename, "a") as f:
+		f.write("=== Running opensmile at {} ===\n".format(datetime.now().isoformat()))
+		f.flush()
+		sp.run(["SMILExtract", "-C", OPENSMILE_CONFIG_BASELINE,
+				"-I", audio_out, "-O", feats_out],
+				stdout=f, stderr=f
+				# stdout=sp.DEVNULL, stderr=sp.DEVNULL
+				)
 
 	# read in acoustic features
-	acoustic_feats = []
+	acoustic_feats = [] 
 	with open(feats_out, 'r') as feats:
 		feats.readline()
 		for line in feats:
@@ -230,6 +278,7 @@ def calc_opensmile_feats(feat_data):
 	- remove the mean for mfcc
 	- normalize for pitch = log(f_0/u_0)
 	- normalize for loudness
+	- array with 38 features
 	"""
 	# f0 normalization
 	f0 = np.copy(feat_data[:, 70])
@@ -340,7 +389,7 @@ if __name__ == "__main__":
 	input_dir = Path(args.input_directory).resolve()
 
 	# Create the full path for the "output" folder
-	output_dir = Path.cwd().resolve() / "multicat_complete_feats"
+	output_dir = Path(args.output_directory).resolve()
 	
 	print(f"input: {input_dir}\n output: {output_dir}")
 
