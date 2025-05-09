@@ -17,7 +17,7 @@ def make_argument_parser():
 	parser.add_argument('--seed', type=int,
 						default=1, metavar='S',
 						help='random seed (default: 1)')
-	parser.add_argument('--h5_directory', default= './test_Fisher_nonorm.h5',
+	parser.add_argument('--h5_file', default= './test_Fisher_nonorm.h5',
 						help='location of h5 file with the test data')
 	parser.add_argument('--model_name',
 						default= "./trained_models/trained_VAE_nonorm_nopre_l1.pt",
@@ -34,7 +34,7 @@ def load_h5(file):
 	print("loading complete!")
 	return test
 
-def model_testing(model_name, X_test,cuda):
+def model_testing(model_name, X_test, cuda):
 	#instantiate a VAE model, set it to evaluation,
 	# and make sure weights are not updated during the process
 	model = VAE().double()
@@ -145,9 +145,9 @@ if __name__ == "__main__":
 
 	torch.manual_seed(args.seed)
 
-	if not args.no_cuda and torch.cuda.is_available():
+	if args.cuda:
 		torch.cuda.manual_seed(args.seed)
 
-	X_test1 = load_h5(args.h5_directory)
+	X_test1 = load_h5(args.h5_file)
 	test_run = model_testing(args.model_name, X_test1, args.cuda)
 

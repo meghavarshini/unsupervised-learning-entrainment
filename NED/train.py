@@ -158,9 +158,10 @@ if __name__ == "__main__":
 	parser = make_argument_parser()
 	args = parser.parse_args()
 	cuda_availability = not args.no_cuda and torch.cuda.is_available()
-	torch.cuda.set_device(args.cuda_device)
 	print("cuda availability: ", cuda_availability)
-	print("gpu details: ", torch.cuda.get_device_name(args.cuda_device))
+	if cuda_availability:
+		torch.cuda.set_device(args.cuda_device)	
+		print("gpu details: ", torch.cuda.get_device_name(args.cuda_device))
 
 	# Check if Model exists:
 	if os.path.isfile(args.model_name):
@@ -221,6 +222,8 @@ if __name__ == "__main__":
 			Tloss.append(tloss)
 			Vloss.append(vloss)
 			writer.writerow((epoch, tloss.item(), vloss.item()))
+			file.flush()  # force flush to disk
+			os.fsync(file.fileno())
 			save_loss_data.append((epoch, tloss.item(), vloss.item()))
 			
 			if vloss < best_loss:

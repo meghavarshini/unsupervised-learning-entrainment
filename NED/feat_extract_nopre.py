@@ -20,8 +20,7 @@ def make_argument_parser():
 	parser.add_argument("transcript", help="Input transcript")
 	parser.add_argument("output_csv", help="output_normed_features_csv")
 	parser.add_argument("--norm", type=bool, required=False, default=True,
-						help="do session level normalization or not",
-						)
+						help="do session level normalization or not")
 	parser.add_argument("--window_size", required=False, type=float, default=10)
 	parser.add_argument("--shift_size", required=False, type=float, default=1)
 	parser.add_argument("--writing", required=False, type=str, default=True,

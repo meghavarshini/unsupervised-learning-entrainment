@@ -12,7 +12,7 @@ def make_argument_parser():
 	parser = argparse.ArgumentParser(
 		description="Processing filepaths and values required for setup")
 	parser.add_argument("--h5_file",
-						default="./multicat_h5_output/test_ASIST.h5",
+						default="./multicat_h5_addressee/test_ASIST.h5",
 						help="directory for storing h5 files")
 	parser.add_argument("--model",
 						default="../fisher_scripts/models/trained_VAE_nonorm_nopre_l1.pt",
@@ -42,21 +42,16 @@ def load_h5(file):
 	return test
 
 def model_testing(model_name, X_test, cuda: bool, cuda_device: int):
-	
-	model = VAE().double().to(device)
-	model = torch.load(model_name, map_location=device)
 
-	model.eval()
+	model = VAE().double()
 	if cuda:
-		model = VAE().double().to(device)
-		model = torch.load(model_name, map_location=device)
-		device = torch.device('cuda:'+str(cuda_device))
+		torch.cuda.set_device(cuda_device)
 		print(f'current device: {torch.cuda.current_device()}')
 		model.cuda(cuda_device)
-	else:
-		model = VAE().double()
-		model = torch.load(model_name)
 	
+	model = torch.load(model_name)
+	
+	model.eval()
 	if 'l1' in model_name:
 		p=1
 	elif 'l2' in model_name:
