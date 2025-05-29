@@ -7,7 +7,7 @@ for the purposes of this script, we assume the following:
 1. For every trial, there exists one transcript file with the following columns:
 "start	end	speaker	addressee	transcript", and 3 associated wav files. 
 The file name contains the IDs for trial, speaker, and team.
-2. The values column "speaker" should match the uniqueIDs of the participants, not roles
+2. The values column "speaker" should match the uniqueIDs of the speakers, not roles
 e.g. E000689, not 'transporter'
 3. OpenSMILE and ffmpeg are installed, and the path to `SMILExtract` has been added to $PATH
 (see documentation: https://audeering.github.io/opensmile/get-started.html)
@@ -22,6 +22,8 @@ import subprocess as sp
 import numpy as np
 import pandas as pd
 import copy
+from datetime import datetime
+
 
 ############ Fix for issues with paths #######
 # Get the absolute path of the parent directory
@@ -34,21 +36,40 @@ sys.path.append(parent_dir)
 OPENSMILE_CONFIG_BASELINE = parent_dir + "/scripts_and_config/emobase2010_haoqi_revised.conf"
 
 # feature extraction function
-from fisher_model_training.feat_extract_nopre import final_feat_calculate_multicat
+from NED.feat_extract_nopre import final_feat_calculate_multicat
 
 def make_argument_parser():
 	parser = argparse.ArgumentParser(
 		description="Processing filepaths and values required for setup")
 	parser.add_argument("--input_directory",
-						default="./files_for_dyad_generation",
+						default="./multicat_addressee_files_for_dyad_generation",
 						help="directory for calling transcripts")
+	parser.add_argument("--output_directory",
+						default="./multicat_complete_test_feats",
+						help="directory for calling transcripts")
+	parser.add_argument("--save_speaker_ids",
+						default=False,
+						type=str2bool,
+						help="ask whether speaker IDs should be added to output CSV")
 	return parser
 
-def loop_through_data(combined_transcript_dict, save_dir):
+def str2bool(v):
+    if isinstance(v, bool):
+        return v
+    if v.lower() in ('yes', 'true', 't', '1'):
+        return True
+    elif v.lower() in ('no', 'false', 'f', '0'):
+        return False
+    else:
+        raise argparse.ArgumentTypeError('Boolean value expected.')	
+
+def loop_through_data(combined_transcript_dict, save_dir, save_speaker_ids: bool):
 	'''
 	This function loops over every file added to a dictionary of unique files
 	and saves the feature set to the user-defined location
 	'''
+	if not isinstance(save_speaker_ids, bool):
+		raise TypeError(f"Expected bool, got {type(save_speaker_ids).__name__}")
 	# go to an individual file in the data
 	for fpath, combined_transcript in combined_transcript_dict.items():
 		# print("file contents: ", combined_file)
@@ -59,6 +80,9 @@ def loop_through_data(combined_transcript_dict, save_dir):
 		# arrange all turns in order
 		combined_transcript = combined_transcript.sort_values(by=["start"], ascending=True)
 		print("no. of rows: ",len(combined_transcript))
+
+		## Holder for current and next speaker:
+		speaker_pairs = []
 
 		## holder for all acoustic features
 		all_features_for_this_list = []
@@ -94,7 +118,7 @@ def loop_through_data(combined_transcript_dict, save_dir):
 					next_row_feats, next_row_copy = run_opensmile_over_utterance(next_row, fpath)
 					## add to row num for this utt
 					this_utt_ends = [row_num, row_num + len(this_row_copy)]
-					print(f"this_utt_ends: {this_utt_ends}")
+					# print(f"this_utt_ends: {this_utt_ends}")
 					row_num += len(this_row_copy)
 
 					## add to row num for next utt
@@ -105,6 +129,9 @@ def loop_through_data(combined_transcript_dict, save_dir):
 					all_row_ends.append(this_utt_ends)
 					all_row_ends.append(next_utt_ends)
 
+					# Create pair of current and next speaker:
+					speaker_pairs.append([row.speaker, next_row.speaker])
+
 					## add feature copies to features_for_normalizing
 					features_for_normalizing.extend(this_row_copy)
 					features_for_normalizing.extend(next_row_copy)
@@ -112,8 +139,11 @@ def loop_through_data(combined_transcript_dict, save_dir):
 					## save these features to holders for later change
 					all_features_for_this_list.append(this_row_feats)
 					all_features_for_this_list.append(next_row_feats)
-			# break
+			# if counter == 2:
+			# 	break
+
 		features_for_normalizing = np.asarray(features_for_normalizing)
+		# exit()
 
 
 		if np.shape(features_for_normalizing)[0] <= 0:
@@ -128,8 +158,6 @@ def loop_through_data(combined_transcript_dict, save_dir):
 
 			for i in range(len(all_features_for_this_list)):
 				if i % 2 == 0:
-					this_utt_feats = np.asarray(all_features_for_this_list[i])
-					next_utt_feats = np.asarray(all_features_for_this_list[i+1])
 
 					whole_func_feat1 = final_feat_calculate_multicat(
 						all_row_ends[i], all_raw_norm_feat, all_norm_feat_dim
@@ -142,12 +170,20 @@ def loop_through_data(combined_transcript_dict, save_dir):
 						all_features = whole_func_feat
 					else:
 						all_features = np.vstack((all_features, whole_func_feat))
+			# print(f"all_features, {len(all_features)}")
+			# print(f"speaker_pairs: {len(speaker_pairs)}")
 
 			# save the features
 			print("savename:", savename)
 			with open(savename, 'w') as savefile:
-				for item in all_features:
-					savefile.write(",".join([str(part) for part in item]))
+				for n, item in enumerate(all_features):
+					# collate speaker pair IDs and current turn features:
+					output_row = []
+					#check if speaker IDs need to be saved:
+					if save_speaker_ids is True:
+						output_row.extend(speaker_pairs[n])
+					output_row.extend([str(part) for part in item])
+					savefile.write(",".join(output_row))
 					savefile.write("\n")
 
 
@@ -179,20 +215,36 @@ def run_opensmile_over_utterance(row, base_file):
 
 	length = end - start
 
-	## extract this short file to run feature extraction on
-	sp.run(["ffmpeg", "-y", "-ss", str(start), "-i", f"{str(filepath)}/{audio_in_name}",
-			"-t", str(length), "-c", "copy", "-y", audio_out])
+	# Format date as DDMMYY
+	date_str = datetime.now().strftime("%d%m%y")
+	filename = f"./{date_str}_output.txt"
+
+	#Convert audio file with ffmpeg	
+	# Run the command and append to the dated file
+	with open(filename, "a") as f:
+		f.write(f"=== Running ffmpeg at {datetime.now().isoformat()}  on {audio_out_name}===\n")
+		f.flush()
+		## extract this short file to run feature extraction on
+		sp.run(["ffmpeg", "-y", "-ss", str(start), "-i", f"{str(filepath)}/{audio_in_name}",
+				"-t", str(length), "-c", "copy", "-y", audio_out],
+				stdout=f, stderr=f				
+				)
 
 	feats_out = filepath / f"{speaker}_{start}-{end}.csv"
 	feats_out = str(feats_out)
 
 	# run opensmile over a particular utterance, ex:
-	# $(OUTPUT_DIR)/%_features_raw_baseline.csv: $(OUTPUT_DIR)/%.wav
-	# 	SMILExtract -C $(OPENSMILE_CONFIG_BASELINE) -I $< -O $@
-	# extract the features with opensmile
+		# $(OUTPUT_DIR)/%_features_raw_baseline.csv: $(OUTPUT_DIR)/%.wav
+		# 	SMILExtract -C $(OPENSMILE_CONFIG_BASELINE) -I $< -O $@
 
-	sp.run(["SMILExtract", "-C", OPENSMILE_CONFIG_BASELINE,
-		   "-I", audio_out, "-O", feats_out])
+	# Run the command and append to the dated file
+	with open(filename, "a") as f:
+		f.write(f"=== Running ffmpeg at {datetime.now().isoformat()}  on {audio_out_name}===\n")
+		f.flush()
+		sp.run(["SMILExtract", "-C", OPENSMILE_CONFIG_BASELINE,
+			"-I", audio_out, "-O", feats_out],
+			stdout=f, stderr=f
+			)
 
 	# read in acoustic features
 	acoustic_feats = []
@@ -324,6 +376,9 @@ def id_whether_to_extract(row, following_row, speaker_pair):
 if __name__ == "__main__":
 	parser = make_argument_parser()
 	args = parser.parse_args()
+
+	# Check whether speaker IDs need to be saved:
+	save_speaker =  args.save_speaker_ids
 	
 	# get location to dir with files of interest
 	
@@ -331,7 +386,7 @@ if __name__ == "__main__":
 	input_dir = Path(args.input_directory).resolve()
 
 	# Create the full path for the "output" folder
-	output_dir = Path.cwd().resolve() / "multicat_complete_feats/no_addressee_feats/test"
+	output_dir = Path(args.output_directory).resolve()
 	
 	print(f"input: {input_dir}\n output: {output_dir}")
 
@@ -352,4 +407,6 @@ if __name__ == "__main__":
 			all_files_of_interest[datafile] = this_file
 
 	## go through all files and generate output
-	loop_through_data(all_files_of_interest, output_dir)
+	loop_through_data(combined_transcript_dict = all_files_of_interest,
+						save_dir = output_dir, 
+				   		save_speaker_ids = save_speaker)

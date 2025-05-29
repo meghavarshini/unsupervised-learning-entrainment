@@ -17,11 +17,23 @@ def make_argument_parser():
 	parser.add_argument("--model",
 						default="../fisher_scripts/models/trained_VAE_nonorm_nopre_l1.pt",
 						help="directory where the Fisher model is")
-	parser.add_argument("--cuda_device",
+	parser.add_argument("--cuda",
 						default=1,
+						help="set device")
+	parser.add_argument("--cuda_device",
+						default=True, type = str2bool,
 						help="set device")
 	return parser
 
+def str2bool(v):
+    if isinstance(v, bool):
+        return v
+    if v.lower() in ('yes', 'true', 't', '1'):
+        return True
+    elif v.lower() in ('no', 'false', 'f', '0'):
+        return False
+    else:
+        raise argparse.ArgumentTypeError('Boolean value expected.')
 ############ Fix for issues with paths #######
 ## Get the current working directory
 current_directory = os.getcwd()
@@ -163,4 +175,4 @@ if __name__ == "__main__":
 	test_h5 = args.h5_file
 	test_input = load_h5(test_h5)
 	torch.cuda.set_device(args.cuda_device)
-	model_testing(model_name = model, X_test = test_input, cuda = True, cuda_device = args.cuda_device)
+	model_testing(model_name = model, X_test = test_input, cuda = args.cuda, cuda_device = args.cuda_device)

@@ -1,3 +1,5 @@
+# Exanple use: $ python generate_dyads_multicat_complete.py --input_directory <dir> --output_directory <dir> --save_speaker_ids <T/F>
+
 '''
 Use this script to generate dyads from the MultiCAT data, 
 irrespective of addresseee. It assumes that two adjacent turns 
@@ -7,7 +9,7 @@ for the purposes of this script, we assume the following:
 1. For every trial, there exists one transcript file with the following columns:
 "start	end	speaker	addressee	transcript", and 3 associated wav files. 
 The file name contains the IDs for trial, speaker, and team.
-2. The values column "speaker" should match the uniqueIDs of the participants, not roles
+2. The values column "speaker" should match the uniqueIDs of the speakers, not roles
 e.g. E000689, not 'transporter'
 3. OpenSMILE and ffmpeg are installed, and the path to `SMILExtract` has been added to $PATH
 (see documentation: https://audeering.github.io/opensmile/get-started.html)
@@ -46,22 +48,36 @@ def make_argument_parser():
 	parser.add_argument("--output_directory",
 						default="./multicat_complete_test_feats",
 						help="directory for calling transcripts")
+	parser.add_argument("--save_speaker_ids",
+						default=False, type=str2bool,
+						help="ask whether speaker IDs should be added to output CSV")
 	return parser
+
+def str2bool(v):
+    if isinstance(v, bool):
+        return v
+    if v.lower() in ('yes', 'true', 't', '1'):
+        return True
+    elif v.lower() in ('no', 'false', 'f', '0'):
+        return False
+    else:
+        raise argparse.ArgumentTypeError('Boolean value expected.')
 
 def time_to_seconds(time_str):
     minutes, seconds = time_str.split(':')
     return int(minutes) * 60 + float(seconds)
 
-def loop_through_data(combined_transcript_dict, save_dir):
+def loop_through_data(combined_transcript_dict, save_dir, save_speaker_ids: bool):
 	'''
 	This function loops over every file added to a dictionary of unique files
 	and saves the feature set to the user-defined location
+	User can specify if they want to save the speaker IDs or not
 	'''
 	# go to an individual transcript file in the folder
 	for fpath, combined_transcript in combined_transcript_dict.items():
 		# print("file contents: ", combined_file)
 		# speakers and addressees in CSV MUST be named their unique ID
-		all_speakers = combined_transcript.participant.unique().tolist()
+		all_speakers = combined_transcript.speaker.unique().tolist()
 		print("Speakers: ", all_speakers)
 		
 		# convert timestamps to seconds:
@@ -72,6 +88,7 @@ def loop_through_data(combined_transcript_dict, save_dir):
 		combined_transcript = combined_transcript.sort_values(by=["start_timestamp"], ascending=True)
 		print("no. of rows: ",len(combined_transcript))
 
+		## Holder for current and next speaker:
 		speaker_pairs = []
 		## holder for all acoustic features for one trial
 		all_features_for_this_list = []
@@ -94,11 +111,11 @@ def loop_through_data(combined_transcript_dict, save_dir):
 				next_row = combined_transcript.iloc[i+1]
 
 				## ToDo: add else condition?
-				print(f"Current speaker for turn {i}: {row.participant}; Next turn speaker for turn {i + 1}: {next_row.participant}")
-				if row.participant == next_row.participant:					
+				print(f"Current speaker for turn {i}: {row.speaker}; Next turn speaker for turn {i + 1}: {next_row.speaker}")
+				if row.speaker == next_row.speaker:					
 					print("pair of utterances have the same speaker, skipping")
-				elif row.participant != next_row.participant:
-					print(f"pair of utterances have different participants, processing...")
+				elif row.speaker != next_row.speaker:
+					print(f"pair of utterances have different speakers, processing...")
 					counter+=1
 					
 					## extract features for this row
@@ -128,11 +145,10 @@ def loop_through_data(combined_transcript_dict, save_dir):
 					# print(f"all_row_ends: {all_row_ends}")
 					
 					# Create pair of current and next speaker:
-					speaker_pairs.append([row.participant, next_row.participant])
+					speaker_pairs.append([row.speaker, next_row.speaker])
+					# print(f"testing speaker info {row.speaker}, {next_row.speaker}")
 
 					## add feature copies to features_for_normalizing
-					# print(f"testing speaker info {row.participant}, {next_row.participant}")
-
 					features_for_normalizing.extend(this_row_copy)
 					features_for_normalizing.extend(next_row_copy)
 					# print(f"print(features_for_normalizing: {len(features_for_normalizing)}")
@@ -161,8 +177,6 @@ def loop_through_data(combined_transcript_dict, save_dir):
 
 			for i in range(len(all_features_for_this_list)):
 				if i % 2 == 0:
-					this_utt_feats = np.asarray(all_features_for_this_list[i])
-					next_utt_feats = np.asarray(all_features_for_this_list[i+1])
 
 					whole_func_feat1 = final_feat_calculate_multicat(
 						all_row_ends[i], all_raw_norm_feat, all_norm_feat_dim
@@ -177,15 +191,15 @@ def loop_through_data(combined_transcript_dict, save_dir):
 						all_features = np.vstack((all_features, whole_func_feat))
 			print(f"all_features, {len(all_features)}")
 			print(f"speaker_pairs: {len(speaker_pairs)}")
-			# save the features
 			
-
+			# save the features
 			print("savename:", savename)
 			with open(savename, 'w') as savefile:
 				for n, item in enumerate(all_features):
 					# collate speaker pair IDs and current turn features:
 					output_row = []
-					output_row.extend(speaker_pairs[n])
+					if save_speaker_ids == True:
+						output_row.extend(speaker_pairs[n])
 					output_row.extend([str(part) for part in item])
 
 					savefile.write(",".join(output_row))
@@ -203,8 +217,8 @@ def run_opensmile_over_utterance(row, base_file):
 	## get start and end times
 	start = row.start_timestamp
 	end = row.end_timestamp
-	speaker = row.participant
-	print(start, end, speaker)
+	speaker = row.speaker
+	# print(start, end, speaker)
 
 	## get the name of the audio
 	## combined files are of format: Trial-T000604_Team-TM000202_combined.txt
@@ -383,8 +397,9 @@ if __name__ == "__main__":
 	parser = make_argument_parser()
 	args = parser.parse_args()
 	
-	# get location to dir with files of interest
-	
+	# Check whether speaker IDs need to be saved:
+	save_speaker =  args.save_speaker_ids
+
 	# get input directory
 	input_dir = Path(args.input_directory).resolve()
 
@@ -410,4 +425,6 @@ if __name__ == "__main__":
 			all_files_of_interest[datafile] = this_file
 
 	## go through all files and generate output
-	loop_through_data(all_files_of_interest, output_dir)
+	loop_through_data(combined_transcript_dict = all_files_of_interest,
+						save_dir = output_dir, 
+				   		save_speaker_ids = save_speaker)
